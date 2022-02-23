@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+{% extends "FuturePlanning/mybase.html" %}
+{%block test%}{{family}}{%endblock%}
+    {% block body_block%}
+    <style media="screen">
+    .boxy{
+       background:#d8ebdb;
+       /* background:red; */
+       border: 2px ridge #6079a6;
+     }
+     .event_meter{
+       width: 12em;
+       height: 3em;
+       background-color: lightgray;
+     }
+    </style>
+    <div class="container-xxl" style="margin-top:60px;">
+      <!-- ROW 1 (Event parameters)-->
+      <!-- ****** -->
+      <form method="POST" class="mycrecord">
+        <div class="row">
+            <!-- Header for event parameters section -->
+            <div  class="col-lg-12 boxy" >
+              <h2 style="display:inline;">Event Parameters {{Counter}}</h2>
+            </div>
+            <!-- End of Header for event parameters section -->
+            <!-- Event parameters section -->
+            <div  class="col-lg-2 boxy" >
+              <p> {{ PurchessApartmantForm.Event_Name.label}}:
+              {{ PurchessApartmantForm.Event_Name}}
+              {% csrf_token %}
+              </p>
+              <p> {{ PurchessApartmantForm.Event_Cost.label}}:
+              {{ PurchessApartmantForm.Event_Cost}}
+              {% csrf_token %}
+              </p>
+              <p> {{ PurchessApartmantForm.Event_Date.label}}:
+              {{ PurchessApartmantForm.Event_Date}}
+              {% csrf_token %}
+              </p>
+              <input type="submit" class='btn btn-primary' value="Run Simulation In" id="in_event_submit_btn" name="SUBMIT">
+              <input type="submit" class='btn btn-primary' value="Run Simulation Exp" id="exp_event_submit_btn" name="SUBMIT">
+              <label for="event_meter">Precentage of Budget achived:</label>
+              <meter class="event_meter" id="event_meter" value="0.2" high="2"></meter><br>
+              <input type="submit" class='btn btn-primary' value="Save Data" id="event_Save_Data_submit_btn" name="SUBMIT">
+            </div>
+            <!-- End Event parameters section -->
+            <!-- Event balance section -->
+            <div  class="col-lg-2 boxy" >
+              <h4 style="display:inline;color:blue;">Balance Section:</h4><p></p>
+              {{ PurchessApartmantForm.Balance_At_Date.label}}
+              {{ PurchessApartmantForm.Balance_At_Date}}
+
+            </div>
+            <!-- End Event balance section -->
+            <!-- Event balance section -->
+            <div  class="col-lg-2 boxy" >
+              <h4 style="display:inline;color:blue;">Savings Section:</h4><p></p>
+              <h5 style="display:inline;color:orange;">Withdraw From Saving:</h5><p></p>
+              <select style="width: 200px;" id="savingsRecords" onchange="SaveEventParameterChange()">
+                  <!-- will be filled with data using scripts -->
+                  <h3 >
+                  </h3>
+              </select>
+              <p> {{ PurchessApartmantForm.Savings_At_Date.label}}:
+              <!-- Display the value of the selected saving record at event dates
+              it rerder by django with 'id':'Event_Savings' and then using scripts
+              to update vale-->
+              {{ PurchessApartmantForm.Savings_At_Date}}
+              {% csrf_token %}
+              </p>
+              <h5 style="display:inline;color:orange;">New Saving:</h5><p></p>
+            </div>
+            <!-- End Event balance section -->
+            <!-- Event Savings records and sim actions -->
+            <div  class="col-lg-2 boxy" >
+              <h4 style="display:inline;color:blue;">Loan Section:</h4><p></p>
+              <select id="loansRecords" onchange="LoanEventParameterChange()">
+                  <h3 >
+                  </h3>
+              </select>
+              <p> {{ PurchessApartmantForm.Loans_At_Date.label}}:
+              <!-- Display the value of the selected saving record at event dates
+              it rerder by django with 'id':'Event_Savings' and then using scripts
+              to update vale-->
+              {{ PurchessApartmantForm.Loans_At_Date}}
+              {% csrf_token %}
+            </div>
+            <!-- End Event Savings records and sim actions -->
+            <!-- Event in comes sim actions -->
+            <div  class="col-lg-2 boxy" >
+              <p> {{ PurchessApartmantForm.Event_In_Start_Date.label}}:
+              <!-- redered with 'id':'Event_In_Start_Date' -->
+              {{ PurchessApartmantForm.Event_In_Start_Date}}
+              {% csrf_token %}
+              </p>
+              <p> {{ PurchessApartmantForm.Event_In_End_Date.label}}:
+              <!-- redered with 'id':'Event_In_End_Date' -->
+              {{ PurchessApartmantForm.Event_In_End_Date}}
+              {% csrf_token %}
+              </p>
+              <p> {{ PurchessApartmantForm.Event_In_Monthly_Value.label}}:
+              <!-- redered with 'id':'Event_In_Value' -->
+              {{ PurchessApartmantForm.Event_In_Monthly_Value}}
+              {% csrf_token %}
+              </p>
+              <p> {{ PurchessApartmantForm.Event_In_Post_Data.label}}:
+              <!-- redered with 'id':'Event_In_Post' -->
+              {{ PurchessApartmantForm.Event_In_Post_Data}}
+              {% csrf_token %}
+              </p>
+            </div>
+            <!-- END Event in comes sim actions -->
+            <!-- Event Expense sim actions -->
+            <div  class="col-lg-2 boxy" >
+              <p> {{ PurchessApartmantForm.Event_Exp_Start_Date.label}}:
+              <!-- redered with 'id':'Event_In_Start_Date' -->
+              {{ PurchessApartmantForm.Event_Exp_Start_Date}}
+              {% csrf_token %}
+              </p>
+              <p> {{ PurchessApartmantForm.Event_Exp_End_Date.label}}:
+              <!-- redered with 'id':'Event_In_End_Date' -->
+              {{ PurchessApartmantForm.Event_Exp_End_Date}}
+              {% csrf_token %}
+              </p>
+              <p> {{ PurchessApartmantForm.Event_Exp_Monthly_Value.label}}:
+              <!-- redered with 'id':'Event_In_Value' -->
+              {{ PurchessApartmantForm.Event_Exp_Monthly_Value}}
+              {% csrf_token %}
+              </p>
+              <p> {{ PurchessApartmantForm.Event_Exp_Post_Data.label}}:
+              <!-- redered with 'id':'Event_In_Post' -->
+              {{ PurchessApartmantForm.Event_Exp_Post_Data}}
+              {% csrf_token %}
+              </p>
+
+
+            </div>
+            <!-- ENd Event Expense sim actions -->
+        </div>
+      </form>
+      <!-- ROW 1 (Event parameters) END-->
+      <!-- ****** -->
+      <!-- ROW 2 (Global view graphs parameters)-->
+      <!-- ****** -->
+      <div class="row">
+        <!-- parameters for global view graphs in the next row -->
+        <div class="col-lg-12 boxy" >
+          <div>
+            <h2 style="display:inline;">Global View:</h2>
+            <h3 style="display:inline;color:blue;">type:</h3>
+            <select id="typeOfPeriods" onchange="periodChangeFunction()">
+              <h3 >
+                <option  selected value=1>Month</option>
+                <option   value=12>year</option>
+              </h3>
+            </select>
+
+            <h3 style="display:inline;color:blue;">period:</h3>
+            <select id="periodSelect" onchange="periodChangeFunction()">
+                <h3 >
+                  <option selected value=1>1</option>
+                  <option value=2>2</option>
+                  <option value=3>3</option>
+                  <option value=4>4</option>
+                  <option value=5>5</option>
+                  <option value=6>6</option>
+                  <option value=7>7</option>
+                  <option value=8>8</option>
+                  <option value=9>9</option>
+                  <option value=10>10</option>
+                  <option value=11>11</option>
+                  <option value=12>12</option>
+                </h3>
+              </select>
+
+            <h3 style="display:inline;color:blue;">returns:</h3>
+            <select id="returns" onchange="periodChangeFunction()">
+              <h3 >
+                <option value=1>1</option>
+                <option value=2>2</option>
+                <option value=3>3</option>
+                <option value=4>4</option>
+                <option value=5>5</option>
+                <option value=6>6</option>
+                <option value=7>7</option>
+                <option value=8>8</option>
+                <option value=9>9</option>
+                <option value=10>10</option>
+                <option  value=11>11</option>
+                <option  selected value=12 >12</option>
+                <option value=13>13</option>
+                <option value=14>14</option>
+                <option value=15>15</option>
+                <option value=16>16</option>
+                <option value=17>17</option>
+                <option value=18>18</option>
+                <option value=19>19</option>
+                <option value=20>20</option>
+                <option value=21>21</option>
+                <option value=22>22</option>
+                <option value=23>23</option>
+                <option value=24>24</option>
+              </h3>
+            </select>
+
+            <input type="checkbox" id="checkAlldata" value="all" onclick="allDataFunc()">
+            <h3 style="display:inline;color:green;">display all data</h3>
+
+          </div>
+        </div>
+      </div>
+      <!-- ROW 2 (Global view graphs parameters) END-->
+      <!-- ****** -->
+      <!-- ROW 3 (View global data as bar graphs)-->
+      <!-- ****** -->
+      <div class="row">
+        <div  class="col-lg-6 boxy" >
+          <p>Current view</p>
+          <div id="bar_in_exp_Plot" style="max-width:1200px;max-height:400px;"></div>
+        </div>
+        <div  class="col-lg-6 boxy" >
+          <p>Future view</p>
+          <div id="sim_bar_in_exp_Plot" style="max-width:1200px;max-height:400px;"></div>
+          <div id="bar_savings_loans" style="max-width:1200px;max-height:400px;"></div>
+        </div>
+      </div>
+      <!-- ROW 3 (View global data as bar graphs) END -->
+      <!-- ****** -->
+      <!-- ROW 4 (View specific record per type)-->
+      <!-- ****** -->
+      <div class="row">
+        <div  class="col-lg-12 boxy" >
+          <h2 style="display:inline;">View specific record:</h2>
+          <select id="RecordTypeList" onchange="rectypeChangeFunction()">
+            <h3 >
+              <option selected="selected" value=1>Incomes</option>
+              <option value=2>Expenses</option>
+              <option value=3>Savings</option>
+              <option value=4>Loans</option>
+            </h3>
+          </select>
+          <select id="CurrentRecordTypeListId" onchange="recordChangeFunction()">
+            <h3 >
+            </h3>
+          </select>
+          <div id="scatter_current_record" style="max-width:2400px;max-height:400px;"></div>
+        </div>
+      </div>
+      <!-- ROW 4 (View specific record per type) END-->
+      <!-- ****** -->
+      <!-- ROW 5 (View incomes/exp bar chart-->
+      <!-- ****** -->
+      <div  class="row">
+        <div  class="col-lg-6  boxy" >
+          <h2>Income Data Table</h2>
+          <p class="saverecdatacss" id="incomerecdata"></p>
+          <div class="div_table_wrapper">
+            {{InTable|safe}}
+          </div>
+          <h2>Simulate Income Data Table</h2>
+          <div class="div_table_wrapper">
+            {{SimInTable|safe}}
+          </div>
+        </div>
+
+        <div  class="col-lg-6   boxy" >
+          <h2>Expanse Data Table</h2>
+          <p class="saverecdatacss" id="expanserecdata"></p>
+          <div class="div_table_wrapper">
+            {{ExpTable|safe}}
+          </div>
+
+          <h2>Simulate Expanse Data Table</h2>
+          <div class="div_table_wrapper">
+            {{SimExpTable|safe}}
+          </div>
+
+        </div>
+      </div>
+      <!-- ROW 5 (View incomes/exp bar chart END-->
+      <!-- ****** -->
+      <!-- ROW 6 (View balance bar chart-->
+      <!-- ****** -->
+      <div id="Balance" class="row">
+        <div id="balanceTable" class="col-lg-12  boxy" >
+          <h2>Balance</h2>
+          <div class="div_table_wrapper">
+            {{BalanceTable|safe}}
+          </div>
+
+          <h2>Simulated Balance</h2>
+          <div class="div_table_wrapper">
+            {{SimBalanceTable|safe}}
+          </div>
+
+        </div>
+      </div>
+      <!-- ROW 6 (View balance bar chart END-->
+      <!-- ****** -->
+      <!-- ROW 7 (View loans/savings bar chart-->
+      <!-- ****** -->
+      <div  class="row">
+        <div id="saveTable" class="col-lg-6 boxy" >
+          <h2>Savings Data Table</h2>
+          <p class="saverecdatacss" id="recdata"></p>
+          <p></p>
+          <div class="div_table_wrapper">
+            {{SaveTable|safe}}
+          </div>
+        </div>
+
+
+        <div id="loanTable" class="col-lg-6 boxy" >
+          <h2>Loans Data Table</h2>
+          <!-- <select id="loansRecords" onchange="loansRecordsChangeFunction()">
+              <h3 >
+              </h3>
+          </select> -->
+          <p class="saverecdatacss" id="loanrecdata"></p>
+          <!-- <div id ="loanselectchart" style="max-width:1200px;max-height:400px;"></div> -->
+          <p></p>
+          <div class="div_table_wrapper">
+            {{LoanTable|safe}}
+          </div>
+        </div>
+
+      </div>
+      <!-- for space at bottom of page -->
+      <p></p>
+      <p></p>
+    </div>
+
+
+
+
+<script>
+document.getElementById("in_event_submit_btn").hidden = true;
+document.getElementById("exp_event_submit_btn").hidden = true;
+
+function EventInPost(){
+
+  x=document.getElementById('in_event_submit_btn').click();
+}
+function EventExpPost(){
+
+  x=document.getElementById('exp_event_submit_btn').click();
+}
+function SaveEventParameterChange()
+{
+  EventParameterChange('Event_Savings',"tSaveTable","savingsRecords")
+}
+function LoanEventParameterChange()
+{
+  EventParameterChange('Event_Loans',"tLoanTable","loansRecords")
+}
+function BalanceAtEventDateSimulated(){
+  var xArray ={{IncomeXAxies|safe}}
+  var balance_at_date=document.getElementById('Event_Balance');
+  var event_date = document.getElementById('Event_Date')
+  var myTable=document.getElementById("SimtBalanceTable")
+  var objCells = myTable.rows.item(1).cells;
+  rawdata =[];
+  for (var j = 0; j < objCells.length; j++) {
+      rawdata.push(parseInt(objCells.item(j).innerHTML))
+  }
+
+  var t = event_date.value
+  event_date.value = t.substr(0, 2) + "_" + t.substr(3);
+
+  console.log("balance data")
+  console.log(rawdata);
+  console.log(event_date.value);
+  // console.log(xArray.indexOf(event_date.value))
+  console.log(xArray.indexOf(event_date.value));
+  console.log(rawdata[xArray.indexOf(event_date.value)])
+
+  balance_at_date.value=rawdata[xArray.indexOf(event_date.value)+1]
+//
+}
+
+
+function EventParameterChange(record_at_date_id,lv_Table,lv_Records){
+
+
+  var xArray ={{IncomeXAxies|safe}}
+  //88//Savings_At_Date at event form can be also Loans_At_Date
+  saving_at_date = document.getElementById(record_at_date_id);
+
+  var event_date = document.getElementById('Event_Date')
+  //88//table id to take data from
+  //*****lv_Table="tSaveTable"
+  //88//select id with the needed record
+  //*****lv_Records = "savingsRecords"
+
+  var myTab = document.getElementById(lv_Table);
+  // saving select id
+  var select = document.getElementById(lv_Records);
+  // current select value
+  var selectValue=select.value
+
+  // LOOP THROUGH EACH ROW OF THE TABLE AFTER HEADER.
+  // and stop when the name of the raw same as name of the select.
+  // Y axis data is in rawdata list
+  for (i = 1; i < myTab.rows.length; i++)
+   {
+            var rawdata = []
+            // GET THE CELLS COLLECTION OF THE CURRENT ROW.
+            var objCells = myTab.rows.item(i).cells;
+            // LOOP THROUGH EACH CELL OF THE CURENT ROW TO READ CELL VALUES.
+            for (var j = 0; j < objCells.length; j++) {
+                rawdata.push(parseInt(objCells.item(j).innerHTML))
+
+            }
+            console.log(rawdata)
+            recName=myTab.rows.item(i).cells.item(0).innerHTML
+            rawdata.shift()
+            // console.log(recName,select.options[selectValue].text,rawdata)
+            if (recName == select.options[selectValue].text)
+            {
+
+              break;
+            }
+    }
+
+    // find index of specific date in x axies arrays
+    // console.log(xArray[4]);
+    // console.log(event_date.value);
+    var t = event_date.value
+
+    event_date.value = t.substr(0, 2) + "_" + t.substr(3);
+    console.log("saving data")
+    console.log(event_date.value);
+    // console.log(xArray.indexOf(event_date.value))
+    console.log(xArray.indexOf(event_date.value));
+    console.log(rawdata[xArray.indexOf(event_date.value)])
+    console.log(rawdata[8])
+  saving_at_date.value=rawdata[xArray.indexOf(event_date.value)]
+
+}
+
+  // data from the view for incomes records
+  var IncomesRecordsList={{IncomesRecordList|safe}}
+  var incomesRecordNumber=IncomesRecordsList.length
+
+  // data from the view for expanses records
+  var ExpansesRecordsList={{ExpansesRecordList|safe}}
+  var expansesRecordNumber=ExpansesRecordsList.length
+
+  // data from the view for savingd records
+  var SavingsRecordsList={{SavingsRecordList|safe}}
+  var savingsRecordNumber=SavingsRecordsList.length
+
+  // data from the view for loans records
+  var LoansRecordsList={{LoansRecordList|safe}}
+  var loansRecordNumber=LoansRecordsList.length
+
+
+  // get names of incomes records
+  var incomesRecordsNames = []
+  for (var i = 0; i<incomesRecordNumber; i++)
+    incomesRecordsNames.push(IncomesRecordsList[i].Rec_Name);
+
+  // inserts incomes record names into list of select
+  // var select = document.getElementById('incomesRecords');
+  // var array_length=incomesRecordsNames.length
+  // for (var i = 0; i<array_length; i++)
+  // {
+  //   var opt = document.createElement('option');
+  //   opt.value = i.toString();
+  //   opt.innerHTML = incomesRecordsNames[i];
+  //   select.appendChild(opt);
+  // }
+
+
+  // get names of expanses records
+  var expansesRecordsNames = []
+  for (var i = 0; i<expansesRecordNumber; i++)
+    expansesRecordsNames.push(ExpansesRecordsList[i].Rec_Name);
+
+  // inserts incomes record names into list of select
+  // var select = document.getElementById('expansesRecords');
+  // var array_length=expansesRecordsNames.length
+  // for (var i = 0; i<array_length; i++)
+  // {
+  //   var opt = document.createElement('option');
+  //   opt.value = i.toString();
+  //   opt.innerHTML = expansesRecordsNames[i];
+  //   select.appendChild(opt);
+  // }
+
+
+
+  // get names of savings records
+  var savingsRecordsNames = []
+  for (var i = 0; i<savingsRecordNumber; i++)
+    savingsRecordsNames.push(SavingsRecordsList[i].Rec_Name);
+
+  // inserts savings record names into list of select
+  var select = document.getElementById('savingsRecords');
+  var array_length=savingsRecordsNames.length
+  for (var i = 0; i<array_length; i++)
+  {
+    var opt = document.createElement('option');
+    opt.value = i.toString();
+    opt.innerHTML = savingsRecordsNames[i];
+    select.appendChild(opt);
+  }
+
+
+  // get names of loans records
+  var loansRecordsNames = []
+  for (var i = 0; i<loansRecordNumber; i++)
+    loansRecordsNames.push(LoansRecordsList[i].Rec_Name);
+
+  // inserts savings record names into list of select
+  var select = document.getElementById('loansRecords');
+  var array_length=loansRecordsNames.length
+  for (var i = 0; i<array_length; i++)
+  {
+    var opt = document.createElement('option');
+    opt.value = i.toString();
+    opt.innerHTML = loansRecordsNames[i];
+    select.appendChild(opt);
+  }
+
+function rectypeChangeFunction(){
+  var select = document.getElementById("RecordTypeList");
+  var rectype=select.value
+  if (rectype == 1) {
+    buildListPerType(incomesRecordNumber,IncomesRecordsList,"CurrentRecordTypeListId",1)
+
+  }
+  if (rectype == 2) {
+    buildListPerType(expansesRecordNumber,ExpansesRecordsList,"CurrentRecordTypeListId",2)
+  }
+  if (rectype == 3) {
+    buildListPerType(savingsRecordNumber,SavingsRecordsList,"CurrentRecordTypeListId",3)
+  }
+  if (rectype == 4) {
+    buildListPerType(loansRecordNumber,LoansRecordsList,"CurrentRecordTypeListId",4)
+  }
+  recordChangeFunction()
+}
+
+
+buildListPerType(incomesRecordNumber,IncomesRecordsList,"CurrentRecordTypeListId",1)
+recordChangeFunction()
+
+// //////////////////////////////////////////////////////////
+// // //////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////
+function buildListPerType(RecNum,RecList,selectId,rectype){
+  var lv_Table =""
+  var lv_Records = ""
+
+  // get names of loans records
+  var RecordsNames = []
+  for (var i = 0; i<RecNum; i++)
+    RecordsNames.push(RecList[i].Rec_Name);
+
+  // inserts record names into list of select
+  var select = document.getElementById(selectId);
+  select.innerHTML = "";
+  var array_length=RecordsNames.length
+  for (var i = 0; i<array_length; i++)
+  {
+    var opt = document.createElement('option');
+    opt.value = i.toString();
+    opt.innerHTML = RecordsNames[i];
+    select.appendChild(opt);
+  }
+}
+function recordChangeFunction()
+{
+//
+//
+//
+//
+  // saving table id
+  var xArray ={{IncomeXAxies|safe}}
+
+  var select = document.getElementById("RecordTypeList");
+  var rectype=select.value
+  if (rectype == 1) {
+    lv_Table="tInTable"
+  }
+  if (rectype == 2) {
+    lv_Table="tExpTable"
+  }
+  if (rectype == 3) {
+    lv_Table="tSaveTable"
+  }
+  if (rectype == 4) {
+    lv_Table="tLoanTable"
+  }
+
+  lv_Records = "CurrentRecordTypeListId"
+
+  var myTab = document.getElementById(lv_Table);
+  // saving select id
+  var select = document.getElementById(lv_Records);
+  // current select value
+  var selectValue=select.value
+
+
+
+  // LOOP THROUGH EACH ROW OF THE TABLE AFTER HEADER.
+  // and stop when the name of the raw same as name of the select.
+  // Y axis data is in rawdata list
+  for (i = 1; i < myTab.rows.length; i++)
+   {
+            var rawdata = []
+            // GET THE CELLS COLLECTION OF THE CURRENT ROW.
+            var objCells = myTab.rows.item(i).cells;
+            console.log(objCells.item(0).innerHTML,objCells.item(1).innerHTML)
+            // LOOP THROUGH EACH CELL OF THE CURENT ROW TO READ CELL VALUES.
+            for (var j = 0; j < objCells.length; j++) {
+                rawdata.push(parseInt(objCells.item(j).innerHTML))
+
+            }
+            console.log(rawdata)
+            recName=myTab.rows.item(i).cells.item(0).innerHTML
+            rawdata.shift()
+            // console.log(recName,select.options[selectValue].text,rawdata)
+            if (recName == select.options[selectValue].text)
+            {
+
+              break;
+            }
+   }
+
+//
+//
+//
+  var trace1 ={
+
+          x: xArray,
+          y: rawdata,
+          marker: {color: 'blue'},
+          type: 'scatter',
+          name:select.options[selectValue].text
+  }
+
+  var layout ={
+    xaxis: {autorange: true,title: "Date"},
+    yaxis: {autorange: true,title: "Value"},
+    title: select.options[selectValue].text,
+    // plot_bgcolor:"black",
+    paper_bgcolor:"#f4fce3",
+    width: 1250,
+    height: 250,
+    margin: {
+      l: 50,
+      r: 50,
+      b: 80,
+      t: 40,
+      pad: 2
+    },
+
+    }
+  // var data =[trace1,trace2,trace3,trace4,layout]
+  var data =[trace1]
+
+  Plotly.newPlot(scatter_current_record,data,layout);
+
+}
+// //////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////
+
+
+
+
+  //call function on change of income select to display the selected record
+  // function incomesRecordsChangeFunction(){
+  //     generalRecordsChangeFunction("tInTable","incomesRecords",IncomesRecordsList,"incomeselectchart","incomerecdata")
+  // }
+
+  //call function on change of expanse  select to display the selected record
+  // function expansesRecordsChangeFunction(){
+  //     generalRecordsChangeFunction("tExpTable","expansesRecords",ExpansesRecordsList,"expanseselectchart","expanserecdata")
+  // }
+
+  //call function on change of saving select to display the selected record
+  // function savingsRecordsChangeFunction(){
+  //     generalRecordsChangeFunction("tSaveTable","savingsRecords",SavingsRecordsList,"savingselectchart","recdata")
+  // }
+
+  //call function on change of loan select to display the selected record
+  // function loansRecordsChangeFunction(){
+  //     generalRecordsChangeFunction("tLoanTable","loansRecords",LoansRecordsList,"loanselectchart","loanrecdata")
+  // }
+
+  // incomesRecordsChangeFunction()
+  // expansesRecordsChangeFunction()
+  // savingsRecordsChangeFunction()
+  // loansRecordsChangeFunction()
+
+// function to catch select saving record change event to update to the selected record
+function generalRecordsChangeFunction(lv_Table,lv_Records,lv_RecordsList,lv_selectchart,lv_recdata){
+  // build x axies of the graph
+  // all x axies are the same. income here can be any other
+  var xArray ={{IncomeXAxies|safe}}
+  // saving table id
+  var myTab = document.getElementById(lv_Table);
+  // saving select id
+  var select = document.getElementById(lv_Records);
+  // current select value
+  var selectValue=select.value
+
+  // LOOP THROUGH EACH ROW OF THE TABLE AFTER HEADER.
+  // and stop when the name of the raw same as name of the select.
+  // Y axis data is in rawdata list
+  for (i = 1; i < myTab.rows.length; i++)
+   {
+            var rawdata = []
+            // GET THE CELLS COLLECTION OF THE CURRENT ROW.
+            var objCells = myTab.rows.item(i).cells;
+            // LOOP THROUGH EACH CELL OF THE CURENT ROW TO READ CELL VALUES.
+            for (var j = 0; j < objCells.length; j++) {
+                rawdata.push(parseInt(objCells.item(j).innerHTML))
+            }
+            recName=myTab.rows.item(i).cells.item(0).innerHTML
+            rawdata.shift()
+            if (recName == select.options[selectValue].text)
+            {
+
+              break;
+            }
+   }
+
+
+   // update rec data under the select
+   for (var j = 0; j < lv_RecordsList.length; j++) {
+      if (lv_RecordsList[j].Rec_Name == recName)
+      {
+        // if loan then dont need the rate and start value to display
+        if(lv_RecordsList[j].Rec_Type == "4" || lv_RecordsList[j].Rec_Type == "1"  || lv_RecordsList[j].Rec_Type == "2")
+        {
+          // document.getElementById('recdata').innerHTML="".concat("Start Date: <em>"" lv_RecordsList[j].Start_Date </em>"
+          document.getElementById(lv_recdata).innerHTML="".concat("<em>","start date: ","</em>",lv_RecordsList[j].Start_Date,"<em>"," end Date: ","</em>",lv_RecordsList[j].End_Date,"<em>"," Value: ","</em>",lv_RecordsList[j].Value,"<em>")
+        }
+        else{
+            // document.getElementById('recdata').innerHTML="".concat("Start Date: <em>"" lv_RecordsList[j].Start_Date </em>"
+            document.getElementById(lv_recdata).innerHTML="".concat("<em>","start date: ","</em>",lv_RecordsList[j].Start_Date,"<em>"," end Date: ","</em>",lv_RecordsList[j].End_Date,"<em>"," Value: ","</em>",lv_RecordsList[j].Value,"<em>"," Rate: ","</em>",lv_RecordsList[j].Rate,
+            "<em>"," Start Value: ","</em>",lv_RecordsList[j].Start_Value)
+        }
+
+
+        break;
+      }
+    }
+
+var trace1 ={
+        x: xArray,
+        y: rawdata,
+        marker: {color: 'blue'},
+        type: 'scatter',
+        name:select.options[selectValue].text
+}
+
+var layout ={
+  xaxis: {autorange: true,title: "Date"},
+  yaxis: {autorange: true,title: "Value"},
+  title: select.options[selectValue].text,
+  // plot_bgcolor:"black",
+  paper_bgcolor:"#f4fce3",
+  width: 500,
+  height: 250,
+  margin: {
+    l: 50,
+    r: 50,
+    b: 40,
+    t: 80,
+    pad: 2
+  },
+
+  }
+// var data =[trace1,trace2,trace3,trace4,layout]
+var data =[trace1]
+
+Plotly.newPlot(lv_selectchart,data,layout);
+}
+
+
+function allDataFunc() {
+
+  var checkBox = document.getElementById("checkAlldata");
+  if (checkBox.checked == true){
+    document.getElementById("periodSelect").disabled=true
+    document.getElementById("typeOfPeriods").disabled=true
+    document.getElementById("returns").disabled=true
+    periodChangeFunction()
+  }else{
+    document.getElementById("periodSelect").disabled=false
+    document.getElementById("typeOfPeriods").disabled=false
+    document.getElementById("returns").disabled=false
+  }
+}
+
+window.onload = periodChangeFunction;
+function periodChangeFunction(){
+  var xArray ={{IncomeXAxies|safe}}
+  var yArray ={{IncomeYAxies}}
+  var ySimArray={{SimIncomeYAxies}}
+
+  var ExpxArray ={{ExpXAxies|safe}}
+  var ExpyArray ={{ExpYAxies}}
+  var ExpySimArray={{SimExpYAxies}}
+
+  var BalancexArray ={{BalanceXAxies|safe}}
+  var BalanceyArray ={{BalanceYAxies}}
+  var BalanceySimArray ={{SimBalanceYAxies}}
+
+
+  var SavingxArray ={{SavingsXAxies|safe}}
+  var SavingyArray ={{SavingsYAxies}}
+
+  var LoanxArray ={{LoansXAxies|safe}}
+  var LoanyArray ={{LoansYAxies}}
+
+
+  var periods = document.getElementById("periodSelect").value;
+  var typeofperiods = document.getElementById("typeOfPeriods").value;
+  var returns = document.getElementById("returns").value;
+  var NomOfMonToRet=periods*typeofperiods
+  var MaxMonthIndex = NomOfMonToRet*returns
+
+  //reduce arrays per user request of display months
+  var xArrayReduced = [];
+  var yArrayReduced = [];
+  var ySimArrayReduced = [];
+
+  var ExpxArrayReduced  = [];
+  var ExpyArrayReduced  = [];
+  var ExpySimArrayReduced  = [];
+
+  var BalancexArrayReduced = [];
+  var BalanceyArrayReduced = [];
+  var BalanceySimArrayReduced = [];
+
+  var SavingxArrayReduced = [];
+  var SavingyArrayReduced = [];
+
+  var LoanxArrayReduced = [];
+  var LoanyArrayReduced = [];
+
+  checkBox = document.getElementById("checkAlldata");
+  if (checkBox.checked == false)
+    {
+      if (MaxMonthIndex > xArray.length)
+      {
+        MaxMonthIndex = xArray.length;
+      }
+      for (i = 0; i <= MaxMonthIndex; i=i+NomOfMonToRet) {
+        xArrayReduced.push(xArray[i]);
+        yArrayReduced.push(yArray[i]);
+        ySimArrayReduced.push(ySimArray[i]);
+
+        ExpxArrayReduced.push(ExpxArray[i]);
+        ExpyArrayReduced.push(ExpyArray[i]);
+        ExpySimArrayReduced.push(ExpySimArray[i]);
+
+        BalancexArrayReduced.push(BalancexArray[i]);
+        BalanceyArrayReduced.push(BalanceyArray[i]);
+        BalanceySimArrayReduced.push(BalanceySimArray[i]);
+
+
+        SavingxArrayReduced.push(SavingxArray[i]);
+        SavingyArrayReduced.push(SavingyArray[i]);
+
+        LoanxArrayReduced.push(LoanxArray[i]);
+        LoanyArrayReduced.push(LoanyArray[i]);
+        // console.log(NomOfMonToRet,MaxMonthIndex,)
+        // console.log(i,xArray[i],xArrayReduced[i])
+      }
+
+    }
+    else{
+      xArrayReduced=xArray
+      yArrayReduced=yArray
+      ySimArrayReduced=ySimArray
+
+      ExpxArrayReduced=ExpxArray
+      ExpyArrayReduced=ExpyArray
+      ExpySimArrayReduced=ExpyArrayReduced
+
+
+      BalancexArrayReduced=BalancexArray
+      BalanceyArrayReduced=BalanceyArray
+      BalanceySimArrayReduced=BalanceyArrayReduced
+
+      SavingxArrayReduced=SavingxArray
+      SavingyArrayReduced=SavingyArray
+
+      LoanxArrayReduced = LoanxArray
+      LoanyArrayReduced = LoanyArray
+    }
+
+///////////////////////////////////////////
+
+
+    var trace1 ={
+      x: xArrayReduced,
+      y: yArrayReduced,
+      marker: {color: 'green'},
+      type: 'bar',
+      name:"Incomes"
+    }
+    var trace2 ={
+      x: ExpxArrayReduced,
+      y: ExpyArrayReduced,
+      marker: {color: 'red'},
+      type: 'bar',
+      name:"Expanses"
+
+    }
+
+    var trace3 ={
+      x: BalancexArrayReduced,
+      y: BalanceyArrayReduced,
+      marker: {color: 'blue'},
+      type: 'scatter',
+      name:"Balance",
+
+
+    }
+
+    var layout ={
+      xaxis: {autorange: true,title: "Date",range: [ExpxArray[0],ExpxArray[36]]},
+      yaxis: {autorange: true,title: "Value"},
+      title: "Current Income,Expanse and Ballance",
+      // plot_bgcolor:"black",
+      paper_bgcolor:"#f4fce3",
+
+      }
+    // var data =[trace1,trace2,trace3,trace4,layout]
+    var data =[trace1,trace2,trace3]
+
+    Plotly.newPlot('bar_in_exp_Plot',data,layout);
+
+    var trace1 ={
+      x: xArrayReduced,
+      y: ySimArrayReduced,
+      marker: {color: 'limegreen'},
+      type: 'scatter',
+      name:"Incomes"
+    }
+
+    var trace2 ={
+      x: xArrayReduced,
+      y: ExpySimArrayReduced,
+      marker: {color: 'orangered'},
+      type: 'scatter',
+      name:"Expanses"
+    }
+
+
+    var trace3 ={
+      x: BalancexArrayReduced,
+      y: BalanceySimArrayReduced,
+      marker: {color: 'blue'},
+      type: 'scatter',
+      name:"Balance",
+
+
+    }
+
+    var layout ={
+      xaxis: {autorange: true,title: "Date",range: [ExpxArray[0],ExpxArray[36]]},
+      yaxis: {autorange: true,title: "Value"},
+      title: "Simulate Income,Expanse and Ballance",
+      // plot_bgcolor:"black",
+      paper_bgcolor:"#f4fce3",
+
+      }
+
+      var data =[trace1,trace2,trace3]
+
+      Plotly.newPlot('sim_bar_in_exp_Plot',data,layout);
+
+
+///////////////////////////////////////////////////////////
+
+    // Define Data
+    var trace1 ={
+      x: SavingxArrayReduced,
+      y: SavingyArrayReduced,
+      marker: {color: 'green'},
+      type: 'bar',
+      name:"Savings"
+    }
+    // Define Layout
+
+    var trace2 ={
+      x: LoanxArrayReduced,
+      y: LoanyArrayReduced,
+      marker: {color: 'red'},
+      type: 'bar',
+      name:"Loans"
+
+    }
+    var layout ={
+      xaxis: {autorange: true,title: "Date"},
+      yaxis: {autorange: true,title: "Value"},
+      title: "Saving and Loans",
+      // plot_bgcolor:"black",
+      paper_bgcolor:"#93a2ba",
+
+      }
+    // var data =[trace1,trace2,trace3,trace4,layout]
+    var data =[trace1,trace2]
+    Plotly.newPlot('bar_savings_loans',data,layout);
+
+}
+
+// function showTableData() {
+//      document.getElementById('info').innerHTML = "";
+//      var myTab = document.getElementById('empTable');
+//
+//      // LOOP THROUGH EACH ROW OF THE TABLE AFTER HEADER.
+//      for (i = 1; i < myTab.rows.length; i++) {
+//
+//          // GET THE CELLS COLLECTION OF THE CURRENT ROW.
+//          var objCells = myTab.rows.item(i).cells;
+//
+//          // LOOP THROUGH EACH CELL OF THE CURENT ROW TO READ CELL VALUES.
+//          for (var j = 0; j < objCells.length; j++) {
+//              info.innerHTML = info.innerHTML + ' ' + objCells.item(j).innerHTML;
+//          }
+//          info.innerHTML = info.innerHTML + '<br />';     // ADD A BREAK (TAG).
+//      }
+//  }
+  SaveEventParameterChange();
+  LoanEventParameterChange();
+  BalanceAtEventDateSimulated();
+  </script>
+
+
+    </body>
+  </html>
+
+    {% endblock %}

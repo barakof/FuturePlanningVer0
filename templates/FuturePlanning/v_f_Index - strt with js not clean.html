@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+{% extends "FuturePlanning/mybase.html" %}
+{%block test%}{{family}}{%endblock%}
+    {% block body_block%}
+
+    <div id="dataContainer" class="container-xxl" style="margin-top:60px; ">
+      <div id="dataRow" class="row">
+        <div id="tenSlotsData" class="col-lg-10 boxy" >
+          <div id="Family Info" class="row">
+            <div class="col-lg-12 boxy" >
+              <div>
+                <h1 style="display:inline;">Charts:</h1>
+                <h3 style="display:inline;color:blue;">period:</h3>
+                <select id="periodSelect" onchange="periodChangeFunction()">
+                    <h3 >
+                      <option selected="selected" value=1>1</option>
+                      <option value=2>2</option>
+                      <option value=3>3</option>
+                      <option value=4>4</option>
+                      <option value=5>5</option>
+                      <option value=6>6</option>
+                      <option value=7>7</option>
+                      <option value=8>8</option>
+                      <option value=9>9</option>
+                      <option value=10>10</option>
+                      <option value=11>11</option>
+                      <option value=12>12</option>
+                    </h3>
+                  </select>
+
+                <h3 style="display:inline;color:blue;">type:</h3>
+                <select id="typeOfPeriods" onchange="periodChangeFunction()">
+                  <h3 >
+                    <option  selected value=1>Month</option>
+                    <option   value=12>year</option>
+                  </h3>
+                </select>
+
+                <h3 style="display:inline;color:blue;">returns:</h3>
+                <select id="returns" onchange="periodChangeFunction()">
+                  <h3 >
+                    <option value=1>1</option>
+                    <option value=2>2</option>
+                    <option value=3>3</option>
+                    <option value=4>4</option>
+                    <option value=5>5</option>
+                    <option value=6>6</option>
+                    <option value=7>7</option>
+                    <option value=8>8</option>
+                    <option value=9>9</option>
+                    <option value=10>10</option>
+                    <option value=11>11</option>
+                    <option selected value=12>12</option>
+                    <option value=13>13</option>
+                    <option value=14>14</option>
+                    <option value=15>15</option>
+                    <option value=16>16</option>
+                    <option value=17>17</option>
+                    <option value=18>18</option>
+                    <option value=19>19</option>
+                    <option value=20>20</option>
+                    <option value=21>21</option>
+                    <option value=22>22</option>
+                    <option value=23>23</option>
+                    <option value=24>24</option>
+                    <!-- <option value=13>13</option>
+                    <option value=14>14</option>
+                    <option value=15>15</option>
+                    <option value=16>16</option>
+                    <option value=17>17</option>
+                    <option value=18>18</option>
+                    <option value=19>19</option>
+                    <option value=20>20</option> -->
+                  </h3>
+                </select>
+                <input type="checkbox" id="checkAlldata" value="all" onclick="allDataFunc()">
+                <h3 style="display:inline;color:green;">display all data</h3>
+
+                <p id="demo"></p>
+
+
+               </div>
+            </div>
+          </div>
+          <!-- XXXXXXXXXXXXXXXXXXXXXX -->
+          <div id="Charts" class="row">
+            <div  class="col-lg-12 boxy" >
+
+
+
+              <div id="testreduce" style="max-width:1200px;max-height:400px;"></div>
+              <div id="bar_in_exp_Plot" style="max-width:1200px;max-height:400px;"></div>
+              <div id="test" style="max-width:1200px;max-height:400px;"></div>
+              <div id="bar_savings_loans" style="max-width:1200px;max-height:400px;"></div>
+
+
+
+            </div>
+          </div>
+          <!-- XXXXXXXXXXXXXXXXXXXXXX -->
+          <div id="inAndExpRow" class="row">
+            <div id="inTable" class="col-lg-6  boxy" >
+              <h2>Income Data Table</h2>
+              <select id="incomesRecords" onchange="incomesRecordsChangeFunction()">
+                  <h3 >
+                  </h3>
+              </select>
+              <p class="saverecdatacss" id="incomerecdata"></p>
+              <div id ="incomeselectchart" style="max-width:1200px;max-height:400px;"></div>
+
+
+              <div class="div_table_wrapper">
+                {{InTable|safe}}
+              </div>
+
+
+
+
+
+
+              <div class="div_table_wrapper">
+                <table border="1" class="dataframe table table-striped table-bordered table-responsivek" id="tInTableJs">
+                  <!-- <thead>
+                 <tr style="text-align: right;">
+                   <th></th>
+                   <th>07 2020</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 <tr>
+                   <th>Meydale</th>
+                   <td>2000</td>
+                 </tr>
+                 <tr>
+                   <th>Rent Tamari20</th>
+                   <td>3700</td>
+                 </tr>
+                 <tr>
+                   <th>Barak</th>
+                   <td>12500</td>
+                 </tr>
+                 <tr>
+                   <th>Hadas</th>
+                   <td>12100</td>
+                 </tr>
+                 <tr>
+                   <th>Total</th>
+                   <td>30300</td>
+                 </tr>
+               </tbody> -->
+                </table>
+              </div>
+
+
+
+
+
+
+
+
+
+
+            </div>
+
+            <div id="expTable" class="col-lg-6   boxy" >
+              <h2>Expanse Data Table</h2>
+
+
+              <select id="expansesRecords" onchange="expansesRecordsChangeFunction()">
+                  <h3 >
+                  </h3>
+              </select>
+              <p class="saverecdatacss" id="expanserecdata"></p>
+              <div id ="expanseselectchart" style="max-width:1200px;max-height:400px;"></div>
+
+              <div class="div_table_wrapper">
+                {{ExpTable|safe}}
+              </div>
+            </div>
+          </div>
+          <div id="Balance" class="row">
+            <div id="balanceTable" class="col-lg-12  boxy" >
+              <h2>Balance</h2>
+              <div class="div_table_wrapper">
+                {{BalanceTable|safe}}
+              </div>
+
+            </div>
+
+          </div>
+
+          <div id="savAndLoanRow" class="row">
+            <div id="saveTable" class="col-lg-6 boxy" >
+              <h2>Savings Data Table</h2>
+              <select id="savingsRecords" onchange="savingsRecordsChangeFunction()">
+                  <h3 >
+
+                  </h3>
+              </select>
+              <p class="saverecdatacss" id="recdata"></p>
+              <div id ="savingselectchart" style="max-width:1200px;max-height:400px;"></div>
+              <p></p>
+              <div class="div_table_wrapper">
+                {{SaveTable|safe}}
+              </div>
+            </div>
+
+            <div id="loanTable" class="col-lg-6 boxy" >
+              <h2>Loans Data Table</h2>
+              <select id="loansRecords" onchange="loansRecordsChangeFunction()">
+                  <h3 >
+                  </h3>
+              </select>
+              <p class="saverecdatacss" id="loanrecdata"></p>
+              <div id ="loanselectchart" style="max-width:1200px;max-height:400px;"></div>
+              <p></p>
+              <div class="div_table_wrapper">
+                {{LoanTable|safe}}
+              </div>
+            </div>
+
+          </div>
+          <!-- for space at bottom of page -->
+          <p></p>
+          <p></p>
+          <!-- *********** -->
+
+          <!-- *********** -->
+        </div>
+        <div id="twoSlotsData" class="col-lg-2 boxy" >
+            <h1>Summery</h1>
+        </div>
+      </div>
+    </div>
+    <!-- <h1>Charts</h1>
+    <div id="myPlot" style="max-width:600px;max-height:400px;"></div> -->
+
+
+<script>
+
+// data from the view for incomes records
+var IncomesRecordsList={{IncomesRecordList|safe}}
+var incomesRecordNumber=IncomesRecordsList.length
+
+// data from the view for expanses records
+var ExpansesRecordsList={{ExpansesRecordList|safe}}
+var expansesRecordNumber=ExpansesRecordsList.length
+
+// data from the view for savingd records
+var SavingsRecordsList={{SavingsRecordList|safe}}
+var savingsRecordNumber=SavingsRecordsList.length
+
+// data from the view for loans records
+var LoansRecordsList={{LoansRecordList|safe}}
+var loansRecordNumber=LoansRecordsList.length
+
+
+// get names of incomes records
+var incomesRecordsNames = []
+  for (var i = 0; i<incomesRecordNumber; i++)
+    incomesRecordsNames.push(IncomesRecordsList[i].Rec_Name);
+
+// inserts incomes record names into list of select
+var select = document.getElementById('incomesRecords');
+var array_length=incomesRecordsNames.length
+for (var i = 0; i<array_length; i++)
+{
+  var opt = document.createElement('option');
+  opt.value = i.toString();
+  opt.innerHTML = incomesRecordsNames[i];
+  select.appendChild(opt);
+}
+
+// get names of expanses records
+var expansesRecordsNames = []
+for (var i = 0; i<expansesRecordNumber; i++)
+  expansesRecordsNames.push(ExpansesRecordsList[i].Rec_Name);
+
+// inserts expanse record names into list of select
+var select = document.getElementById('expansesRecords');
+var array_length=expansesRecordsNames.length
+for (var i = 0; i<array_length; i++)
+{
+  var opt = document.createElement('option');
+  opt.value = i.toString();
+  opt.innerHTML = expansesRecordsNames[i];
+  select.appendChild(opt);
+}
+
+// get names of savings records
+var savingsRecordsNames = []
+for (var i = 0; i<savingsRecordNumber; i++)
+  savingsRecordsNames.push(SavingsRecordsList[i].Rec_Name);
+
+// inserts savings record names into list of select
+var select = document.getElementById('savingsRecords');
+var array_length=savingsRecordsNames.length
+for (var i = 0; i<array_length; i++)
+{
+  var opt = document.createElement('option');
+  opt.value = i.toString();
+  opt.innerHTML = savingsRecordsNames[i];
+  select.appendChild(opt);
+}
+
+
+// get names of loans records
+var loansRecordsNames = []
+for (var i = 0; i<loansRecordNumber; i++)
+  loansRecordsNames.push(LoansRecordsList[i].Rec_Name);
+
+// inserts loans record names into list of select
+var select = document.getElementById('loansRecords');
+var array_length=loansRecordsNames.length
+for (var i = 0; i<array_length; i++)
+{
+  var opt = document.createElement('option');
+  opt.value = i.toString();
+  opt.innerHTML = loansRecordsNames[i];
+  select.appendChild(opt);
+}
+
+//call function on change of income select to display the selected record
+function incomesRecordsChangeFunction(){
+    generalRecordsChangeFunction("tInTable","incomesRecords",IncomesRecordsList,"incomeselectchart","incomerecdata")
+}
+
+//call function on change of expanse  select to display the selected record
+function expansesRecordsChangeFunction(){
+    generalRecordsChangeFunction("tExpTable","expansesRecords",ExpansesRecordsList,"expanseselectchart","expanserecdata")
+}
+
+//call function on change of saving select to display the selected record
+function savingsRecordsChangeFunction(){
+    generalRecordsChangeFunction("tSaveTable","savingsRecords",SavingsRecordsList,"savingselectchart","recdata")
+}
+
+//call function on change of loan select to display the selected record
+function loansRecordsChangeFunction(){
+    generalRecordsChangeFunction("tLoanTable","loansRecords",LoansRecordsList,"loanselectchart","loanrecdata")
+}
+
+incomesRecordsChangeFunction()
+expansesRecordsChangeFunction()
+savingsRecordsChangeFunction()
+loansRecordsChangeFunction()
+
+// function to catch select saving record change event to update to the selected record
+function generalRecordsChangeFunction(lv_Table,lv_Records,lv_RecordsList,lv_selectchart,lv_recdata){
+  // build x axies of the graph
+  // all x axies are the same. income here can be any other
+  var xArray ={{IncomeXAxies|safe}}
+  // saving table id
+  var myTab = document.getElementById(lv_Table);
+  // saving select id
+  var select = document.getElementById(lv_Records);
+  // current select value
+  var selectValue=select.value
+
+  // LOOP THROUGH EACH ROW OF THE TABLE AFTER HEADER.
+  // and stop when the name of the raw same as name of the select.
+  // Y axis data is in rawdata list
+  for (i = 1; i < myTab.rows.length; i++)
+   {
+            var rawdata = []
+            // GET THE CELLS COLLECTION OF THE CURRENT ROW.
+            var objCells = myTab.rows.item(i).cells;
+            // LOOP THROUGH EACH CELL OF THE CURENT ROW TO READ CELL VALUES.
+            for (var j = 0; j < objCells.length; j++) {
+                rawdata.push(parseInt(objCells.item(j).innerHTML))
+            }
+            recName=myTab.rows.item(i).cells.item(0).innerHTML
+            rawdata.shift()
+            if (recName == select.options[selectValue].text)
+            {
+
+              break;
+            }
+   }
+
+
+   // update rec data under the select
+   for (var j = 0; j < lv_RecordsList.length; j++) {
+      if (lv_RecordsList[j].Rec_Name == recName)
+      {
+        // if loan then dont need the rate and start value to display
+        if(lv_RecordsList[j].Rec_Type == "4" || lv_RecordsList[j].Rec_Type == "1"  || lv_RecordsList[j].Rec_Type == "2")
+        {
+          // document.getElementById('recdata').innerHTML="".concat("Start Date: <em>"" lv_RecordsList[j].Start_Date </em>"
+          document.getElementById(lv_recdata).innerHTML="".concat("<em>","start date: ","</em>",lv_RecordsList[j].Start_Date,"<em>"," end Date: ","</em>",lv_RecordsList[j].End_Date,"<em>"," Value: ","</em>",lv_RecordsList[j].Value,"<em>")
+        }
+        else{
+            // document.getElementById('recdata').innerHTML="".concat("Start Date: <em>"" lv_RecordsList[j].Start_Date </em>"
+            document.getElementById(lv_recdata).innerHTML="".concat("<em>","start date: ","</em>",lv_RecordsList[j].Start_Date,"<em>"," end Date: ","</em>",lv_RecordsList[j].End_Date,"<em>"," Value: ","</em>",lv_RecordsList[j].Value,"<em>"," Rate: ","</em>",lv_RecordsList[j].Rate,
+            "<em>"," Start Value: ","</em>",lv_RecordsList[j].Start_Value)
+        }
+
+
+        break;
+      }
+    }
+
+   var trace1 ={
+            x: xArray,
+            y: rawdata,
+            marker: {color: 'blue'},
+            type: 'scatter',
+            name:select.options[selectValue].text
+    }
+
+   var layout ={
+      xaxis: {autorange: true,title: "Date"},
+      yaxis: {autorange: true,title: "Value"},
+      title: select.options[selectValue].text,
+      // plot_bgcolor:"black",
+      paper_bgcolor:"#f4fce3",
+      width: 500,
+      height: 250,
+        margin: {
+          l: 50,
+          r: 50,
+          b: 40,
+          t: 80,
+          pad: 2
+        },
+
+    }
+    // var data =[trace1,trace2,trace3,trace4,layout]
+   var data =[trace1]
+
+   Plotly.newPlot(lv_selectchart,data,layout);
+}
+
+
+function allDataFunc() {
+
+  var checkBox = document.getElementById("checkAlldata");
+  if (checkBox.checked == true){
+    document.getElementById("periodSelect").disabled=true
+    document.getElementById("typeOfPeriods").disabled=true
+    document.getElementById("returns").disabled=true
+    periodChangeFunction()
+  }else{
+    document.getElementById("periodSelect").disabled=false
+    document.getElementById("typeOfPeriods").disabled=false
+    document.getElementById("returns").disabled=false
+  }
+}
+
+window.onload = periodChangeFunction;
+function periodChangeFunction(){
+
+  var xArray ={{IncomeXAxies|safe}}
+
+  // update table using **js/////////////////////////////////
+  var table = document.getElementById("tInTableJs");
+  var row = table.insertRow(0);
+  var cell1 = row.insertCell(0);
+  cell1.innerHTML = "";
+  // fill in the first raw with the X aaies from view with  values(month of the simulation)
+  for (i = 1; i <= xArray.length; i=i+1)
+  {
+    cell = row.insertCell(i);
+    cell.innerHTML = xArray[i-1]
+  }
+  // build raw based on records list from the view
+  for (i=0;i<IncomesRecordsList.length;i=i+1)
+    {
+      // record name
+      row = table.insertRow(i+1);
+      cell = row.insertCell(0);
+      cell.innerHTML = IncomesRecordsList[i]['Rec_Name']
+      //insert values to the raw based on the dates of the records
+      for (j = 1; j <= xArray.length; j=j+1)
+      {
+        // console.log(IncomesRecordsList[i])
+        startDateArr = IncomesRecordsList[i]['Start_Date'].split(" ");
+        StartDateJsFormat=startDateArr[1]+"-"+startDateArr[0]+"-"+"01"
+        recStartDate = new Date(StartDateJsFormat)
+
+        endDateArr = IncomesRecordsList[i]['End_Date'].split(" ");
+        EndDateJsFormat=endDateArr[1]+"-"+endDateArr[0]+"-"+"01"
+        recEndDate = new Date(EndDateJsFormat)
+
+        cellDate=(table.rows[0].cells[j].innerHTML);
+        cellDateArr = cellDate.split("-");
+        CellDateJsFormat=cellDateArr[0]+"-"+cellDateArr[1]+"-"+"01"
+        cellDate = new Date(CellDateJsFormat)
+
+        cell = row.insertCell(j);
+        if((cellDate>=recStartDate)&&(cellDate<=recEndDate)){
+          cell.innerHTML = IncomesRecordsList[i]['Value']
+        }
+        else{
+          cell.innerHTML = '0'
+          }
+      }
+    }
+    //calculate the total raw.
+    row = table.insertRow(IncomesRecordsList.length+1);
+    cell = row.insertCell(0);
+    cell.innerHTML = "Total"
+
+    for (i=1;i<=xArray.length;i=i+1){
+      cell = row.insertCell(i);
+      sum=0
+      for (j=1;j<IncomesRecordsList.length+1;j=j+1){
+        // console.log(table.rows[j].cells[i].innerHTML)
+        val = parseInt(table.rows[j].cells[i].innerHTML)
+        sum = sum+val
+        cell.innerHTML = sum
+      }
+
+    }
+
+    totalRow = table.rows[IncomesRecordsList.length+1]
+    yArrayJsTable=[]
+    for (i = 1; i <= xArray.length; i=i+1) {
+      intValue=parseInt(totalRow.cells[i].innerHTML)
+      yArrayJsTable.push(intValue)
+    }
+  /////////////////////////////////////////////////////////////
+
+  //**js moved up becouse needed in the front end table build in js
+  // var xArray ={{IncomeXAxies|safe}}
+  // replaced with yArrayJsTable array that is build in front end js
+  // var yArray ={{IncomeYAxies}}
+  var yArray = yArrayJsTable
+  var ExpxArray ={{ExpXAxies|safe}}
+  var ExpyArray ={{ExpYAxies}}
+  var BalancexArray ={{BalanceXAxies|safe}}
+  var BalanceyArray ={{BalanceYAxies}}
+  var SavingxArray ={{SavingsXAxies|safe}}
+  var SavingyArray ={{SavingsYAxies}}
+  var LoanxArray ={{LoansXAxies|safe}}
+  var LoanyArray ={{LoansYAxies}}
+
+
+
+  var periods = document.getElementById("periodSelect").value;
+  var typeofperiods = document.getElementById("typeOfPeriods").value;
+  var returns = document.getElementById("returns").value;
+  var NomOfMonToRet=periods*typeofperiods
+  var MaxMonthIndex = NomOfMonToRet*returns
+
+  //reduce arrays per user request of display months
+  var xArrayReduced = [];
+  var yArrayReduced = [];
+  var ExpxArrayReduced  = [];
+  var ExpyArrayReduced  = [];
+  var BalancexArrayReduced = [];
+  var BalanceyArrayReduced = [];
+  var SavingxArrayReduced = [];
+  var SavingyArrayReduced = [];
+  var LoanxArrayReduced = [];
+  var LoanyArrayReduced = [];
+
+
+
+
+  checkBox = document.getElementById("checkAlldata");
+  if (checkBox.checked == false)
+    {
+      if (MaxMonthIndex > xArray.length)
+      {
+        MaxMonthIndex = xArray.length;
+      }
+      for (i = 0; i <= MaxMonthIndex; i=i+NomOfMonToRet) {
+        xArrayReduced.push(xArray[i]);
+        yArrayReduced.push(yArray[i]);
+        ExpxArrayReduced.push(ExpxArray[i]);
+        ExpyArrayReduced.push(ExpyArray[i]);
+        BalancexArrayReduced.push(BalancexArray[i]);
+        BalanceyArrayReduced.push(BalanceyArray[i]);
+        SavingxArrayReduced.push(SavingxArray[i]);
+        SavingyArrayReduced.push(SavingyArray[i]);
+        LoanxArrayReduced.push(LoanxArray[i]);
+        LoanyArrayReduced.push(LoanyArray[i]);
+        // console.log(NomOfMonToRet,MaxMonthIndex,)
+        // console.log(i,xArray[i],xArrayReduced[i])
+      }
+
+    }
+    else{
+      xArrayReduced=xArray
+      yArrayReduced=yArray
+      ExpxArrayReduced=ExpxArray
+      ExpyArrayReduced=ExpyArray
+      BalancexArrayReduced=BalancexArray
+      BalanceyArrayReduced=BalanceyArray
+      SavingxArrayReduced=SavingxArray
+      SavingyArrayReduced=SavingyArray
+      LoanxArrayReduced = LoanxArray
+      LoanyArrayReduced = LoanyArray
+    }
+
+///////////////////////////////////////////
+
+
+
+    var trace1 ={
+      x: xArrayReduced,
+      y: yArrayReduced,
+      marker: {color: 'green'},
+      type: 'bar',
+      name:"Incomes"
+
+    }
+
+    var trace2 ={
+      x: ExpxArrayReduced,
+      y: ExpyArrayReduced,
+      marker: {color: 'red'},
+      type: 'bar',
+      name:"Expanses"
+
+    }
+
+    var trace3 ={
+      x: BalancexArrayReduced,
+      y: BalanceyArrayReduced,
+      marker: {color: 'blue'},
+      type: 'scatter',
+      name:"Balance",
+
+
+    }
+
+    var layout ={
+      xaxis: {autorange: true,title: "Date",range: [ExpxArray[0],ExpxArray[36]]},
+      yaxis: {autorange: true,title: "Value"},
+      title: "Income,Expanse and Ballance",
+      // plot_bgcolor:"black",
+      paper_bgcolor:"#f4fce3",
+
+      }
+    // var data =[trace1,trace2,trace3,trace4,layout]
+    var data =[trace1,trace2,trace3]
+
+    Plotly.newPlot('bar_in_exp_Plot',data,layout);
+
+
+///////////////////////////////////////////////////////////
+
+    // Define Data
+    var trace1 ={
+      x: SavingxArrayReduced,
+      y: SavingyArrayReduced,
+      marker: {color: 'green'},
+      type: 'bar',
+      name:"Savings"
+    }
+    // Define Layout
+
+    var trace2 ={
+      x: LoanxArrayReduced,
+      y: LoanyArrayReduced,
+      marker: {color: 'red'},
+      type: 'bar',
+      name:"Loans"
+
+    }
+    var layout ={
+      xaxis: {autorange: true,title: "Date"},
+      yaxis: {autorange: true,title: "Value"},
+      title: "Saving and Loans",
+      // plot_bgcolor:"black",
+      paper_bgcolor:"#93a2ba",
+
+      }
+    // var data =[trace1,trace2,trace3,trace4,layout]
+    var data =[trace1,trace2]
+    Plotly.newPlot('bar_savings_loans',data,layout);
+
+}
+
+// function showTableData() {
+//      document.getElementById('info').innerHTML = "";
+//      var myTab = document.getElementById('empTable');
+//
+//      // LOOP THROUGH EACH ROW OF THE TABLE AFTER HEADER.
+//      for (i = 1; i < myTab.rows.length; i++) {
+//
+//          // GET THE CELLS COLLECTION OF THE CURRENT ROW.
+//          var objCells = myTab.rows.item(i).cells;
+//
+//          // LOOP THROUGH EACH CELL OF THE CURENT ROW TO READ CELL VALUES.
+//          for (var j = 0; j < objCells.length; j++) {
+//              info.innerHTML = info.innerHTML + ' ' + objCells.item(j).innerHTML;
+//          }
+//          info.innerHTML = info.innerHTML + '<br />';     // ADD A BREAK (TAG).
+//      }
+//  }
+
+  </script>
+
+
+    </body>
+  </html>
+
+    {% endblock %}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+{% extends "FuturePlanning/mybase.html" %}
+{%block test%}{{family}}{%endblock%}
+    {% block body_block%}
+
+
+
+
+    <div class="container" style="margin-top:60px; ">
+      <h2>Edit Record</h2>
+      {% if erros %}
+            {% for err in erros %}
+              <h3>{{erros}}</h3>
+            {% endfor %}
+      {% else %}
+
+      {% endif %}
+
+      <form method="POST" class="mycrecord">
+        {{ del_c_record_form.as_p }}
+        {% csrf_token %}
+
+        <input type="submit" class='btn btn-primary' value="Submit" id="submit_btn">
+      </form>
+    </div>
+
+
+
+  </body>
+  <style>
+    .mycrecord {
+        color: black;
+
+    }
+  </style>
+  <script>
+  // set style to form fields
+  // ************************
+  document.getElementById("id_Rec_Name").style.backgroundColor="lightgray"
+  document.getElementById("id_Rec_Type").style.backgroundColor="lightgray"
+  // ************************
+
+  // Variables from django views
+  // ******************************
+  var inarraylist = {{ Indata|safe }};
+  var exparraylist = {{ Expdata|safe }};
+  var savearraylist = {{ Savedata|safe }};
+  var loanarraylist = {{ Loandata|safe }};
+  // ******************************
+
+  // set names as default to income names
+  // ************************************
+  var select = document.getElementById('id_Rec_Name');
+  var array_length=inarraylist.length
+  for (var i = 0; i<array_length; i++)
+  {
+    var opt = document.createElement('option');
+    opt.value = i.toString();
+    opt.innerHTML = inarraylist[i];
+    select.appendChild(opt);
+  }
+  // ************************************
+
+  // on change of rec type update name list
+  // ************************************
+  function myFunction1()
+  {
+
+    var select = document.getElementById("id_Rec_Name");
+    var length = select.options.length;
+    var rec_type_select = document.getElementById("id_Rec_Type");
+    // clear list
+    if(length>0)
+    {
+      for (i = length-1; i >= 0; i--)
+       {
+        select.options[i] = null;
+       }
+    }
+
+    if (rec_type_select.value == "1")
+    {
+      current_array=inarraylist
+    }
+    else {
+            if (rec_type_select.value == "2")
+            {
+              current_array=exparraylist
+            }
+            else
+                if (rec_type_select.value == "3")
+                {
+                  current_array=savearraylist
+                }
+                else
+                    if (rec_type_select.value == "4")
+                    {
+                      current_array=loanarraylist
+                    }
+         }
+
+    // update nema list per type selected
+    var array_length=current_array.length
+    for (var i = 0; i<array_length; i++)
+    {
+      var opt = document.createElement('option');
+      opt.value = i.toString();
+      opt.innerHTML = current_array[i];
+      select.appendChild(opt);
+    }
+
+  }
+  </script>
+</html>
+{% endblock %}

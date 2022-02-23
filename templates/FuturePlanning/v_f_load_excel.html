@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+{% extends "FuturePlanning/mybase.html" %}
+{%block test%}{{family}}{%endblock%}
+    {% block body_block%}
+
+    <style>
+    .table td, .table th {
+     font-size: 12px;
+    }
+
+    .div_table_wrapper{
+    overflow-x:auto;
+    max-height:400px;}
+
+    </style>
+    <!-- <div class="container-fluid" style="margin-top:60px;margin-right:100px;">
+      <div class="row">
+          <div class="col-sm-12 boxy">
+            <p>rrrrrr</p>
+          </div>
+      </div>
+    </div> -->
+
+    <!-- <div class="container-fluid" style="margin-top:60px"> -->
+
+      <!-- <div class="container-fluid" style="margin-top:80px;margin-left:80px;margin-right:80px"> -->
+      {% if user.is_authenticated %}
+
+      <div class="container-fluid" style="margin-top:80px;width:90%;">
+
+        <div class="row">
+
+            <div class="col-sm-12 boxy">
+              <h2 style="text-align:center;color:blue">חישוב הוצאות והכנסות חודשיות מדוח עוש</h2>
+              <br>
+              <div id="step1" style="float:right;">
+                  <a  style="text-align:right;float:right;" class="nav-link" href="/static/CSS/demo1_8_2_2022_load osh.mp4" target="_blank"><input style="align:right;" type="button" class='btn btn-info' value="צפה בסרטון הדרכה"></a><br><br><br>
+                  <h4 style="text-align:right">שלב 1: טען קובץ אקסל של תנועות עו"ש</h4>
+                  <h4 style="text-align:right" id="supportFile">xls or xlsx קבצים נתמכים</h4><br>
+
+
+                  <!-- <a  style="display: inline;" class="nav-link" href="/load_excel/"><input type="button" class='btn btn-info' value="טען קובץ חדש"></a> -->
+                  <form method="POST" class="mycrecord" enctype="multipart/form-data">
+                    {% for item in ExcelLoadingForm %}
+
+                      {{ item }}
+
+                    {% endfor %}
+                    <!-- {{ ExcelLoadingForm.as_p }} -->
+                    {% csrf_token %}
+                    <input style="width:400px;color:red;display:none" type="text"  id="errorMasageFileType"   >
+                    <input type="submit" id="bankOs" class="btn btn-success" value="טען קובץ" name="LoadXlsFile" onclick="loadclick()">
+                    <input type="text"  id="fileNamedisplay" placeholder="No File Selected" readonly  >
+                    <!-- <output id="fileNamedisplay">No file selected</output> -->
+                    <input type="button" class='btn btn-primary' value="בחר קובץ" onclick="selectFile()">
+
+
+                  </form>
+              </div>
+              <br>
+              <!-- ///////////////////////////////////// -->
+              <div id="step2">
+                    <div style="text-align:right">
+                      <h4>שלב 2: תיוג הכנסות והוצאות</h4><br>
+                      <!-- <h4>א. הוצאות, ללא הוצאות על הלוואות וחסכונות (יטען בהמשך)</h4><br>
+                      <h4>ב. הכנסות</h4><br>
+                      <h4>ג. תא כלשהו בעמודת תאריך (רק לצורך סימון העמודה)</h4><br>
+                      <h4>ד. שאתה מרוצה מהבחירות שלך הכנס שם רשומה לשמירה (למשל,חשבון עוש 1) ולחץ חשב ממוצע</h4><br> -->
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2 ">
+                          <div class="form-floating">
+                            <select id="TypeOfCell" onchange="ChangeTypeOfCell()" class="form-select" aria-label="Floating label select example">
+                              <h3 >
+                                <option value=selected_red>הוצאות</option>
+                                <option value=selected_green>הכנסות</option>
+                                <!-- <option value=selected_orange>תאריך התחלה(Orange)"</option> -->
+                                <option value=selected_blue>תקופה</option>
+                              </h3>
+                            </select>
+                            <label for="floatingSelect">בחר מה לתייג</label><br>
+                          </div>
+                      </div>
+                      <div class="col-sm-5 ">
+                        <p id="selecttypetomark" style="color:red; text-align:left;font-weight: bold" >לחץ על כל התאים בהם מפורט סכום ההוצאה אותה תרצה לקחת בחשבון בחישוב ההוצאה הממוצעת, שים לב לא לתייג הוצאות שקשורות להלוואות וחסכונות (יטופלו בהמשך)</p>
+                      </div>
+                    </div>
+
+                    <!-- <h5 style="text-align:right">לאחר שסיימת לסמן הוצאות הכנסות ותא כלשהו בעמודת התאריכים, הכנס שם לרשומה(למשל:חשבון עוש 1) ולחץ חשב ממוצע</h5> -->
+
+                    <div class="row">
+                        <div class="col-sm-2 ">
+                          <div class="form-floating mb-3" style="margin-top: 10px;" >
+                            <input type="text" class="form-control" id="mirorNmae" value="" name="mirorNameSave" >
+                            <label>הכנס שם</label>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3 ">
+                          <div id="ErrorMassageDiv" class="form-floating mb-3" style="margin-top: 10px;display:none;" >
+                            <textarea  id="ErrorMassage"style="background-color:#ff9666 ;" class="form-control"  value="">הודעת שגיאה</textarea>
+                            <label>הודעות שגיאה</label>
+                          </div>
+                        </div>
+                    </div>
+                    <input type="button" id="calcOs" class='btn btn-primary' value="חשב ממוצע" name="CalcValuesXls" onclick="calcValuesXla()">
+                    <a  style="display: inline;" class="nav-link" href="/load_excel/"><input type="button" class='btn btn-info' value="חזור להתחלה"></a>
+              </div>
+              <!-- STEP 2 DIV for hiiding from user -->
+              <div id="step3">
+                  <h4 style="text-align:right">שלב 3: עבור על תוצאות החישוב ולבחירתך 3 אפשרויות</h4>
+                  <h4 style="text-align:right">א. לשמור נתונים</h4>
+                  <h4 style="text-align:right">ב. לחזור לתיוג תאים</h4>
+                  <h4 style="text-align:right">ג. לטעון קובץ חדש</h4>
+                  <form method="POST" class="mycrecord" enctype="multipart/form-data">
+                      {% csrf_token %}
+                    <div class="row">
+                          <div class="col-sm-2 ">
+                              <div class="form-floating mb-3" style="margin-top: 10px; background-color:powderblue;">
+                                <input type="number" class="form-control" id="totalIn" value=0 disabled style="background-color:#dbdae3">
+                                <label>סך הכנסות</label>
+                              </div>
+                          </div>
+                          <div class="col-sm-2 ">
+                                <div class="form-floating mb-3" style="margin-top: 10px;">
+                                  <textarea type="number" class="form-control" id="totalExp" value=0 disabled style="background-color:#dbdae3"></textarea >
+                                  <label>סך הוצאות</label>
+                                </div>
+                          </div>
+                          <div class="col-sm-2 ">
+                                <div class="form-floating mb-3" style="margin-top: 10px;">
+                                  <input type="number" class="form-control" id="totalMonth" value=1 readonly style="background-color:#dbdae3">
+                                  <label>מספר חודשים</label>
+                                </div>
+                          </div>
+                          <div class="col-sm-2 ">
+                                <div class="form-floating mb-3" style="margin-top: 10px;">
+                                  <input type="number" class="form-control" id="inAverage" value=0 name="IncomeAverage" readonly style="background-color:#dbdae3">
+                                  <label>ממוצע הכנסות</label>
+                                </div>
+                          </div>
+                          <div class="col-sm-2 ">
+                                <div class="form-floating mb-3" style="margin-top: 10px;">
+                                  <input type="number"  class="form-control" id="expAverage" value=0 name="ExpansesAverage" readonly style="background-color:#dbdae3">
+                                  <label>ממוצע הוצאות</label>
+                                </div>
+                          </div>
+                          <div class="col-sm-2 ">
+
+                            <textarea hidden="hidden" name="Os_Records_List" id="OsRecList" rows="10" cols="50" ></textarea><br>
+                          </div>
+
+                      </div>
+                      <input type="submit" id="bankOsSave" class='btn btn-success' value="שמור חישוב" name="SaveOsIncomesExpanses">
+                      <a  style="display: inline;" class="nav-link" href="/load_excel/"><input type="button" class='btn btn-info' value="טען קובץ חדש"></a>
+                      <input type="button" id="reMark" class="btn btn-warning" value="חזור לתיוג"  onclick="reMarkTable()">
+                    </form>
+              </div>
+              <div id="exceltable" class="div_table_wrapper">
+                  {{xlsTableHtml|safe}}
+              </div>
+            </div>
+          </div>
+
+
+
+
+        </div>
+      </div>
+
+      {% else %}
+        <br><br><br><h1>Please log in</h1>
+
+      {% endif %}
+
+
+<!-- </div> -->
+
+
+
+
+
+
+  </body>
+
+  <style>
+
+    /* body{ */
+
+      /* cursor:url('/static/CSS/green arrow.png'),auto */
+    /* } */
+
+
+
+}
+    /* label[for="id_InputFile"] {
+      background-color: red;
+      display: none;
+    } */
+
+    .mycrecord {
+        color: black;
+    }
+
+    .selected_red{
+    background-color: red;
+    }
+
+    .selected_green{
+    background-color: lightgreen;
+    }
+    .selected_orange{
+    background-color: orange;
+    }
+    .selected_blue{
+    background-color: lightblue;
+    }
+  </style>
+
+
+<script>
+
+
+// get from the server the state of the process
+g_load_excel_state = {{state}}
+g_cellType = document.getElementById("TypeOfCell").value
+
+function selectFile()
+{
+
+  document.getElementById("selectExcelFIle").click()
+
+
+}
+
+function selectFileclicked()
+{
+
+  // console.log("select file clicked",this.vale)
+  // this.value = null;
+}
+
+function selectFileChanged()
+{
+  document.getElementById("fileNamedisplay").value=document.getElementById("selectExcelFIle").files[0].name
+  document.getElementById("errorMasageFileType").style.display = "none"
+  document.getElementById("errorMasageFileType").value=""
+  // console.log("file path:",document.getElementById("selectExcelFIle").files[0].name)
+}
+
+function reMarkTable()
+{
+  document.getElementById("step1").style.display = "none";
+  document.getElementById("step2").style.display = "block";
+  document.getElementById("step3").style.display = "none";
+  document.getElementById("exceltable").style.display = "block";
+}
+
+// set function for each cell with the on click event
+var xlsTable = document.getElementById("tXlsTable"),rIndex,cIndex;
+if (xlsTable) {
+  // table rows
+  for(var i = 1; i < xlsTable.rows.length; i++)
+  {
+      // row cells
+      for(var j = 0; j < xlsTable.rows[i].cells.length; j++)
+      {
+          xlsTable.rows[i].cells[j].onclick = function()
+          {
+              rIndex = this.parentElement.rowIndex;
+              cIndex = this.cellIndex+1;
+              console.log("cell contant:",this.innerHTML)
+              if ( (g_cellType == "selected_red" || g_cellType == "selected_green" ) && (isNaN(this.innerHTML) || this.innerHTML=="") )
+              {
+                  if (g_cellType == "selected_red")
+                    alert("התא הנבחר אינו מספר ולכן אינו יכול להבחר כהוצאה")
+                  if (g_cellType == "selected_green")
+                    alert("התא הנבחר אינו מספר ולכן אינו יכול להבחר כהכנסה")
+              }
+              else{
+                if(this.classList.item(0) == g_cellType)
+                {
+                  // console.log("yes")
+                  this.classList.remove("selected_red");
+                  this.classList.remove("selected_green");
+                  this.classList.remove("selected_orange");
+                  this.classList.remove("selected_blue");
+
+                }
+                else{
+                  console.log("class:",this.classList)
+                  this.classList.remove("selected_red");
+                  this.classList.remove("selected_green");
+                  this.classList.remove("selected_orange");
+                  this.classList.remove("selected_blue");
+                  this.classList.add(g_cellType);
+                  console.log("class:",this.classList)
+                }
+
+              }
+
+
+              // document.getElementById("indexFirstRow").value=rIndex
+              // console.log("Row : "+rIndex+" , Cell : "+cIndex ,g_cellType );
+          };
+      }
+  }
+
+}
+
+
+if (g_load_excel_state == 0   ||  g_load_excel_state == 9 )
+{
+  document.getElementById("step1").style.display = "block";
+  document.getElementById("step2").style.display = "none";
+  document.getElementById("step3").style.display = "none";
+  document.getElementById("exceltable").style.display = "none";
+
+  if (g_load_excel_state == 9){
+    document.getElementById("errorMasageFileType").style.display = "block"
+    document.getElementById("errorMasageFileType").value="xls,xlsx הקובץ שנבחר אינו נתמך, הקבצים הנתמכים הם"
+  }
+
+}
+if (g_load_excel_state == 1)
+{
+  document.getElementById("step1").style.display = "none";
+  document.getElementById("step2").style.display = "block";
+  document.getElementById("step3").style.display = "none";
+  document.getElementById("exceltable").style.display = "block";
+  document.getElementById("exceltable").style.cursor = "url('/static/CSS/red arrow.png'),auto";
+}
+
+function ChangeTypeOfCell(){
+
+  g_cellType = document.getElementById("TypeOfCell").value
+  console.log(g_cellType)
+
+  if (g_cellType == "selected_green"){
+      document.getElementById("selecttypetomark").innerHTML="לחץ על כל התאים בהם מפורטת סכום ההכנסה אותה תרצה לקחת בחשבון בחישוב ההכנסה הממוצעת "
+      document.getElementById("selecttypetomark").style.color="green"
+      document.getElementById("exceltable").style.cursor = "url('/static/CSS/green arrow.png'),auto";
+
+  }
+  if (g_cellType == "selected_red"){
+      document.getElementById("selecttypetomark").innerHTML="לחץ על כל התאים בהם מפורט סכום ההוצאה אותה תרצה לקחת בחשבון בחישוב ההוצאה הממוצעת, שים לב לא לתייג הוצאות שקשורות להלוואות וחסכונות (יטופלו בהמשך)"
+      // document.getElementById("selecttypetomark").innerHTML="לחץ על כל התאים בהם מפורט סכום ההוצאה אותה תרצה לקחת בחשבון בחישוב ההוצאה הממוצעת "
+      document.getElementById("selecttypetomark").style.color="red"
+      document.getElementById("exceltable").style.cursor = "url('/static/CSS/red arrow.png'),auto";
+  }
+  // if (g_cellType == "selected_orange"){
+  //   document.getElementById("selecttypetomark").innerHTML="לחץ על תא כלשהו בעמודת התאריכים, לא משנה איזה תא, זה רק לצורך זיהוי העמודה "
+  //   document.getElementById("selecttypetomark").style.color="DarkOrange"
+  // }
+  if (g_cellType == "selected_blue"){
+    document.getElementById("selecttypetomark").innerHTML="לחץ על תא הכותרת בעמודת התאריכים "
+    document.getElementById("selecttypetomark").style.color="blue"
+    document.getElementById("exceltable").style.cursor = "url('/static/CSS/blue arrow.png'),auto";
+  }
+
+}
+function getMyFormatDateFromJsDate(lv_jsDareFormat)
+{
+  SelectedDate = new Date(lv_jsDareFormat)
+  SelectedMonth =SelectedDate.getMonth()
+  SelectedMonth=SelectedMonth+1//function start january=0
+  SelectedYear = SelectedDate.getFullYear()
+  if (SelectedMonth<10)
+  {
+    SelectedMonthString = "0".concat(SelectedMonth.toString())
+  }
+    else
+        {
+          SelectedMonthString = SelectedMonth.toString()
+        }
+  lv_EventDateMyFormat = "".concat(SelectedMonthString," ",SelectedYear.toString())
+  return lv_EventDateMyFormat
+
+}
+
+
+function calcValuesXla(){
+
+    var g_error_selectedCellIsNotNumber = false
+    var l_array__Rows =[]
+    var l_startDateFromView = "{{g_start_date}}"
+    var l_endDateFromView = "{{g_end_date}}"
+    var sumOfIncomes=0,sumOfExpanse=0,l_notValiddate=false
+
+    // ERROR HANDLING
+    // //////////////
+    // check if there is name for the records or its empty
+    l_mirror_name = document.getElementById("mirorNmae").value
+    if (l_mirror_name == "")
+    {
+        g_error_noName = true
+    }
+    else{
+      g_error_noName = false
+    }
+
+    // get an array of all cells with class "selected green" that is incomes
+    var dateCells = document.getElementsByClassName("selected_green");
+
+    // scan all cells and sum the number and push row index to an array that will be used
+    // to find max and min later to use the indexs of the rows the get the start date and end date.
+    for (var j = 0; j < dateCells.length; j++)
+    {
+          l_row= dateCells[j].parentElement.rowIndex;
+          l_col=dateCells[j].cellIndex+1;
+          l_array__Rows.push(l_row)
+          // console.log("non num char:",dateCells[j].innerHTML.match(/\D/),"type:",typeof(dateCells[j].innerHTML.match(/\D/)))
+          if( isNaN(dateCells[j].innerHTML))
+          {
+
+            g_error_selectedCellIsNotNumber = true
+          }
+          sumOfIncomes=sumOfIncomes+ parseFloat (dateCells[j].innerHTML)
+
+    }
+
+    // ERROR HANDLING
+    // //////////////
+    // check if there is at least one cell that marked as income
+    if (l_array__Rows.length != 0){
+      g_error_noIncomeCellected = false
+    }
+    else{
+      g_error_noIncomeCellected = true
+    }
+
+
+    // get an array of all cells with class "selected res" that is expanses
+    var dateCells = document.getElementsByClassName("selected_red");
+    // scan all cells and sum the number and push row index to an array that will be used
+    // to find max and min later to use the indexs of the rows the get the start date and end date.
+    for (var j = 0; j < dateCells.length; j++)
+    {
+      if( isNaN(dateCells[j].innerHTML))
+      {
+        g_error_selectedCellIsNotNumber = true
+      }
+      sumOfExpanse=sumOfExpanse+ parseFloat(dateCells[j].innerHTML)
+      l_row= dateCells[j].parentElement.rowIndex;
+      l_col=dateCells[j].cellIndex+1;
+      l_array__Rows.push(l_row)
+    }
+
+    // ERROR HANDLING
+    // //////////////
+    // check if there is at least one cell that marked as expanse
+    if (dateCells.length != 0){
+      g_error_noExpCellected = false
+    }
+    else{
+      g_error_noExpCellected = true
+    }
+
+    // get an array of all cells with class "selected blue" that is dates cells
+    var dateCells = document.getElementsByClassName("selected_blue");
+
+    // ERROR HANDLING
+    // //////////////
+    // check if there is at least one cell that marked as date col
+    if (dateCells.length != 0){
+      // get the dates colums from the first one. it doesnt matter all other we just want to now the col of the dates
+      DateCol=dateCells[0].cellIndex+1;
+      g_error_noDateCellSelectes = false
+    }
+    else {
+      g_error_noDateCellSelectes = true
+    }
+
+    if(    g_error_noIncomeCellected==false &&  g_error_noExpCellected ==false)
+    {
+      // find the biggest index of in/exp that were selected to use it for getting the start date of the cells that was markked
+      StartDateRow=Math.max(...l_array__Rows)
+
+      // find the biggest index of in/exp that were selected to use it for getting the end date of the cells that was markked
+      EndDateRow= Math.min(...l_array__Rows)
+    }
+
+    // get the table object to reead the dates from
+    table = document.getElementById("tXlsTable")
+
+    if(g_error_noDateCellSelectes == false  && g_error_noIncomeCellected == false && g_error_noExpCellected==false )
+    {
+      // get the string values of start and stop date of the cells that was marked
+      cell_endDate =   table.rows[EndDateRow].cells[DateCol-1].innerHTML
+      cell_startDate = table.rows[StartDateRow].cells[DateCol-1].innerHTML
+
+      // translate them to js date object
+      l_endDate = new Date(cell_endDate)
+      l_startDate = new Date(cell_startDate)
+    }
+
+
+    // ERROR HANDLING
+    // //////////////
+    // Verify dates values are valid
+    if(l_endDate.toString()=="Invalid Date" || l_startDate.toString()=="Invalid Date" ){
+       l_error_notValiddate=true
+     }
+     else{
+        l_error_notValiddate=false
+     }
+
+     // calculate the differenc between start and end date
+     var delta = Math.abs(l_endDate - l_startDate) / 1000
+
+     // calculate how many month includeded in the cells that was marked
+     var days = Math.floor(delta / 86400)
+     var month = Math.ceil(days/30.5)
+     if (month==0 || isNaN(month)){
+       month=1
+     }
+
+     // calculateaverage of incomes and expanses
+     inAverage = Math.floor(sumOfIncomes/month)
+     ExpAverage = Math.floor(sumOfExpanse/month)
+
+     // ERROR HANDDLING
+     // ///////////////
+     // verify calculation is a number
+     if (  isNaN(inAverage) || isNaN(ExpAverage)){
+
+       g_error_averageIsNotANumber =true
+     }
+     else{
+       g_error_averageIsNotANumber =false
+     }
+
+     if (g_error_noDateCellSelectes || g_error_averageIsNotANumber || l_error_notValiddate ||   g_error_noIncomeCellected || g_error_noExpCellected || g_error_selectedCellIsNotNumber || g_error_noName){
+
+
+       // init the error massage to user
+       error_massage=""
+       // by default no error massage is dispalyed
+       document.getElementById("ErrorMassageDiv").style.display="none"
+
+       if (  g_error_noName == true){
+         // error_massage=error_massage.concat("One of the Incomes or Expanses cells are not a number\n")
+         // error_massage=error_massage.concat("יש להכניס שם לשמירת החישובים\n")
+         document.getElementById("ErrorMassage").value="יש להכניס שם לשמירת החישובים"
+         document.getElementById("ErrorMassageDiv").style.display="block"
+
+       }
+       else {
+             if (  g_error_selectedCellIsNotNumber == true){
+               // error_massage=error_massage.concat("One of the Incomes or Expanses cells are not a number\n")
+               // error_massage=error_massage.concat("אחד מהתאים של הכנסות או הוצאות אינו מספר\n")
+               document.getElementById("ErrorMassage").value="אחד מהתאים של הכנסות או הוצאות אינו מספר"
+               document.getElementById("ErrorMassageDiv").style.display="block"
+             }
+             else{
+                   if (  g_error_noIncomeCellected == true){
+                     // error_massage=error_massage.concat("No cells of Incomes were selleced\n")
+                     // error_massage=error_massage.concat("לא נבחרו תאים של הכנסות בטבלה\n")
+                     document.getElementById("ErrorMassage").value="לא נבחרו תאים של הכנסות בטבלה"
+                     document.getElementById("ErrorMassageDiv").style.display="block"
+                   }
+                   else{
+                         if (  g_error_noExpCellected == true){
+                           // error_massage=error_massage.concat("No cells of Expanses were selleced\n")
+                           // error_massage=error_massage.concat("לא נבחרו תאים של הוצאות בטבלה\n")
+                           document.getElementById("ErrorMassage").value="לא נבחרו תאים של הוצאות בטבלה"
+                           document.getElementById("ErrorMassageDiv").style.display="block"
+                         }
+                         else{
+                              if (g_error_noDateCellSelectes  == true){
+                                document.getElementById("ErrorMassage").value="לא סומנו תאים בעמודת התאריך"
+                                document.getElementById("ErrorMassageDiv").style.display="block"
+                              }
+                              else{
+                                    if (g_error_averageIsNotANumber  == true  && g_error_noIncomeCellected == false && g_error_noExpCellected== false){
+                                      // error_massage=error_massage.concat("Selected Incomes or Expanses are not numbers\n")
+                                    // error_massage=error_massage.concat("תאים שנבחרו עבור הכנסות או הוצאות אינם מספרים\n")
+                                    document.getElementById("ErrorMassage").value="תאים שנבחרו עבור הכנסות או הוצאות אינם מספרי"
+                                    document.getElementById("ErrorMassageDiv").style.display="block"
+                                    }
+                                    else{
+                                          if (l_error_notValiddate  == true && g_error_averageIsNotANumber==false){
+                                            // error_massage=error_massage.concat("date format is not a valid date formmat\n")
+                                            // error_massage=error_massage.concat("מבנה התאריך אינו מבנה מתאים לצחון תאריך\n")
+                                            document.getElementById("ErrorMassage").value="מבנה התאריך אינו מבנה מתאים לציון תאריך"
+                                            document.getElementById("ErrorMassageDiv").style.display="block"
+                                      }
+                                    }
+                              }
+                         }
+                   }
+             }
+       }
+
+       document.getElementById("step1").style.display = "none";
+       document.getElementById("step2").style.display = "block";
+       document.getElementById("step3").style.display = "none";
+       document.getElementById("exceltable").style.display = "block";
+     }
+     else{
+       document.getElementById("step1").style.display = "none";
+       document.getElementById("step2").style.display = "none";
+       document.getElementById("step3").style.display = "block";
+       document.getElementById("exceltable").style.display = "none";
+
+       // update UI fields
+       document.getElementById("totalIn").value=Math.floor(sumOfIncomes)
+       document.getElementById("totalExp").value=Math.floor(sumOfExpanse)
+       document.getElementById("totalMonth").value=month
+       document.getElementById("inAverage").value=inAverage
+       document.getElementById("expAverage").value=ExpAverage
+
+      // build records to save in data base
+      DateNow = Date.now();
+      DateNowString = DateNow.toString()
+      var SimName = document.getElementById('mirorNmae').value.concat("_").concat(DateNowString,"_In")
+      const NewOsRecordIncomes = {
+                                  Rec_Type:     "1",
+                                  End_Date:     l_endDateFromView,
+                                  Start_Date:   getMyFormatDateFromJsDate(l_endDate),
+                                  Value:        inAverage.toString(),
+                                  Rec_Name:     SimName
+                                };
+      var ExpSimName = document.getElementById('mirorNmae').value.concat("_").concat(DateNowString,"_Exp")
+      const NewOsRecordExpanses = {
+                                  Rec_Type:     "2",
+                                  End_Date:     l_endDateFromView,
+                                  // start date of record is the end date of the shikuf
+                                  Start_Date:   getMyFormatDateFromJsDate(l_endDate),
+                                  Value:        ExpAverage.toString(),
+                                  Rec_Name:     ExpSimName
+                                };
+
+      // var records_list=[NewOsRecordIncomes]
+      jsonRec= JSON.stringify(NewOsRecordIncomes)
+      ExpJsonRec=JSON.stringify(NewOsRecordExpanses)
+      console.log("InRecord:",jsonRec)
+      console.log("ExpRecord:",ExpJsonRec)
+      // console.log("rec:",NewOsRecordIncomes.toString(),"ty:",typeof(NewOsRecordIncomes.toString()))
+      s1="{".concat('"',0,'"',":")
+      s2=jsonRec
+      s3=",".concat('"',1,'"',":")
+      s4=ExpJsonRec
+      s5="}"
+      Stringtosaveindatabase=s1.concat(s2,s3,s4,s5)
+      document.getElementById('OsRecList').value=Stringtosaveindatabase
+     }
+ // document.getElementById("exceltable").style.display = "none";
+ // g_load_excel_state=2
+}
+
+
+  </script>
+</html>
+
+
+  {% endblock %}

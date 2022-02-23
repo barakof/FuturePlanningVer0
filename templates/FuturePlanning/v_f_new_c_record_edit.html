@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% extends "FuturePlanning/mybase.html" %}
+{%block test%}{{family}}{%endblock%}
+    {% block body_block%}
+
+    <div class="container" style="margin-top:60px; ">
+      <h2>Edit Record</h2>
+      {% if erros %}
+            {% for err in erros %}
+              <h3>{{erros}}</h3>
+            {% endfor %}
+      {% else %}
+
+      {% endif %}
+
+
+      <form method="POST" class="mycrecord">
+        {{ c_record_form.as_p }}
+        {% csrf_token %}
+        <input type="submit" class='btn btn-primary' value="Submit">
+      </form>
+    </div>
+
+
+
+  </body>
+
+  <style>
+    .mycrecord {
+        color: black;
+
+    }
+  </style>
+
+
+  <script>
+  document.getElementById("id_Rec_Name").style.backgroundColor="lightgray"
+  document.getElementById("id_Rec_Type").style.backgroundColor="lightgray"
+  document.getElementById("id_Start_Date").style.backgroundColor="lightgreen"
+  document.getElementById("id_End_Date").style.backgroundColor="lightgreen"
+  document.getElementById("id_Value").style.backgroundColor="lightblue"
+  document.getElementById("id_Rate").style.backgroundColor="lightblue"
+  </script>
+</html>
+
+
+  {% endblock %}

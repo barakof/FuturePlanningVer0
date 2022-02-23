@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+{% load static%}
+<html>
+  <head>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <meta charset="utf-8">
+    <!-- load styling css file from static folder of django -->
+    <link rel="stylesheet" href="{%static "CSS/mycss.css" %}">
+    <title>Calcalut-Future Planning</title>
+    <!-- Latest compiled and minified CSS from bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
+
+  </head>
+  <body>
+    class="navbar navbar-expand-md navbar-dark fixed-top"
+    <nav class="navbar navbar-expand-sm navbar-light fixed-top "style="background-color: #e3f2fd;">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Calcalut</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Home Page</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'FuturePlanning:new_record' %}">New Record</a>
+              </li>
+              <li  class="nav-item">
+                <a  class="nav-link" href="{% url 'FuturePlanning:del_record' %}">Delete Record</a>
+
+              </li>
+
+            </ul>
+            <ul class="nav justify-content-end">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Sign Up</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Log In</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Log Out</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+    <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid" >
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'index' %}">Home Page</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'FuturePlanning:new_record' %}">New Record</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'FuturePlanning:del_record' %}">Delete Record</a></li>
+
+          </ul>
+          <form class="d-flex">
+             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+             <button class="btn btn-outline-success btn-info" type="submit">Search</button>
+           </form>
+           <a class="nav-link active" aria-current="page"  href="{% url 'index' %}">Home Page</a>
+        </div>
+      </div>
+    </nav> -->
+  <div id="dataContainer" class="container-xxl" style="margin-top:40px; ">
+    <div id="dataRow" class="row">
+      <div id="tenSlotsData" class="col-lg-10 boxy" >
+        <div id="addNewRecord" class="row">
+          <div class="col-lg-12 boxy" ><p>
+                                          <span style="font-size:25px;">Family Name:</span>
+                                          <span style="font-size:20px;">{{FamName}}</span>
+                                        </p>
+            </div>
+
+        </div>
+        <div id="inAndExpRow" class="row">
+          <div id="inTable" class="col-lg-6  boxy" >
+            <h2>Income Data Table</h2>
+            <div class="div_table_wrapper">
+              {{InTable|safe}}
+            </div>
+
+          </div>
+          <div id="expTable" class="col-lg-6   boxy" >
+            <h2>Expanse Data Table</h2>
+            <div class="div_table_wrapper">
+              {{ExpTable|safe}}
+            </div>
+          </div>
+        </div>
+        <div id="savAndLoanRow" class="row">
+          <div id="loanTable" class="col-lg-6 boxy" >
+            <h2>Loans Data Table</h2>
+            <div class="div_table_wrapper">
+              <table id="tLoanTable" class="table table-striped table-bordered table-responsive">
+                  <thead></thead>
+                  <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div id="savTable" class="col-lg-6 boxy" >
+            <h2>Savings Data Table</h2>
+            <div class="div_table_wrapper">
+              <table id="tSavTable" class="table table-striped table-bordered table-responsive">
+                  <thead></thead>
+                  <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="twoSlotsData" class="col-lg-2 boxy" >
+          <h1>Summery</h1>
+      </div>
+    </div>
+  </div>
+  <h1>Charts</h1>
+  <!-- <canvas id="myChart" style="width:100%;max-width:600px"></canvas> -->
+  <div id="myPlot" style="max-width:600px;max-height:400px;"></div>
+
+
+  <!-- load script file from static folder of django -->
+  <!-- <script src="{%static "CSS/scripts.js"%}"></script> -->
+
+  <script>
+  var xArray ={{IncomeXAxies|safe}}
+  var yArray ={{IncomeYAxies}}
+  // Define Data
+  var data = [{
+    x: xArray,
+    y: yArray,
+    mode:"lines"
+  }];
+  // Define Layout
+  var layout = {
+    xaxis: {title: "Date"},
+    yaxis: {title: "Value"},
+    title: "In come"
+  };
+  // Display using Plotly
+  Plotly.newPlot("myPlot", data, layout);
+</script>
+
+
+  </body>
+</html>

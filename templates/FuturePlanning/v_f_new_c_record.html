@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+{% extends "FuturePlanning/mybase.html" %}
+{%block test%}{{family}}{%endblock%}
+    {% block body_block%}
+
+    <style>
+    .table td, .table th {
+     font-size: 12px;
+    }
+
+    .div_table_wrapper{
+    overflow-x:auto;
+    max-height:400px;}
+
+    </style>
+
+    <div class="container" style="margin-top:60px; ">
+
+      <div class="container">
+        <!-- <div class="row">
+          <div class="col-sm-6 boxy">
+            <h2>Choose XML Loans File</h2>
+
+            <div>
+              <form method="POST" class="mycrecord" enctype="multipart/form-data">
+                {{ XmlForm.as_p }}
+
+                {% csrf_token %}
+                <input type="submit" id="jsonfileloaded" class='btn btn-primary' value="Load File" name="LoadFile">
+
+              </form>
+            </div>
+          </div>
+          <div class="col-sm-6 boxy">
+            <h2>Loans Records Loaded</h2>
+
+              <div class="div_table_wrapper" id="showData">
+                <table border="1" class="dataframe table table-striped table-bordered table-responsivek" id="tInTableJs" >
+                </table>
+              </div>
+
+            <form method="POST" class="mycrecord">
+              {% csrf_token %}
+              <textarea name="Records_List" id="recList" rows="10" cols="50" ></textarea><br>
+              <input type="submit" id="saverecords" class='btn btn-primary' value="Save Records" name="SaveRecords">
+            </form>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6 boxy">
+            <h2>Choose XML Savings File</h2>
+
+            <div>
+              <form method="POST" class="mycrecord" enctype="multipart/form-data">
+                {{ XmlSavingForm.as_p }}
+
+                {% csrf_token %}
+                <input type="submit" id="mislakaXml" class='btn btn-primary' value="Load File" name="LoadSavingFile">
+
+              </form>
+            </div>
+          </div>
+          <div class="col-sm-6 boxy">
+            <h2>Savings Records Loaded</h2>
+
+              <div class="div_table_wrapper" id="showSavingData">
+                <table border="1" class="dataframe table table-striped table-bordered table-responsivek" id="tInTableSavingsJs" >
+                </table>
+              </div>
+
+            <form method="POST" class="mycrecord">
+              {% csrf_token %}
+
+              <input type="submit" id="saveSavingsrecords" class='btn btn-primary' value="Save Savings Records" name="SaveSavingsRecords">
+            </form>
+
+          </div>
+        </div> -->
+        <div class="row">
+          <div class="col-sm-12 boxy">
+            <h2>Add Manually New Record</h2>
+            {% if erros %}
+                  {% for err in erros %}
+                    <h3>{{erros}}</h3>
+                  {% endfor %}
+            {% else %}
+
+            {% endif %}
+
+
+            <form method="POST" class="mycrecord">
+              {{ c_record_form.as_p }}
+              {% csrf_token %}
+              <input type="submit" class='btn btn-primary' value="Save Record" name="AddRecord">
+            </form>
+          </div>
+
+        </div>
+        <!-- <div class="row">
+
+            <div class="col-sm-12 boxy">
+              <h2>Choose Xls Bank File</h2>
+
+
+              <div>
+                <form method="POST" class="mycrecord" enctype="multipart/form-data">
+                  {{ XmlSavingForm.as_p }}
+
+                  {% csrf_token %}
+                  <input type="submit" id="bankOs" class='btn btn-primary' value="Load File" name="LoadXlsFile">
+                  <input type="button" id="calcOs" class='btn btn-primary' value="Calculate" name="CalcValuesXls" onclick="calcValuesXla()"><br><br>
+
+                </form>
+                <form method="POST" class="mycrecord" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <input type="submit" id="bankOsSave" class='btn btn-primary' value="Save Incomes and Expanses" name="SaveOsIncomesExpanses">
+                  <div class="form-floating mb-3" style="margin-top: 10px;" >
+                    <input type="text" class="form-control" id="mirorNmae" value="" name="mirorNameSave" >
+                    <label>שם</label>
+                  </div>
+                  <div class="row">
+                      <div class="col-sm-2 boxy">
+                          <div class="form-floating mb-3" style="margin-top: 10px;">
+                            <input type="number" class="form-control" id="totalIn" value=0>
+                            <label>סך הכנסות</label>
+                          </div>
+                      </div>
+                      <div class="col-sm-2 boxy">
+                            <div class="form-floating mb-3" style="margin-top: 10px;">
+                              <input type="number" class="form-control" id="totalExp" value=0>
+                              <label>סך הוצאות</label>
+                            </div>
+                      </div>
+                      <div class="col-sm-2 boxy">
+                            <div class="form-floating mb-3" style="margin-top: 10px;">
+                              <input type="number" class="form-control" id="totalMonth" value=1>
+                              <label>מספר חודשים</label>
+                            </div>
+                      </div>
+                      <div class="col-sm-2 boxy">
+                            <div class="form-floating mb-3" style="margin-top: 10px;">
+                              <input type="number" class="form-control" id="inAverage" value=0 name="IncomeAverage">
+                              <label>ממוצע הכנסות</label>
+                            </div>
+                      </div>
+                      <div class="col-sm-2 boxy">
+                            <div class="form-floating mb-3" style="margin-top: 10px;">
+                              <input type="number" class="form-control" id="expAverage" value=0 name="ExpansesAverage">
+                              <label>ממוצע הוצאות</label>
+                            </div>
+                      </div>
+                      <div class="col-sm-2 boxy">
+                        <textarea name="Os_Records_List" id="OsRecList" rows="10" cols="50" ></textarea><br>
+                      </DIv>
+
+                  </div>
+                </form>
+
+
+                    <input type="number" class="form-control" id="indexFirstRow" value=0 >
+                    <label>First Raw Index</label>
+
+                  <br>
+                  <label>Set type of cell to mark</label><br>
+                <select id="TypeOfCell" onchange="ChangeTypeOfCell()">
+                  <h3 >
+                    <option value=selected_red>"Expanse (Red)"</option>
+                    <option value=selected_green>"Income (Green)"</option>
+                    <option value=selected_orange>"Start date (Orange)"</option>
+                    <option value=selected_blue>"End Date (Blue)"</option>
+                  </h3>
+                </select><br><br>
+
+                <div class="div_table_wrapper">
+                    {{xlsTableHtml|safe}}
+                </div>
+
+
+              </div>
+
+            </div>
+
+
+
+
+        </div> -->
+      </div>
+</div>
+
+
+
+
+
+
+  </body>
+
+  <style>
+    .mycrecord {
+        color: black;
+    }
+
+    /* .selected_red{
+    background-color: red;
+    }
+
+    .selected_green{
+    background-color: green;
+    }
+    .selected_orange{
+    background-color: orange;
+    }
+    .selected_blue{
+    background-color: lightblue;
+    } */
+  </style>
+
+
+<script>
+// g_cellType = document.getElementById("TypeOfCell").value
+
+// function ChangeTypeOfCell(){
+//
+//   g_cellType = document.getElementById("TypeOfCell").value
+// }
+
+
+// var xlsTable = document.getElementById("tXlsTable"),rIndex,cIndex;
+
+// if (xlsTable) {
+//   // table rows
+//   for(var i = 1; i < xlsTable.rows.length; i++)
+//   {
+//       // row cells
+//       for(var j = 0; j < xlsTable.rows[i].cells.length; j++)
+//       {
+//           xlsTable.rows[i].cells[j].onclick = function()
+//           {
+//               rIndex = this.parentElement.rowIndex;
+//               cIndex = this.cellIndex+1;
+//               // console.log("value:",this.innerHTML)
+//               // console.log("date:",new Date(this.innerHTML))
+//
+//               if(this.classList.item(0) == g_cellType)
+//               {
+//                 // console.log("yes")
+//                 this.classList.remove("selected_red");
+//                 this.classList.remove("selected_green");
+//                 this.classList.remove("selected_orange");
+//                 this.classList.remove("selected_blue");
+//
+//               }
+//               else{
+//
+//                 this.classList.remove("selected_red");
+//                 this.classList.remove("selected_green");
+//                 this.classList.remove("selected_orange");
+//                 this.classList.remove("selected_blue");
+//                 this.classList.add(g_cellType);
+//               }
+//
+//               // document.getElementById("indexFirstRow").value=rIndex
+//               // console.log("Row : "+rIndex+" , Cell : "+cIndex ,g_cellType );
+//           };
+//       }
+//   }
+// }
+
+// var g_start = "{{g_start_date}}"
+// var g_end = "{{g_end_date}}"
+
+// function calcValuesXla(){
+//     var sumOfIncomes=0,sumOfExpanse=0
+//     l_notValiddate=false
+//     var dateCells = document.getElementsByClassName("selected_green");
+//     console.log("greens:")
+//     for (var j = 0; j < dateCells.length; j++)
+//     {
+//
+//           sumOfIncomes=sumOfIncomes+ parseInt (dateCells[j].innerHTML,dateCells[j])
+//           console.log(dateCells[j].innerHTML,sumOfIncomes)
+//     }
+//
+//
+//     var dateCells = document.getElementsByClassName("selected_red");
+//     console.log("red:")
+//     for (var j = 0; j < dateCells.length; j++)
+//     {
+//       sumOfExpanse=sumOfExpanse+ parseFloat(dateCells[j].innerHTML,dateCells[j])
+//       console.log(dateCells[j].innerHTML,sumOfExpanse)
+//     }
+//
+//     var dateCells = document.getElementsByClassName("selected_orange");
+//     console.log("orange:")
+//     for (var j = 0; j < dateCells.length; j++)
+//     {
+//       l_startDate = new Date(dateCells[j].innerHTML)
+//       if(l_startDate.toString()=="Invalid Date"){
+//         l_notValiddate=true
+//       }
+//
+//     }
+//     var dateCells = document.getElementsByClassName("selected_blue");
+//     console.log("blue:")
+//     for (var j = 0; j < dateCells.length; j++)
+//     {
+//       l_endDate = new Date(dateCells[j].innerHTML)
+//       if(l_endDate.toString()=="Invalid Date"){
+//         l_notValiddate=true
+//       }
+//       // calculate (and subtract) whole days
+//       var delta = Math.abs(l_endDate - l_startDate) / 1000;
+//       var days = Math.floor(delta / 86400);
+//       var month = Math.ceil(days/30.5)
+//       console.log("total month:",month)
+//     }
+//
+//     document.getElementById("totalIn").value=sumOfIncomes
+//     document.getElementById("totalExp").value=Math.floor(sumOfExpanse)
+//
+//     if (l_notValiddate==true){
+//       console.log("not valid date")
+//       // document.getElementById("totalMonth").value=1
+//         month=document.getElementById("totalMonth").value
+//
+//     }
+//     else{
+//         document.getElementById("totalMonth").value=month
+//     }
+//
+//     inAverage = Math.floor(sumOfIncomes/month)
+//     if (isNaN(inAverage)){
+//       inAverage = 0
+//     }
+//
+//     ExpAverage = Math.floor(sumOfExpanse/month)
+//     if (isNaN(ExpAverage)){
+//       ExpAverage = 0
+//     }
+//
+//     document.getElementById("inAverage").value=inAverage
+//     document.getElementById("expAverage").value=ExpAverage
+//
+//     DateNow = Date.now();
+//     DateNowString = DateNow.toString()
+//     var SimName = document.getElementById('mirorNmae').value.concat("_").concat(DateNowString,"_In")
+//     const NewOsRecordIncomes = {
+//                                 Rec_Type:     "1",
+//                                 End_Date:     g_end,
+//                                 Start_Date:   g_start,
+//                                 Value:        inAverage.toString(),
+//                                 Rec_Name:     SimName
+//                               };
+//     var ExpSimName = document.getElementById('mirorNmae').value.concat("_").concat(DateNowString,"_Exp")
+//     const NewOsRecordExpanses = {
+//                                 Rec_Type:     "2",
+//                                 End_Date:     g_end,
+//                                 Start_Date:   g_start,
+//                                 Value:        ExpAverage.toString(),
+//                                 Rec_Name:     ExpSimName
+//                               };
+//
+//     // var records_list=[NewOsRecordIncomes]
+//     jsonRec= JSON.stringify(NewOsRecordIncomes)
+//     ExpJsonRec=JSON.stringify(NewOsRecordExpanses)
+//     console.log("recj:",jsonRec,ExpJsonRec)
+//     // console.log("rec:",NewOsRecordIncomes.toString(),"ty:",typeof(NewOsRecordIncomes.toString()))
+//     s1="{".concat('"',0,'"',":")
+//     s2=jsonRec
+//     s3=",".concat('"',1,'"',":")
+//     s4=ExpJsonRec
+//     s5="}"
+//     Stringtosaveindatabase=s1.concat(s2,s3,s4,s5)
+//     document.getElementById('OsRecList').value=Stringtosaveindatabase
+//
+// }
+
+// function CreateTableFromJSON(InJson) {
+//
+//         // var myBooks = [
+//         //     {
+//         //         "Book ID": "1",
+//         //         "Book Name": "Computer Architecture",
+//         //         "Category": "Computers",
+//         //         "Price": "125.60"
+//         //     },
+//         //     {
+//         //         "Book ID": "2",
+//         //         "Book Name": "Asp.Net 4 Blue Book",
+//         //         "Category": "Programming",
+//         //         "Price": "56.00"
+//         //     },
+//         //     {
+//         //         "Book ID": "3",
+//         //         "Book Name": "Popular Science",
+//         //         "Category": "Science",
+//         //         "Price": "210.40"
+//         //     }
+//         // ]
+//
+//         // EXTRACT VALUE FOR HTML HEADER.
+//         // ('Book ID', 'Book Name', 'Category' and 'Price')
+//         console.log("start func:",InJson)
+//         var col = [];
+//         for (var i = 0; i < InJson.length; i++) {
+//           for (var key in InJson[i]) {
+//             console.log("key",key)
+//               if (col.indexOf(key) === -1) {
+//                   col.push(key);
+//               }
+//           }
+//         }
+//
+//         // CREATE DYNAMIC TABLE.
+//         var table = document.getElementById("tInTableJs");
+//
+//         // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
+//
+//         var tr = table.insertRow(-1);                   // TABLE ROW.
+//
+//         for (var i = 0; i < col.length; i++) {
+//             var th = document.createElement("th");      // TABLE HEADER.
+//             th.innerHTML = col[i];
+//             tr.appendChild(th);
+//         }
+//
+//         // ADD JSON DATA TO THE TABLE AS ROWS.
+//         for (var i = 0; i < InJson.length; i++) {
+//
+//           tr = table.insertRow(-1);
+//
+//           for (var j = 0; j < col.length; j++) {
+//               var tabCell = tr.insertCell(-1);
+//               tabCell.innerHTML = InJson[i][col[j]];
+//           }
+//         }
+//
+//         // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+//         var divContainer = document.getElementById("showData");
+//         divContainer.innerHTML = "";
+//         divContainer.appendChild(table);
+// }
+
+
+
+// function isEmpty(obj) {
+//     for(var prop in obj) {
+//         if(obj.hasOwnProperty(prop))
+//             return false;
+//     }
+//
+//     return true;
+// }
+//
+// function sleep(milliseconds) {
+//   var start = new Date().getTime();
+//   for (var i = 0; i < 10000000; i++) {
+//     if ((new Date().getTime() - start) > milliseconds){
+//       break;
+//     }
+//   }
+// }
+
+
+// gcnt =0
+// var gRecordListToSaveInDataBase=[]
+// function handleCreditFromReport(source,type,InRecord)
+// {
+//     // console.log(source,type,InRecord)
+//     const RecStatus = {
+//       C:"עסקה פעילה ששולמה במלואה או לא מנוצלת",
+//       T:"העסקה נסגרה לאחר ששולמה במלואה או לא נוצלה",
+//       A:"קיים פיגור בתשלום, אין הליך משפטי",
+//       A1:"קיים פיגור בתשלום, מתקיים הליך משפטי",
+//       B:"העסקה נסגרה אך לא שולמה במלואה",
+//       P:"הפסקת דיווח בעסקה",
+//     }
+//     const RecCouse = {
+//       1:"עסק",
+//       2:"רכב",
+//       3:"לימודים",
+//       4:"נדלן ושיפוצים",
+//       5:"צריכה פרטית",
+//       6:"השקעה בשוק ההון",
+//       7:"כרטיס אשראי",
+//       8:"ארגון חוב מחדש",
+//       9:"אחר",
+//       10:"לא ידוע",
+//       11:"הלוואה לתאגיד או בשיתוף עם תאגיד "
+//     }
+//   const RecPayFreq = {
+//       1:"תשלום אחד",
+//       2:"תשלום שבועי",
+//       3:"פעם בשבועיים",
+//       4:"פעם בחודשיים",
+//       5:"חודשי",
+//       6:"רבעוני",
+//       7:"שלוש פעמים בשנה",
+//       8:"חצי שנתי",
+//       9:"שנתי",
+//       10:"תשלום בלון",
+//       11:"תשלום דחוי",
+//       12:"אחר"
+//     }
+//
+//   const RecIntrestType = {
+//     F:"קבוע",
+//     V:"משתנה",
+//     M:"ריבית קבועה וריבית משתנה",
+//     N:"ללא ריבית (הריבית = אפס)"
+//   }
+//
+//   const RecChangePerTo={
+//     1:"שיעור הריבית של בנק ישראל",
+//     2:"ריבית פריים",
+//     3:"ריבית LIBOR",
+//     4:"ריבית TELBOR",
+//     5:"אגח מדינה צמודות מדד",
+//     6:"אגח מדינה לא צמודות",
+//     7:"שיעור הריבית הממוצע על משכנתאות צמודות מדד",
+//     8:"שיעור הריבית הממוצע על משכנתאות שאינן צמודות מדד",
+//     9:"ריבית מטח",
+//     10:"אחר",
+//     11:"ללא עוגן"
+//   }
+//
+//   const RecIntrestHatzmada={
+//     NI:"לא צמוד",
+//     CPI:"מדד המחירים לצרכן",
+//     FC:"צמוד למטבע חוץ",
+//     O :"אחר"
+//
+//   }
+//
+//   const RecRole={
+//     1:"לווה",
+//     2:"ערב"
+//   }
+//
+//     // console.log("keys:",Object.keys(InRecord))
+//
+//     creditkey= Object.keys(InRecord)[2]
+//     //value of V2_Loan or V3_mortage and etc' that is contracts
+//     credit = InRecord[creditkey]
+//     // console.log("V like:",credit)
+//     // console.log(credit)
+//     // barak report
+//     if (    ("Credit" in credit)     )
+//     {// there is only one month of definition
+//       // console.log("only one credit",credit)
+//       // RecordToExtractFrom=credit["Credit"]
+//       console.log("TBD")
+//       // console.log("only one credit",credit,RecordToExtractFrom)
+//     }
+//     else
+//       {//there is more then one month of definition
+//         //take the first from the month list to extract data
+//         CreditToExtractdataFrom=credit["Contract"]// object of first month
+//
+//         // console.log("zero:",CreditToExtractdataFrom)
+//         // barak report
+//         RecordToExtractFrom=CreditToExtractdataFrom["0"]
+//         RecordToExtractFrom=RecordToExtractFrom["Credit"]
+//         // console.log("rectoex:",RecordToExtractFrom)
+//         // yosi report
+//         // RecordToExtractFrom=CreditToExtractdataFrom["Contract"]
+//         // console.log("more then one credit",credit,RecordToExtractFrom)
+//         consolidate=CreditToExtractdataFrom["0"]["Consolidated"]
+//         // console.log("consolidate:",consolidate)
+//         intrestScheme=consolidate["InterestSchema"]
+//         // console.log("intrest scheme:",intrestScheme)
+//       }
+//
+//     // Extract credit data ny knowing the source the type and the credit object(RecordToExtractFrom)
+//     // console.log("reshuma:",RecordToExtractFrom)
+//     // if(gcnt<1){
+//     //     CreateTableFromJSON(RecordToExtractFrom)
+//     //     gcnt=gcnt+1
+//     // }
+//
+//     const myCreditRecord =
+//     {
+//       Source:source,
+//       Type:type,
+//       Status:RecStatus[RecordToExtractFrom["@Status"]],
+//       Actualpayment:RecordToExtractFrom["@ActualPaidAmount"],
+//       Couse:RecCouse[RecordToExtractFrom["@Designation"]],
+//       PayFreq:RecPayFreq[RecordToExtractFrom["@PaymentFrequency"]],
+//       PlannedEndDate:RecordToExtractFrom["@PlannedEndDate"],
+//       ActualEndDate:RecordToExtractFrom["@ActualEndDate"],
+//       StartDate:RecordToExtractFrom["@StartingDate"],
+//       IntrestType:RecIntrestType[intrestScheme["@Type"]],
+//       IntrestChangePerTo:RecChangePerTo[intrestScheme["@Base"]],
+//       IntrestHatzmada: RecIntrestHatzmada[intrestScheme["@Linkage"]],
+//       IntrestNominalValue:intrestScheme["@NominalInterest"],
+//       StartValue:RecordToExtractFrom["@LoanUtilized"],
+//       CurrentBallance:RecordToExtractFrom["@CurrentBalance"],
+//       LoanStartValue:RecordToExtractFrom["@LoanUtilized"],
+//       Role:RecRole[RecordToExtractFrom["@Role"]]
+//     }
+//     if (RecordToExtractFrom["@Status"]=="C")
+//     {
+//       endDate=myCreditRecord.PlannedEndDate
+//       t_year = endDate.substring(0,4)
+//       t_month = endDate.substring(5,7)
+//       t_endyear=t_month.concat(" ",t_year)
+//
+//       if (typeof myCreditRecord.ActualEndDate === "undefined")
+//       {
+//         At_endyear= "not defined"
+//       }
+//       else{
+//         AendDate=myCreditRecord.ActualEndDate
+//         At_year = AendDate.substring(0,4)
+//         At_month = AendDate.substring(5,7)
+//         At_endyear=At_month.concat(" ",At_year)
+//       }
+//
+//
+//
+//
+//
+//
+//       endDate=myCreditRecord.StartDate
+//       t_year = endDate.substring(0,4)
+//       t_month = endDate.substring(5,7)
+//       t_start=t_month.concat(" ",t_year)
+//
+//       t_interestChangePerTo=""
+//       if (myCreditRecord.IntrestType=="משתנה"){
+//         t_interestChangePerTo=myCreditRecord.IntrestChangePerTo
+//       }
+//
+//       DateNow = Date.now();
+//       DateNowString = DateNow.toString()
+//
+//       // wait 1 miliosecond to be sure the next record will have uniq name
+//       sleep(1)
+//
+//       t_name=myCreditRecord.Source.concat("__",myCreditRecord.Couse,"__",myCreditRecord.IntrestType,"__",t_interestChangePerTo,"__",t_start,"__",DateNowString)
+//
+//
+//       const NewSimRecord = {Source:       myCreditRecord.Source,
+//                             Mahamad:      myCreditRecord.Role,
+//                             Target:       myCreditRecord.Couse,
+//                             PayedFreq:    myCreditRecord.PayFreq,
+//                             IntrestType:  myCreditRecord.IntrestType,
+//                             ChangePer:    myCreditRecord.IntrestChangePerTo,
+//                             Hatzmada:     myCreditRecord.IntrestHatzmada,
+//                             Yitra:        myCreditRecord.CurrentBallance,
+//                             StartValue:   myCreditRecord.LoanStartValue,
+//                             Rec_Type:     "4",
+//                             End_Date:     t_endyear,
+//                             ActualEndDate:At_endyear,
+//                             Start_Date:   t_start,
+//                             Value:        parseFloat(myCreditRecord.Actualpayment),
+//                             Rate:         parseFloat(myCreditRecord.IntrestNominalValue),
+//                             // Family_id:    1,
+//                             Rec_Name:     t_name
+//                             };
+//
+//       t_name=t_name.concat("__","Exps")
+//       const NewExpSimRecord = {Rec_Type:     "2",
+//                             End_Date:     t_endyear,
+//                             Start_Date:   t_start,
+//                             Value:        parseFloat(myCreditRecord.Actualpayment),
+//                             Start_Value:  0 ,
+//                             Rate:         parseFloat(myCreditRecord.IntrestNominalValue),
+//                             // Family_id:    1,
+//                             Rec_Name:     t_name
+//                             };
+//
+//
+//       gRecordListToSaveInDataBase.push(NewSimRecord)
+//
+//
+//       RecordsStringJsonFormat=RecordsStringJsonFormat.concat('"',Counter.toString(),'"',":",JSON.stringify(NewSimRecord),",")
+//       // console.log("loan rec:",RecordsStringJsonFormat)
+//       Counter=Counter+1
+//       RecordsStringJsonFormat=RecordsStringJsonFormat.concat('"',Counter.toString(),'"',":",JSON.stringify(NewExpSimRecord),",")
+//       Counter=Counter+1
+//       // console.log("Exp rec:",RecordsStringJsonFormat)
+//
+//     }
+// }
+
+// myObject={{XmlInJsonFormat|safe}}
+// console.log("savings data is",myObject)
+// RecordsStringJsonFormat="{"
+// Counter = 0
+
+// // mySavingsObject={{XmlSavingsInJsonFormat|safe}}
+// // RecordsSavingsStringJsonFormat="{"
+// // SavingsCounter = 0
+//
+// console.log("savings data is",mySavingsObject)
+// a=mySavingsObject["Mimshak"]["0"]
+// b=a["YeshutYatzran"]
+// c=b["SHEM-YATZRAN"]
+// console.log("yatzran data is",c)
+
+
+
+// if (Object.keys(myObject).length != 0)
+// {//1
+//   console.log("data is",myObject)
+//
+// // console.log(Object.keys(myObject).length)
+// // if (Object.keys(mySavingsObject).length != 0)
+// // {//1
+// //   console.log("savings data is",mySavingsObject)
+// // }
+//   //barak report
+//   // CreditSources=myObject.CE_ProductOutput.ConsolidatedReport.CreditInformationByDataSource
+//   //yosi report
+//   CreditSources=myObject.ProductResponse["0"].CE_ProductOutput.ConsolidatedReport.CreditInformationByDataSource
+//   // console.log("credit source:",CreditSources)
+//
+//   if (isEmpty(CreditSources)==true)
+//   {//2
+//     console.log("there is no credit sources")
+//   }//2
+//   else
+//   {//3
+//     // loop al credit sources
+//     for (CreditSourceIndex in CreditSources)
+//     {//4
+//         // array of all credits per source
+//         // console.log("creadit source object:",CreditSources[CreditSourceIndex])
+//         // console.log("מקור אשראי:",CreditSources[CreditSourceIndex]["@DataSourceDescription"])
+//         source=CreditSources[CreditSourceIndex]["@DataSourceDescription"]
+//         if (    ("Credit" in CreditSources[CreditSourceIndex]["CreditInformation"])     )
+//         {//5  there is only one credit in this data source
+//           creditkey= Object.keys(CreditSources[CreditSourceIndex]["CreditInformation"])[2]
+//           credit=CreditSources[CreditSourceIndex]["CreditInformation"]
+//           creditKeys=Object.keys(credit)
+//           //console.log("רשומה:",creditKeys[2])
+//           if(creditkey == "V2_Loan")
+//           {//6
+//               // console.log("הלוואה:",credit)
+//               handleCreditFromReport(source,"Loan",credit)
+//           }//6
+//           else
+//           {//7
+//             if(creditkey == "V3_Mortgage")
+//             {//8
+//               // console.log("משכנתא:",credit)
+//               handleCreditFromReport(source,"Mortgage",credit)
+//             }//8
+//             else
+//             {//9
+//               // console.log("לא הלוואה ולא משכנתא:",credit)
+//             }//9
+//           }//7
+//         }//5
+//         else
+//         {//10 more then one credit
+//           for (creditRecords in CreditSources[CreditSourceIndex]["CreditInformation"])
+//           {//11
+//               credit=CreditSources[CreditSourceIndex]["CreditInformation"][creditRecords]
+//               creditKeys=Object.keys(credit)
+//               //console.log("רשומה:",creditKeys[2])
+//               if(creditKeys[2] == "V2_Loan")
+//                 handleCreditFromReport(source,"Loan",credit)
+//                 // console.log("הלוואה:",credit)
+//               if(creditKeys[2] == "V3_Mortgage")
+//                 handleCreditFromReport(source,"Mortgage",credit)
+//                 // console.log("משכנתא:",credit)
+//               if(  (creditKeys[2] != "V2_Loan")&&(creditKeys[2]!== "V3_Mortgage") )
+//               {//12
+//                 // console.log("לא הלוואה ולא משכנתא:",credit)
+//               }//12
+//
+//           }//11
+//         }//10
+//     }//4
+//   }//3
+//
+// // remove last "," and close json with "{}"
+// RecordsStringJsonFormat=RecordsStringJsonFormat.slice(0, -1)
+// RecordsStringJsonFormat=RecordsStringJsonFormat.concat("}")
+// // show results in text area
+// document.getElementById('recList').value=RecordsStringJsonFormat
+//
+// obj = JSON.parse(RecordsStringJsonFormat)
+// console.log("reclistjonsons:",gRecordListToSaveInDataBase)
+// CreateTableFromJSON(gRecordListToSaveInDataBase)
+// // CreateTableFromJSON(obj["0"])
+// // console.log(RecordsStringJsonFormat)
+// }//1
+//
+
+  var family = "{{ family }}";
+
+  var family_select = document.getElementById('id_Family');
+  for (var i = 0; i < family_select.options.length; i++) {
+      // console.log(i,family_select.options[i].text);
+      if (family_select.options[i].text === family) {
+          family_select.selectedIndex = i;
+          break;
+      }
+  }
+
+
+  family_select.text=family
+  document.getElementById("id_Rec_Name").style.backgroundColor="lightgray"
+  document.getElementById("id_Rec_Type").style.backgroundColor="lightgray"
+  document.getElementById("id_Start_Date").style.backgroundColor="lightgreen"
+  document.getElementById("id_End_Date").style.backgroundColor="lightgreen"
+  document.getElementById("id_Value").style.backgroundColor="lightblue"
+  document.getElementById("id_Rate").style.backgroundColor="lightblue"
+
+
+
+
+  </script>
+</html>
+
+
+  {% endblock %}

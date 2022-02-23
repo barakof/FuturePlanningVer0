@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% extends "FuturePlanning/mybase.html" %}
+{% load static %}
+
+    {% block body_block%}
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Forms</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  </head>
+  <body>
+
+
+    <div class="container">
+      <h1>Registraion</h1>
+      <div class="jumbotron">
+        {% if registered %}
+          <h1>Thank you for registering!</h1>
+        {% else %}
+          <h1>Register Here</h1>
+          <h3>Just fill out the form.</h3>
+
+          <form enctype="multipart/form-data" method="POST" >
+            {% csrf_token %}
+            {{ user_form.as_p }}
+            {{ profile_form.as_p }}
+            <input type="submit" name="" value="Register">
+          </form>
+
+        {% endif %}
+
+      </div>
+    </div>
+
+  </body>
+</html>
+    {% endblock %}

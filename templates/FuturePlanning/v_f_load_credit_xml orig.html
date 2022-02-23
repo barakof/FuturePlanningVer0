@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+{% extends "FuturePlanning/mybase.html" %}
+{%block test%}{{family}}{%endblock%}
+    {% block body_block%}
+
+    <style>
+    .table td, .table th {
+     font-size: 12px;
+    }
+
+    .div_table_wrapper{
+    overflow-x:auto;
+    max-height:400px;}
+
+    </style>
+    <!-- <div class="container-fluid" style="margin-top:60px;margin-right:100px;">
+      <div class="row">
+          <div class="col-sm-12 boxy">
+            <p>rrrrrr</p>
+          </div>
+      </div>
+    </div> -->
+
+    <!-- <div class="container-fluid" style="margin-top:60px"> -->
+
+      <!-- <div class="container-fluid" style="margin-top:80px;margin-left:80px;margin-right:80px"> -->
+      <div class="container-fluid" style="margin-top:80px;width:90%;">
+
+        <div class="row">
+
+            <div class="col-sm-12 boxy">
+              <h2 style="text-align:center;color:blue">טעינת נתוני אשראי ממערכת נתוני אשראי של בנק ישראל</h2>
+              <br>
+              <div id="step1" style="float:right;">
+                  <a  style="text-align:right;float:right;" class="nav-link" href="/static/CSS/demo1_8_2_2022_load osh.mp4" target="_blank"><input style="align:right;" type="button" class='btn btn-info' value="צפה בסרטון הדרכה"></a><br><br><br>
+                  <h4 style="text-align:right">שלב 1: טען קובץ נתוני אשראי מבנק ישראל</h4>
+                  <h4 style="text-align:right" id="supportFile">קבצים נתמכים XML</h4><br>
+
+
+                  <!-- <a  style="display: inline;" class="nav-link" href="/load_excel/"><input type="button" class='btn btn-info' value="טען קובץ חדש"></a> -->
+                  <form method="POST" class="mycrecord" enctype="multipart/form-data">
+                    {% for item in CreditLoadingForm %}
+
+                      {{ item }}
+
+                    {% endfor %}
+                    <!-- {{ ExcelLoadingForm.as_p }} -->
+                    {% csrf_token %}
+                    <input style="width:400px;color:red;display:none" type="text"  id="errorMasageFileType"   >
+                    <input type="submit" id="bankOs" class="btn btn-success" value="טען קובץ" name="LoadXmlFile" onclick="loadclick()">
+                    <input type="text"  id="fileNamedisplay" placeholder="No File Selected" readonly  >
+                    <!-- <output id="fileNamedisplay">No file selected</output> -->
+                    <input type="button" class='btn btn-primary' value="בחר קובץ" onclick="selectFile()">
+
+
+                  </form>
+              </div>
+              <br>
+              <!-- ///////////////////////////////////// -->
+              <div id="step2">
+                    <div style="text-align:right">
+                      <h4>שלב 2:סמן אלו הלוואות לשמור</h4><br>
+
+                    </div>
+
+                    <input type="button" id="calcOs" class='btn btn-primary' value="עדכן שדות" name="CalcValuesXls" onclick="updateJsonData()">
+                    <a  style="display: inline;" class="nav-link" href="/load_credit_xml/"><input type="button" class='btn btn-info' value="חזור להתחלה"></a>
+              </div>
+              <!-- STEP 2 DIV for hiiding from user -->
+              <div id="step3">
+                  <h4 style="text-align:right">שלב 3: עבור על תוצאות החישוב ולבחירתך 3 אפשרויות</h4>
+
+                  <form method="POST" class="mycrecord" enctype="multipart/form-data">
+                      {% csrf_token %}
+                    <div class="row">
+
+                          <div class="col-sm-2 ">
+
+                            <textarea hidden="hidden" name="Os_Records_List" id="OsRecList" rows="10" cols="50" ></textarea><br>
+                          </div>
+
+                      </div>
+                      <input type="submit" id="bankOsSave" class='btn btn-success' value="שמור חישוב" name="SaveOsIncomesExpanses">
+                      <a  style="display: inline;" class="nav-link" href="/load_excel/"><input type="button" class='btn btn-info' value="טען קובץ חדש"></a>
+                      <input type="button" id="reMark" class="btn btn-warning" value="חזור לתיוג"  onclick="reMarkTable()">
+                    </form>
+              </div>
+              <div id="exceltable" class="div_table_wrapper">
+                  <textarea  name="Records_List" id="recList" rows="10" cols="200" ></textarea>
+                  <div class="div_table_wrapper" id="showData">
+                    <table border="1" class="dataframe  table-striped table-bordered table-responsivek" id="CreditTable" >
+                    </table>
+                  </div>
+
+              </div>
+            </div>
+          </div>
+
+
+
+
+        </div>
+      </div>
+<!-- </div> -->
+
+
+
+
+
+
+  </body>
+
+  <style>
+
+    /* body{ */
+
+      /* cursor:url('/static/CSS/green arrow.png'),auto */
+    /* } */
+
+
+
+}
+    /* label[for="id_InputFile"] {
+      background-color: red;
+      display: none;
+    } */
+
+    .mycrecord {
+        color: black;
+    }
+
+    .selected_red{
+    background-color: red;
+    }
+
+    .selected_green{
+    background-color: lightgreen;
+    }
+    .selected_orange{
+    background-color: orange;
+    }
+    .selected_blue{
+    background-color: lightblue;
+    }
+  </style>
+
+
+<script>
+
+
+// get from the server the state of the process
+g_load_credit_state = {{state}}
+
+// g_cellType = document.getElementById("TypeOfCell").value
+g_cellType ="selected_blue"
+function selectFile()
+{
+
+  document.getElementById("selectExcelFIle").click()
+
+
+}
+
+function selectFileclicked()
+{
+
+  // console.log("select file clicked",this.vale)
+  // this.value = null;
+}
+
+function selectFileChanged()
+{
+  document.getElementById("fileNamedisplay").value=document.getElementById("selectExcelFIle").files[0].name
+  document.getElementById("errorMasageFileType").style.display = "none"
+  document.getElementById("errorMasageFileType").value=""
+  // console.log("file path:",document.getElementById("selectExcelFIle").files[0].name)
+}
+
+function reMarkTable()
+{
+  document.getElementById("step1").style.display = "none";
+  document.getElementById("step2").style.display = "block";
+  document.getElementById("step3").style.display = "none";
+  document.getElementById("exceltable").style.display = "block";
+}
+
+// // set function for each cell with the on click event
+// var xlsTable = document.getElementById("CreditTable"),rIndex,cIndex;
+// console.log("0")
+// if (xlsTable) {
+//   console.log("1")
+//   // table rows
+//   for(var i = 1; i < xlsTable.rows.length; i++)
+//   {
+//       console.log("2")
+//       // row cells
+//       for(var j = 0; j < xlsTable.rows[i].cells.length; j++)
+//       {
+//           console.log("cell contant:",this.innerHTML)
+//           xlsTable.rows[i].cells[j].onclick = function()
+//           {
+//               rIndex = this.parentElement.rowIndex;
+//               cIndex = this.cellIndex+1;
+//               console.log("cell contant:",this.innerHTML)
+//               if ( (g_cellType == "selected_red" || g_cellType == "selected_green" ) && (isNaN(this.innerHTML) || this.innerHTML=="") )
+//               {
+//                   if (g_cellType == "selected_red")
+//                     alert("התא הנבחר אינו מספר ולכן אינו יכול להבחר כהוצאה")
+//                   if (g_cellType == "selected_green")
+//                     alert("התא הנבחר אינו מספר ולכן אינו יכול להבחר כהכנסה")
+//               }
+//               else{
+//                 if(this.classList.item(0) == g_cellType)
+//                 {
+//                   // console.log("yes")
+//                   this.classList.remove("selected_red");
+//                   this.classList.remove("selected_green");
+//                   this.classList.remove("selected_orange");
+//                   this.classList.remove("selected_blue");
+//
+//                 }
+//                 else{
+//
+//                   this.classList.remove("selected_red");
+//                   this.classList.remove("selected_green");
+//                   this.classList.remove("selected_orange");
+//                   this.classList.remove("selected_blue");
+//                   this.classList.add(g_cellType);
+//                 }
+//
+//               }
+//
+//
+//               // document.getElementById("indexFirstRow").value=rIndex
+//               // console.log("Row : "+rIndex+" , Cell : "+cIndex ,g_cellType );
+//           };
+//       }
+//   }
+//
+// }
+
+
+if (g_load_credit_state == 0   ||  g_load_credit_state == 9 )
+{
+  document.getElementById("step1").style.display = "block";
+  document.getElementById("step2").style.display = "none";
+  document.getElementById("step3").style.display = "none";
+  document.getElementById("exceltable").style.display = "none";
+
+  if (g_load_credit_state == 9){
+    document.getElementById("errorMasageFileType").style.display = "block"
+    document.getElementById("errorMasageFileType").value="xls,xlsx הקובץ שנבחר אינו נתמך, הקבצים הנתמכים הם"
+  }
+
+}
+if (g_load_credit_state == 1)
+{
+  document.getElementById("step1").style.display = "none";
+  document.getElementById("step2").style.display = "block";
+  document.getElementById("step3").style.display = "none";
+  document.getElementById("exceltable").style.display = "block";
+  document.getElementById("exceltable").style.cursor = "url('/static/CSS/blue arrow.png'),auto";
+}
+
+function ChangeTypeOfCell(){
+
+  g_cellType = document.getElementById("TypeOfCell").value
+  console.log(g_cellType)
+
+  if (g_cellType == "selected_green"){
+      document.getElementById("selecttypetomark").innerHTML="לחץ על כל התאים בהם מפורטת סכום ההכנסה אותה תרצה לקחת בחשבון בחישוב ההכנסה הממוצעת "
+      document.getElementById("selecttypetomark").style.color="green"
+      document.getElementById("exceltable").style.cursor = "url('/static/CSS/green arrow.png'),auto";
+
+  }
+  if (g_cellType == "selected_red"){
+      document.getElementById("selecttypetomark").innerHTML="לחץ על כל התאים בהם מפורט סכום ההוצאה אותה תרצה לקחת בחשבון בחישוב ההוצאה הממוצעת, שים לב לא לתייג הוצאות שקשורות להלוואות וחסכונות (יטופלו בהמשך)"
+      // document.getElementById("selecttypetomark").innerHTML="לחץ על כל התאים בהם מפורט סכום ההוצאה אותה תרצה לקחת בחשבון בחישוב ההוצאה הממוצעת "
+      document.getElementById("selecttypetomark").style.color="red"
+      document.getElementById("exceltable").style.cursor = "url('/static/CSS/red arrow.png'),auto";
+  }
+  // if (g_cellType == "selected_orange"){
+  //   document.getElementById("selecttypetomark").innerHTML="לחץ על תא כלשהו בעמודת התאריכים, לא משנה איזה תא, זה רק לצורך זיהוי העמודה "
+  //   document.getElementById("selecttypetomark").style.color="DarkOrange"
+  // }
+  if (g_cellType == "selected_blue"){
+    document.getElementById("selecttypetomark").innerHTML="לחץ על תא הכותרת בעמודת התאריכים "
+    document.getElementById("selecttypetomark").style.color="blue"
+    document.getElementById("exceltable").style.cursor = "url('/static/CSS/blue arrow.png'),auto";
+  }
+
+}
+function getMyFormatDateFromJsDate(lv_jsDareFormat)
+{
+  SelectedDate = new Date(lv_jsDareFormat)
+  SelectedMonth =SelectedDate.getMonth()
+  SelectedMonth=SelectedMonth+1//function start january=0
+  SelectedYear = SelectedDate.getFullYear()
+  if (SelectedMonth<10)
+  {
+    SelectedMonthString = "0".concat(SelectedMonth.toString())
+  }
+    else
+        {
+          SelectedMonthString = SelectedMonth.toString()
+        }
+  lv_EventDateMyFormat = "".concat(SelectedMonthString," ",SelectedYear.toString())
+  return lv_EventDateMyFormat
+
+}
+
+
+function CreateTableFromJSON(InJson) {
+
+        // console.log("start func:",InJson)
+        var col = [];
+        for (var i = 0; i < InJson.length; i++) {
+          for (var key in InJson[i]) {
+            // console.log("key",key)
+              if (col.indexOf(key) === -1) {
+                  col.push(key);
+              }
+          }
+        }
+
+        // CREATE DYNAMIC TABLE.
+        var table = document.getElementById("CreditTable");
+
+        // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
+
+        var tr = table.insertRow(-1);                   // TABLE ROW.
+
+        for (var i = 0; i < col.length; i++) {
+            var th = document.createElement("th");      // TABLE HEADER.
+            th.innerHTML = col[i];
+            tr.appendChild(th);
+        }
+
+        // ADD JSON DATA TO THE TABLE AS ROWS.
+        for (var i = 0; i < InJson.length; i++) {
+
+          tr = table.insertRow(-1);
+
+          for (var j = 0; j < col.length; j++) {
+              var tabCell = tr.insertCell(-1);
+              tabCell.innerHTML = InJson[i][col[j]];
+          }
+        }
+
+        // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+        var divContainer = document.getElementById("showData");
+        divContainer.innerHTML = "";
+        divContainer.appendChild(table);
+}
+
+function isEmpty(obj) {
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    }
+
+    return true;
+}
+
+//
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 10000000; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}
+//
+//
+gcnt =0
+var gRecordListToSaveInDataBase=[]
+function handleCreditFromReport(source,type,InRecord)
+{
+    // console.log(source,type,InRecord)
+    const RecStatus = {
+      C:"עסקה פעילה ששולמה במלואה או לא מנוצלת",
+      T:"העסקה נסגרה לאחר ששולמה במלואה או לא נוצלה",
+      A:"קיים פיגור בתשלום, אין הליך משפטי",
+      A1:"קיים פיגור בתשלום, מתקיים הליך משפטי",
+      B:"העסקה נסגרה אך לא שולמה במלואה",
+      P:"הפסקת דיווח בעסקה",
+    }
+    const RecCouse = {
+      1:"עסק",
+      2:"רכב",
+      3:"לימודים",
+      4:"נדלן ושיפוצים",
+      5:"צריכה פרטית",
+      6:"השקעה בשוק ההון",
+      7:"כרטיס אשראי",
+      8:"ארגון חוב מחדש",
+      9:"אחר",
+      10:"לא ידוע",
+      11:"הלוואה לתאגיד או בשיתוף עם תאגיד "
+    }
+  const RecPayFreq = {
+      1:"תשלום אחד",
+      2:"תשלום שבועי",
+      3:"פעם בשבועיים",
+      4:"פעם בחודשיים",
+      5:"חודשי",
+      6:"רבעוני",
+      7:"שלוש פעמים בשנה",
+      8:"חצי שנתי",
+      9:"שנתי",
+      10:"תשלום בלון",
+      11:"תשלום דחוי",
+      12:"אחר"
+    }
+
+  const RecIntrestType = {
+    F:"קבוע",
+    V:"משתנה",
+    M:"ריבית קבועה וריבית משתנה",
+    N:"ללא ריבית (הריבית = אפס)"
+  }
+
+  const RecChangePerTo={
+    1:"שיעור הריבית של בנק ישראל",
+    2:"ריבית פריים",
+    3:"ריבית LIBOR",
+    4:"ריבית TELBOR",
+    5:"אגח מדינה צמודות מדד",
+    6:"אגח מדינה לא צמודות",
+    7:"שיעור הריבית הממוצע על משכנתאות צמודות מדד",
+    8:"שיעור הריבית הממוצע על משכנתאות שאינן צמודות מדד",
+    9:"ריבית מטח",
+    10:"אחר",
+    11:"ללא עוגן"
+  }
+
+  const RecIntrestHatzmada={
+    NI:"לא צמוד",
+    CPI:"מדד המחירים לצרכן",
+    FC:"צמוד למטבע חוץ",
+    O :"אחר"
+
+  }
+
+  const RecRole={
+    1:"לווה",
+    2:"ערב"
+  }
+
+    // console.log("keys:",Object.keys(InRecord))
+
+    creditkey= Object.keys(InRecord)[2]
+    //value of V2_Loan or V3_mortage and etc' that is contracts
+    credit = InRecord[creditkey]
+    // console.log("V like:",credit)
+    // console.log(credit)
+    // barak report
+    if (    ("Credit" in credit)     )
+    {// there is only one month of definition
+      // console.log("only one credit",credit)
+      // RecordToExtractFrom=credit["Credit"]
+      console.log("TBD")
+      // console.log("only one credit",credit,RecordToExtractFrom)
+    }
+    else
+      {//there is more then one month of definition
+        //take the first from the month list to extract data
+        CreditToExtractdataFrom=credit["Contract"]// object of first month
+
+        // console.log("zero:",CreditToExtractdataFrom)
+        // barak report
+        RecordToExtractFrom=CreditToExtractdataFrom["0"]
+        RecordToExtractFrom=RecordToExtractFrom["Credit"]
+        // console.log("rectoex:",RecordToExtractFrom)
+        // yosi report
+        // RecordToExtractFrom=CreditToExtractdataFrom["Contract"]
+        // console.log("more then one credit",credit,RecordToExtractFrom)
+        consolidate=CreditToExtractdataFrom["0"]["Consolidated"]
+        // console.log("consolidate:",consolidate)
+        intrestScheme=consolidate["InterestSchema"]
+        // console.log("intrest scheme:",intrestScheme)
+      }
+
+    // Extract credit data ny knowing the source the type and the credit object(RecordToExtractFrom)
+    // console.log("reshuma:",RecordToExtractFrom)
+    // if(gcnt<1){
+    //     CreateTableFromJSON(RecordToExtractFrom)
+    //     gcnt=gcnt+1
+    // }
+
+    const myCreditRecord =
+    {
+      Source:source,
+      Type:type,
+      Status:RecStatus[RecordToExtractFrom["@Status"]],
+      Actualpayment:RecordToExtractFrom["@ActualPaidAmount"],
+      Couse:RecCouse[RecordToExtractFrom["@Designation"]],
+      PayFreq:RecPayFreq[RecordToExtractFrom["@PaymentFrequency"]],
+      PlannedEndDate:RecordToExtractFrom["@PlannedEndDate"],
+      ActualEndDate:RecordToExtractFrom["@ActualEndDate"],
+      StartDate:RecordToExtractFrom["@StartingDate"],
+      IntrestType:RecIntrestType[intrestScheme["@Type"]],
+      IntrestChangePerTo:RecChangePerTo[intrestScheme["@Base"]],
+      IntrestHatzmada: RecIntrestHatzmada[intrestScheme["@Linkage"]],
+      IntrestNominalValue:intrestScheme["@NominalInterest"],
+      StartValue:RecordToExtractFrom["@LoanUtilized"],
+      CurrentBallance:RecordToExtractFrom["@CurrentBalance"],
+      LoanStartValue:RecordToExtractFrom["@LoanUtilized"],
+      Role:RecRole[RecordToExtractFrom["@Role"]]
+    }
+    if (RecordToExtractFrom["@Status"]=="C")
+    {
+      endDate=myCreditRecord.PlannedEndDate
+      t_year = endDate.substring(0,4)
+      t_month = endDate.substring(5,7)
+      t_endyear=t_month.concat(" ",t_year)
+
+      if (typeof myCreditRecord.ActualEndDate === "undefined")
+      {
+        At_endyear= "not defined"
+      }
+      else{
+        AendDate=myCreditRecord.ActualEndDate
+        At_year = AendDate.substring(0,4)
+        At_month = AendDate.substring(5,7)
+        At_endyear=At_month.concat(" ",At_year)
+      }
+
+      endDate=myCreditRecord.StartDate
+      t_year = endDate.substring(0,4)
+      t_month = endDate.substring(5,7)
+      t_start=t_month.concat(" ",t_year)
+
+      t_interestChangePerTo=""
+      if (myCreditRecord.IntrestType=="משתנה"){
+        t_interestChangePerTo=myCreditRecord.IntrestChangePerTo
+      }
+
+      DateNow = Date.now();
+      DateNowString = DateNow.toString()
+
+      // wait 1 miliosecond to be sure the next record will have uniq name
+      sleep(1)
+
+      t_name=myCreditRecord.Source.concat("__",myCreditRecord.Couse,"__",myCreditRecord.IntrestType,"__",t_interestChangePerTo,"__",t_start,"__",DateNowString)
+
+
+      const NewSimRecord = {Source:       myCreditRecord.Source,
+                            Mahamad:      myCreditRecord.Role,
+                            Target:       myCreditRecord.Couse,
+                            PayedFreq:    myCreditRecord.PayFreq,
+                            IntrestType:  myCreditRecord.IntrestType,
+                            ChangePer:    myCreditRecord.IntrestChangePerTo,
+                            Hatzmada:     myCreditRecord.IntrestHatzmada,
+                            Yitra:        myCreditRecord.CurrentBallance,
+                            StartValue:   myCreditRecord.LoanStartValue,
+                            Rec_Type:     "4",
+                            End_Date:     t_endyear,
+                            ActualEndDate:At_endyear,
+                            Start_Date:   t_start,
+                            Value:        parseFloat(myCreditRecord.Actualpayment),
+                            Rate:         parseFloat(myCreditRecord.IntrestNominalValue),
+                            // Family_id:    1,
+                            Rec_Name:     t_name
+                            };
+
+      t_name=t_name.concat("__","Exps")
+      const NewExpSimRecord = {Rec_Type:     "2",
+                            End_Date:     t_endyear,
+                            Start_Date:   t_start,
+                            Value:        parseFloat(myCreditRecord.Actualpayment),
+                            Start_Value:  0 ,
+                            Rate:         parseFloat(myCreditRecord.IntrestNominalValue),
+                            // Family_id:    1,
+                            Rec_Name:     t_name
+                            };
+
+
+      gRecordListToSaveInDataBase.push(NewSimRecord)
+
+
+      RecordsStringJsonFormat=RecordsStringJsonFormat.concat('"',Counter.toString(),'"',":",JSON.stringify(NewSimRecord),",")
+      // console.log("loan rec:",RecordsStringJsonFormat)
+      Counter=Counter+1
+      RecordsStringJsonFormat=RecordsStringJsonFormat.concat('"',Counter.toString(),'"',":",JSON.stringify(NewExpSimRecord),",")
+      Counter=Counter+1
+      // console.log("Exp rec:",RecordsStringJsonFormat)
+
+    }
+}
+
+myObject={{XmlInJsonFormat|safe}}
+console.log("myObject",myObject)
+RecordsStringJsonFormat="{"
+Counter = 0
+
+if (Object.keys(myObject).length != 0)
+{//1
+  console.log("credit data is",myObject)
+
+  CreditSources=myObject.ProductResponse["0"].CE_ProductOutput.ConsolidatedReport.CreditInformationByDataSource
+  // console.log("credit source:",CreditSources)
+
+  if (isEmpty(CreditSources)==true)
+  {//2
+    console.log("there is no credit sources")
+  }//2
+  else
+  {//3
+    // loop al credit sources
+    for (CreditSourceIndex in CreditSources)
+    {//4
+        // array of all credits per source
+        // console.log("creadit source object:",CreditSources[CreditSourceIndex])
+        // console.log("מקור אשראי:",CreditSources[CreditSourceIndex]["@DataSourceDescription"])
+        source=CreditSources[CreditSourceIndex]["@DataSourceDescription"]
+        if (    ("Credit" in CreditSources[CreditSourceIndex]["CreditInformation"])     )
+        {//5  there is only one credit in this data source
+          creditkey= Object.keys(CreditSources[CreditSourceIndex]["CreditInformation"])[2]
+          credit=CreditSources[CreditSourceIndex]["CreditInformation"]
+          creditKeys=Object.keys(credit)
+          //console.log("רשומה:",creditKeys[2])
+          if(creditkey == "V2_Loan")
+          {//6
+              // console.log("הלוואה:",credit)
+              handleCreditFromReport(source,"Loan",credit)
+          }//6
+          else
+          {//7
+            if(creditkey == "V3_Mortgage")
+            {//8
+              // console.log("משכנתא:",credit)
+              handleCreditFromReport(source,"Mortgage",credit)
+            }//8
+            else
+            {//9
+              // console.log("לא הלוואה ולא משכנתא:",credit)
+            }//9
+          }//7
+        }//5
+        else
+        {//10 more then one credit
+          for (creditRecords in CreditSources[CreditSourceIndex]["CreditInformation"])
+          {//11
+              credit=CreditSources[CreditSourceIndex]["CreditInformation"][creditRecords]
+              creditKeys=Object.keys(credit)
+              //console.log("רשומה:",creditKeys[2])
+              if(creditKeys[2] == "V2_Loan")
+                handleCreditFromReport(source,"Loan",credit)
+                // console.log("הלוואה:",credit)
+              if(creditKeys[2] == "V3_Mortgage")
+                handleCreditFromReport(source,"Mortgage",credit)
+                // console.log("משכנתא:",credit)
+              if(  (creditKeys[2] != "V2_Loan")&&(creditKeys[2]!== "V3_Mortgage") )
+              {//12
+                // console.log("לא הלוואה ולא משכנתא:",credit)
+              }//12
+
+          }//11
+        }//10
+    }//4
+  }//3
+
+// remove last "," and close json with "{}"
+RecordsStringJsonFormat=RecordsStringJsonFormat.slice(0, -1)
+RecordsStringJsonFormat=RecordsStringJsonFormat.concat("}")
+// show results in text area
+document.getElementById('recList').value=RecordsStringJsonFormat
+
+obj = JSON.parse(RecordsStringJsonFormat)
+console.log("reclistjonsons:",gRecordListToSaveInDataBase)
+CreateTableFromJSON(gRecordListToSaveInDataBase)
+// CreateTableFromJSON(obj["0"])
+// console.log(RecordsStringJsonFormat)
+}//1
+
+// set function for each cell with the on click event
+var xlsTable = document.getElementById("CreditTable"),rIndex,cIndex;
+// console.log("0")
+if (xlsTable) {
+  // console.log("1")
+  // table rows
+  for(var i = 1; i < xlsTable.rows.length; i++)
+  {
+      // console.log("2")
+      // row cells
+      for(var j = 0; j < xlsTable.rows[i].cells.length; j++)
+      {
+          // console.log("cell contant:",this.innerHTML)
+          xlsTable.rows[i].cells[j].onclick = function()
+          {
+              rIndex = this.parentElement.rowIndex;
+              cIndex = this.cellIndex+1;
+              // console.log("row 0:",this.parentElement)
+              for(var j = 0; j < this.parentElement.cells.length; j++)
+              {
+                // console.log("cell:",this.parentElement.cells[j])
+                if(this.parentElement.cells[j].classList.item(0) == "selected_blue")
+                  {
+                      this.parentElement.cells[j].classList.remove("selected_blue");
+                  }
+                  else{
+
+                    this.parentElement.cells[j].classList.add("selected_blue");
+
+                  }
+              }
+
+          };
+      }
+  }
+
+}
+
+function updateJsonData(){
+  var recNamesBlueList=[]
+  var creditTable = document.getElementById("CreditTable")
+
+  // build list of all rec names that are marked to be saved
+  for(var i = 1; i < xlsTable.rows.length; i++)
+    for(var j = 0; j < xlsTable.rows[i].cells.length; j++)
+      if(j==15){
+        if (xlsTable.rows[i].cells[j].classList.item(0) == "selected_blue"){
+          recNamesBlueList.push(xlsTable.rows[i].cells[j].innerHTML);
+          recNamesBlueList.push(xlsTable.rows[i].cells[j].innerHTML.concat("__Exps"));
+        }
+      }
+      // //////////////////////////////////////////////////
+
+  console.log("blue names",recNamesBlueList)
+
+  // get string value fro textarea and convarte it to object
+  const CreditsInJsonStringFormat=document.getElementById("recList").value
+  creditJson=JSON.parse(CreditsInJsonStringFormat)
+  console.log("before update:",creditJson)
+  // ///////////////////////////////////////////////////////
+  for (let key in creditJson) {
+    let value = creditJson[key];
+    // console.log("key name:",key,value["Rec_Name"])
+    // if( (recNamesBlueList.indexOf(value["Rec_Name"]) != -1) || (recNamesBlueList.indexOf(value["Rec_Name"].concat("_Exps") != -1 ) ) )
+    // console.log("names to search in blue list:",value["Rec_Name"])
+    if( (recNamesBlueList.indexOf(value["Rec_Name"]) == -1) )
+    {
+      delete creditJson[key]
+      console.log ("key:",key)
+      console.log("names to search in blue list:",value["Rec_Name"])
+    }
+  }
+  console.log("after update:",creditJson)
+
+  document.getElementById("recList").value=JSON.stringify(creditJson)
+
+
+
+}
+</script>
+</html>
+
+
+  {% endblock %}

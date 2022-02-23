@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+{% load static%}
+<html>
+  <head>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <meta charset="utf-8">
+    <!-- load styling css file from static folder of django -->
+    <link rel="stylesheet" href="{%static "CSS/mycss.css" %}">
+    <title>Calcalut-Future Planning</title>
+    <!-- Latest compiled and minified CSS from bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
+
+  </head>
+  <style>
+      .myTd{
+        padding: 4px;
+
+      }
+        /* Button used to open the contact form - fixed at the bottom of the page */
+      .open-button {
+        background-color: #555;
+        color: white;
+        padding: 16px 20px;
+        border: none;
+        cursor: pointer;
+        opacity: 0.8;
+        /* position: fixed;
+        bottom: 23px;
+        right: 28px;
+        width: 280px; */
+      }
+
+      /* The popup form - hidden by default */
+      .form-popup {
+        display: none;
+        border: 3px solid #f1f1f1;
+        z-index: 9;
+
+      }
+
+      /* Add styles to the form container */
+      .form-container {
+        position: relative;
+        /* top: 0;
+        left: 0; */
+        /* max-width: 500px; */
+        padding: 10px;
+        background-color: lightblue;
+      }
+
+      /* tabs css */
+            /* Style tab links */
+            .tablink {
+              background-color: #555;
+              color: white;
+              float: left;
+              border: none;
+              outline: none;
+              cursor: pointer;
+              /* padding: 14px 16px; */
+              font-size: 17px;
+              width: 25%;
+            }
+
+            .tablink:hover {
+              background-color: #777;
+            }
+
+            /* Style the tab content (and add height:100% for full page content) */
+            .tabcontent {
+              color: gray;
+              display: none;
+              /* padding: 50px 15px;
+              height: 100%; */
+            }
+
+            #Event {background-color: #e8eded;}
+            #Actions {background-color: #e8eded;}
+            #Edit/Delete {background-color: #e8eded;}
+            #ActionsLog {background-color: #e8eded;}
+
+            .div_table_wrapper_actions{
+            overflow-x:auto;
+            max-height:100px;
+            }
+      /* XXXXXXX */
+
+
+  </style>
+
+  <body>
+      <nav class="navbar navbar-expand-sm navbar-light fixed-top "style="background-color: #e3f2fd;">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Calcalut</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+{#              <li  class="nav-item">#}
+{#                <a  style ="background-color:#ffffff;color:blue" class="nav-link active myFamilyColor" href="/select_family/"> Family Name : {%block test%}{%endblock%} </a>#}
+{#              </li>#}
+
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Home Page</a>
+
+              </li>
+              <li class="nav-item" id="new_reocrd_nav">
+                <a class="nav-link" href="/new_record/">New Record</a>
+              </li>
+              <li  class="nav-item" id="del_reocrd_nav">
+                <a  class="nav-link" href="/del_record/">del Record</a>
+              </li>
+              <li  class="nav-item" id="edit_reocrd_nav">
+                <a  class="nav-link" href="/edit_record/">edit Record</a>
+              </li>
+              <li  class="nav-item" id="new_event_nav">
+                <a  class="nav-link" href="/new_event/" target="_blank">new event</a>
+              </li>
+              <li  class="nav-item" id="load_excel">
+                <a  style='color: blue;' class="nav-link" href="/load_excel/" target="_blank">Load Bank Report</a>
+              </li>
+              <li  class="nav-item" id="load_excel">
+                <a  style='color: blue;' class="nav-link" href="/load_credit_xml/" target="_blank">Load Credit Report</a>
+              </li>
+
+
+
+            </ul>
+            <ul class="nav justify-content-end">
+              <!-- <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/select_family/">Select Family</a>
+              <li class="nav-item"> -->
+                <a class="nav-link active" aria-current="page" href="/registration/">Sign Up</a>
+              </li>
+              {% if user.is_authenticated %}
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout/">Log Out {{ user.username }}</a>
+
+                </li>
+
+              {% else %}
+                <li class="nav-item">
+                  <a class="nav-link" href="/login/">Log In</a>
+
+                </li>
+
+
+
+              {% endif %}
+                <li  class="nav-item">
+                  <h6  style ="background-color:#ffffff;color:blue" class="nav-link active myFamilyColor"> Family Name : {%block test%}{%endblock%} <h6>
+                </li>
+
+
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+    {% block body_block %}
+    {# Anything outside of this will be inherited if you use extend.#}
+    {% endblock %}

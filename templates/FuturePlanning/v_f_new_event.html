@@ -1,0 +1,2335 @@
+<!DOCTYPE html>
+{% extends "FuturePlanning/mybase.html" %}
+{%block test%}{{family}}{%endblock%}
+    {% block body_block%}
+
+    <!-- <div id="dataContainer" class="container-xxl" style="margin-top:60px; "> -->
+    <div id="dataContainer"   class="container-fluid" style="margin-top:80px;width:90%;">
+      <div id="dataRow" class="row">
+        <div id="tenSlotsData" class="col-lg-12 boxy" >
+          <div id="Family Info" class="row">
+            <div class="col-lg-12 boxy" >
+              <div >
+                  <h1 class="text-center" >תכנון ארוע עתידי</h1>
+                  <!-- <textarea id="jsonread" rows="4" cols="50"></textarea>
+                  <div>
+                  <form method="POST" class="mycrecord" enctype="multipart/form-data">
+                    {{ form.as_p }}
+                    {% csrf_token %}
+                    <input type="submit" id="jsonfileloaded" class='btn btn-primary' value="Submit">
+                  </form>
+                  </div> -->
+                  <button class="tablink" onclick="openPage('Event', this, 'gray')" id="defaultOpen">ארוע</button>
+                  <button class="tablink" onclick="openPage('Actions', this, 'gray')">הוסף פעולה</button>
+                  <button class="tablink" onclick="openPage('Edit/Delete', this, 'gray')">ערוך/מחק רשומה</button>
+                  <button class="tablink" onclick="openPage('ActionsLog', this, 'gray')">רשימת פעולות</button>
+
+                  <div id="Event" class="tabcontent" style="margin-top: 50px;">
+                    <div class="row">
+                        <div  class="col-lg-2 "  >
+                          <!-- <label class="badge bg-primary text-wrap" style="color:white;font-weight: bold;font-size :1em">Event Parameters:</label><br><br> -->
+
+                          <div class="form-floating mb-3" >
+                            <input type="text" class="form-control" id="ename" value="שם הארוע" >
+                            <label>שם</label>
+                          </div>
+                          <div class="form-floating mb-3" style="margin-top: 10px;">
+                            <input type="number" class="form-control" id="ecost" value=10000 onchange="periodChangeFunction()">
+                            <label>עלות</label>
+                          </div>
+                          <div class="form-floating ">
+                            <input type="date" class="form-control" id="selectedDate" onchange="SelectedDateChane()" value = "2020-07-01">
+                            <!-- value = "2020-07-01" -->
+                            <label>תאריך</label>
+                          </div>
+                          <!-- <label class="badge bg-primary text-wrap" style="color:white;font-weight: bold;font-size :0.9em">Target Achived</label>
+                          <label class="fs-4" id="progressBarTxt"></label><br>
+                          <progress  style="height:20px;width: 100%;" id="progressBar" max="100" value="0"></progress>
+                          <div class="text-center" >
+                            <label class="fs-8" id="progressBarTxt"></label>
+                          </div> -->
+                        </div>
+
+                        <div  class="col-lg-10 " >
+                          <!-- <label class="badge bg-primary text-wrap" style="color:white;font-weight: bold;font-size :1em">Status At Event Date:</label><br> -->
+                          <table  class="table table-striped table table-bordered" style="margin-top: 0px;">
+                            <tr>
+                              <!-- <th class="fs-6">Incomes</th> -->
+                              <!-- <th class="fs-6">Expanses</th> -->
+                              <th class="fs-6">יתרת עו"ש</th>
+                              <th class="fs-6">יכולת לקיחת הלוואה(חודש לאחר הארוע)</th>
+                              <th class="fs-6">חסכונות</th>
+                              <!-- <th class="fs-6">Loans</th> -->
+                              <th class="fs-6">מאזן הון</th>
+                              <!-- <th class="fs-6">Total</th> -->
+                            </tr>
+                            <tr>
+                              <!-- <td class="fs-6">Incomes</td> -->
+                              <!-- <td class="fs-6"><label id="InAtDate" style="color:black"></label><br></td> -->
+                              <!-- <td class="fs-6">  <label id="ExpansesAtDate" style="color:black"></label><br></td> -->
+                              <td class="fs-6 py-0">  <label id="BallanceAtDate" style="color:black;font-weight: bold"></label></td>
+                              <td class="fs-6 py-0"> <label id="SourceOfGrowthAtDate" style="color:black;font-weight: bold"></label> </td>
+                              <td class="fs-6 py-0"><label id="SavingsAtDate" style="color:black; font-weight: bold"></label></td>
+                              <!-- <td class="fs-6"><label id="LoansAtDate" style="color:black"></label> </td> -->
+                              <td class="fs-6 py-0">  <label id="HonBallanceAtDate" style="color:black;font-weight: bold"></label></td>
+                              <!-- <td class="fs-6"><label id="TotalHonAtDate" style="color:blue;font-weight: bold"></label> </td> -->
+                            </tr>
+                            <tr>
+                              <td py-0>
+                                <!-- <div class="form-floating mb-3 py-0"> -->
+                                  <!-- <input type="number" class="form-control" id="aDraw" value=0 onchange="EventPlanaingParamaterChange()"> -->
+                                  <label for="aDraw" class="fs-6" class="form-label">סכום משיכה מהעוש</label>
+                                  <input style = "background-color: white;width:auto" type="range" min="1" max="100000" value="0"  id="aDraw" onchange="EventPlanaingParamaterChange()">
+
+                                  <!-- <label class="fs-6">משיכה מהעו"ש</label> -->
+                                <!-- </div> -->
+                              </td>
+                              <td py-0>
+                                <!-- <div class="container"> -->
+                                  <div class="row">
+                                    <div class="col">
+                                      <div class="form-floating mb-3">
+                                        <input type="number" class="form-control" id="lDraw" value=0 onchange="EventPlanaingParamaterChange()">
+                                        <label class="fs-6">לקיחת הלוואה</label>
+                                      </div>
+                                    </div>
+                                    <div class="col">
+                                      <div class="form-floating mb-3">
+                                        <input type="number" class="form-control" id="lMonth" value=1 min="1" onchange="EventPlanaingParamaterChange()">
+                                        <label class="fs-6">תקופת בחודשים</label>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-6">
+                                      <div class="form-floating mb-3">
+                                        <input type="number" class="form-control" id="lDrawIntrest" value=0 onchange="EventPlanaingParamaterChange()">
+                                        <label class="fs-6">ריבית בשקלים</label>
+                                      </div>
+                                    </div>
+                                  </div>
+                                <!-- </div> -->
+                              </td>
+                              <td py-0>
+                                <div class="form-floating mb-3">
+                                  <!-- <input type="number" class="form-control" id="sDraw" value=0 onchange="EventPlanaingParamaterChange()"> -->
+                                  <select id="savingDrawSelect" class="form-select" aria-label="select saving" onchange="EventSavingRecChange()">
+                                  </select>
+                                  <label class="fs-6">בחר חיסכון למשוך</label>
+                                </div>
+                                  <div class="row">
+                                    <div class="col-4">
+                                      <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="sBallanceToDraw" value=0 min="0" disabled >
+                                        <label class="fs-6" >יתרת החיסכון</label>
+                                      </div>
+                                    </div>
+                                    <div class="col-5">
+                                      <div class="form-floating mb-3">
+                                        <input type="number" class="form-control" id="savingToDraw" value=0 min="0"  >
+                                        <label class="fs-6">סכום למשיכה</label>
+                                      </div>
+                                    </div>
+                                    <div class="col-1">
+                                      <button id="savingDrawButton" class="open-button" onclick="EventPlanaingParamaterChange()">אישור</button>
+                                    </div>
+
+                              </td>
+                              <td>
+                                <!-- <div class="form-floating mb-3">
+                                  <input type="number" class="form-control" id="TotalDraw" value=0 min="0" disabled >
+                                  <label class="fs-6">Total Draw</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                  <input type="number" class="form-control" id="StillNeedDraw" value=0 min="0" disabled >
+                                  <label class="fs-6">Still Missing</label>
+                                </div> -->
+                              </td>
+
+                            </tr>
+                            <tr>
+                              <td colspan="4">
+                                <div class="row">
+                                  <div class="col-3">
+                                      <div class="form-floating mb-3">
+                                        <input type="number" class="form-control" id="TotalDraw" value=0 min="0" disabled >
+                                        <label class="fs-6">סה"כ משיכה</label>
+                                      </div>
+                                  </div>
+                                  <div class="col-3">
+                                      <div class="form-floating mb-3">
+                                        <input type="number" class="form-control" id="StillNeedDraw" value=0 min="0" disabled >
+                                        <label class="fs-6">סכום שעדיין נדרש</label>
+                                      </div>
+                                  </div>
+                                  <div class="col-6">
+                                      <!-- <label class="badge bg-primary text-wrap" style="color:white;font-weight: bold;font-size :1em">Target Achived</label> -->
+                                      <label class="fs-5" id="progressBarTxt"></label><br>
+                                      <progress  style="height:40px;width: 100%;" id="progressBar" max="100" value="0"></progress>
+                                      <div class="text-center" >
+                                        <!-- <label class="fs-8" id="progressBarTxt"></label> -->
+                                      </div>
+                                  </div>
+
+
+                              </td>
+
+                            <tr>
+                              <td colspan="4">
+                                <div class="form-floating mb-3">
+                                  <!-- <input type="number" class="form-control" id="EventLimitControlLabel" value=0 min="0" disabled > -->
+                                  <label id="EventLimitCrossLabel" class="fs-6" style = "border: 0px solid green;  padding: 0px;  margin: 0px; color: red"></label>
+                                </div>
+                              </td>
+                            <tr>
+                          </table>
+                        </div>
+                    </div>
+
+                  </div>
+                  <div id="Actions" class="tabcontent">
+                    <!-- <label class="badge bg-primary text-wrap" style="color:yellow;font-weight: bold;font-size :1em">Add Record:</label><br><br> -->
+                      <br>  <br>  <br>
+                    <div class="row">
+                        <div class="col">
+                          <div class="form-floating mb-3" >
+                            <input type="text" class="form-control" id="rname" value="Record Name" >
+                            <label>Name:</label>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-floating  mb-3">
+                            <select id="rselect" class="form-control" >
+                              <h3 >
+                                <option value=1>"Income"</option>
+                                <option value=2>"Expanse"</option>
+                                <option value=3>"Saving"</option>
+                                <option value=4>"Loan"</option>
+                              </h3><br>
+                            </select><br>
+                            <label>Type:</label>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-floating mb-3" >
+                            <input type="date" class="form-control" id="rstartdate" value = "2020-07-01"  >
+                            <label>Start Date:</label>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-floating">
+                            <input type="date" class="form-control" id="renddate" value="2020-07-01" >
+                            <label>End Date:</label>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-floating mb-3" >
+                            <input type="number" class="form-control" id="rvalue" value=0 >
+                            <label>Value:</label>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-floating">
+                            <input type="number" class="form-control" id="rstartvalue" value=0 >
+                            <label>Start Value:</label>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="form-floating mb-3" >
+                            <input type="number" class="form-control" id="rrate" value=4>
+                            <label>Rate:</label>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <button class="open-button" onclick="addSimulatedRecord('FromAddAction')">Add Action</button>
+
+                        </div>
+                    </div>
+                    <!-- <label class="badge bg-primary text-wrap" style="color:yellow;font-weight: bold;font-size :1em">Add Action:</label><br><br> -->
+                  </div>
+
+                  <div id="Edit/Delete" class="tabcontent">
+                    <label class="badge bg-primary text-wrap" style="color:yellow;font-weight: bold;font-size :1em">Edit/Delete:</label><br><br>
+                    <dic class="row">
+                        <div class="col-8">
+                          <div class="form-floating">
+                            <select id="rselectdelete" class="form-select" aria-label="Floating label select example">
+                              <h3 >
+
+                              </h3>
+                            </select><br>
+                            <label for="floatingSelect">Select Record</label>
+                          </div>
+                        </div>
+                        <div class="col-2">
+                          <button style="color:white;width: 80%;" class="open-button" onclick="editRecord()" id="EditRecBut">Edit</button>
+                        </div>
+                        <div class="col-2">
+                          <button style="color:white;width: 80%;" class="open-button" onclick="deleteSimulatedRecord()" id="DeleteRecBut">Delete</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                      <div class="form-popup" id="myForm">
+                        <form  class="form-container">
+                          <div class="row">
+                            <div class="col">
+                              <div class="form-floating mb-3" >
+                                <p id="poprrecordtype" class="form-control"></p>
+                                <label>Record Type:</label>
+                              </div>
+                            </div>
+                            <div class="col">
+                              <div class="form-floating mb-3" >
+                                 <input type="date" class="form-control" id="poprstartdate" value = "2020-07-01">
+                                 <label>Start Date:</label>
+                              </div>
+                            </div>
+                            <div class="col">
+                              <div class="form-floating">
+                                <input type="date" class="form-control" id="poprenddate" value = "2020-07-01">
+                                <!-- <input class="form-control" type="text" id="poprenddate" ><br> -->
+                                <label>End Date:</label>
+
+                              </div>
+                            </div>
+                            <div class="col">
+                              <div class="form-floating mb-3" >
+                                <input type="number" class="form-control" id="poprvalue" value=0 >
+                                <label>Monthly Value:</label>
+                              </div>
+                            </div>
+                            <div class="col">
+                              <div class="form-floating">
+                                <input type="number" class="form-control" id="poprstartvalue" value=0 >
+                                <label>Start Value:</label>
+                              </div>
+                            </div>
+                            <div class="col">
+                              <div class="form-floating mb-3" >
+                                <input type="number" class="form-control" id="poprrate" value=4>
+                                <label>Rate:</label>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-1">
+                                <button style= " width:100%;" type="button" class="open-button" onclick="updateRecord()">Update</button>
+                            </div>
+                            <div class="col-1">
+                              <button style= " width:100%;" type="button" class="open-button" onclick="exitEdit()">Exit</button>
+                            </div>
+
+                          </div>
+
+                    </row>
+
+                  </div>
+
+                  <div id="ActionsLog" class="tabcontent">
+                    <label class="badge bg-primary text-wrap" style="color:white;font-weight: bold;font-size :1em">Actions taken to reach event cost</label><br><br>
+                    <div class="div_table_wrapper_actions">
+                        <table  id="ActionsTable" class="table table-striped" style="width:100%;height:auto"  >
+                          <!-- class="table table-striped" -->
+                          <!-- class="dataframe table table-striped table-bordered table-responsivek" -->
+                        </table>
+                    </div>
+
+                  </div>
+                  <!--  -->
+               </div>
+            </div>
+          </div>
+          <!-- XXXXXXXXXXXXEvent RowXXXXXXXXXXXXXX -->
+
+          <!-- XXXXXXXXXXXXXXXXXXXXXXXXXX -->
+          <!-- XXXXXXXXXXXXXXXXXXXXXX -->
+          <div id="Family Info" class="row">
+            <div class="col-lg-12 boxy" >
+              <div class="text-center">
+                <h3 style="display:inline;color:blue;">תקופה:</h3>
+                <select id="typeOfPeriods" onchange="periodChangeFunction()">
+                  <h3 >
+                    <option  selected value=1>חודש</option>
+                    <option   value=12>שנה</option>
+                  </h3>
+                </select>
+                <h3 style="display:inline;color:blue;">תקופות:</h3>
+                <select id="returns" onchange="periodChangeFunction()">
+                  <h3 >
+                    <option value=1>1</option>
+                    <option value=2>2</option>
+                    <option value=3>3</option>
+                    <option value=4>4</option>
+                    <option value=5>5</option>
+                    <option value=6>6</option>
+                    <option value=7>7</option>
+                    <option value=8>8</option>
+                    <option value=9>9</option>
+                    <option value=10>10</option>
+                    <option value=11>11</option>
+                    <option selected value=12>12</option>
+                    <option value=13>13</option>
+                    <option value=14>14</option>
+                    <option value=15>15</option>
+                    <option value=16>16</option>
+                    <option value=17>17</option>
+                    <option value=18>18</option>
+                    <option value=19>19</option>
+                    <option value=20>20</option>
+                    <option value=21>21</option>
+                    <option value=22>22</option>
+                    <option value=23>23</option>
+                    <option value=24>24</option>
+                  </h3>
+              </select>
+              <h3 style="display:inline;color:blue;">הכפלה:</h3>
+              <select id="periodSelect" onchange="periodChangeFunction()">
+                  <h3 >
+                    <option selected="selected" value=1>1</option>
+                    <option value=2>2</option>
+                    <option value=3>3</option>
+                    <option value=4>4</option>
+                    <option value=5>5</option>
+                    <option value=6>6</option>
+                    <option value=7>7</option>
+                    <option value=8>8</option>
+                    <option value=9>9</option>
+                    <option value=10>10</option>
+                    <option value=11>11</option>
+                    <option value=12>12</option>
+                  </h3>
+                </select>
+              <input type="checkbox" id="checkAlldata" value="all" onclick="allDataFunc()">
+              <h3 style="display:inline;color:green;">הכל</h3>
+               </div>
+            </div>
+          </div>
+          <div id="Charts" class="row">
+            <div  class="col-lg-12 boxy" >
+              <div class "row">
+                <!-- <div id="testreduce" style="max-width:1200px;max-height:400px;"></div> -->
+                <div id="bar_in_exp_Plot" style="max-width:50%;max-height:400px;float:left"></div>
+                <!-- <div id="test" style="max-width:1200px;max-height:400px;"></div> -->
+                <div id="bar_savings_loans" style="max-width:50%;max-height:400px;float:left"></div>
+              </div>
+
+
+
+            </div>
+          </div>
+          <!-- XXXXXXXXXXXXXXXXXXXXXX -->
+          <div id="inAndExpRow" class="row">
+            <div id="inTable" class="col-lg-6  boxy" >
+              <h2>Income Data Table</h2>
+              <select id="incomesRecords" onchange="incomesRecordsChangeFunction()">
+                  <h3 >
+                  </h3>
+              </select>
+              <p class="saverecdatacss" id="incomerecdata"></p>
+              <div id ="incomeselectchart" style="max-width:1200px;max-height:400px;"></div>
+
+              <div class="div_table_wrapper">
+                <table border="1" class="dataframe table table-striped table-bordered table-responsivek" id="tInTableJs">
+                </table>
+              </div>
+
+
+            </div>
+
+            <div id="expTable" class="col-lg-6   boxy" >
+              <h2>Expanse Data Table</h2>
+
+
+              <select id="expansesRecords" onchange="expansesRecordsChangeFunction()">
+                  <h3 >
+                  </h3>
+              </select>
+              <p class="saverecdatacss" id="expanserecdata"></p>
+              <div id ="expanseselectchart" style="max-width:1200px;max-height:400px;"></div>
+
+              <div class="div_table_wrapper">
+                <table border="1" class="dataframe table table-striped table-bordered table-responsivek" id="tExpTableJs">
+                </table>
+              </div>
+
+
+
+
+
+            </div>
+          </div>
+          <div id="Balance" class="row">
+            <div id="balanceTable" class="col-lg-12  boxy" >
+              <h2>Balance</h2>
+
+            </div>
+
+          </div>
+
+          <div id="savAndLoanRow" class="row">
+            <div id="saveTable" class="col-lg-6 boxy" >
+              <h2>Savings Data Table</h2>
+              <select id="savingsRecords" onchange="savingsRecordsChangeFunction()">
+                  <h3 >
+
+                  </h3>
+              </select>
+              <p class="saverecdatacss" id="recdata"></p>
+              <div id ="savingselectchart" style="max-width:1200px;max-height:400px;"></div>
+              <p></p>
+              <!-- <div class="div_table_wrapper">
+                {{SaveTable|safe}}
+              </div> -->
+              <div class="div_table_wrapper">
+                <table border="1" class="dataframe table table-striped table-bordered table-responsivek" id="tSaveTableJs">
+                </table>
+              </div>
+            </div>
+
+            <div id="loanTable" class="col-lg-6 boxy" >
+              <h2>Loans Data Table</h2>
+              <select id="loansRecords" onchange="loansRecordsChangeFunction()">
+                  <h3 >
+                  </h3>
+              </select>
+              <p class="saverecdatacss" id="loanrecdata"></p>
+              <div id ="loanselectchart" style="max-width:1200px;max-height:400px;"></div>
+              <p></p>
+              <!-- <div class="div_table_wrapper">
+                {{LoanTable|safe}}
+              </div> -->
+              <div class="div_table_wrapper">
+                <table border="1" class="dataframe table table-striped table-bordered table-responsivek" id="tLoanTableJs">
+                </table>
+              </div>
+            </div>
+
+          </div>
+          <!-- for space at bottom of page -->
+          <p></p>
+          <p></p>
+          <!-- *********** -->
+
+          <!-- *********** -->
+        </div>
+        <!-- <div id="twoSlotsData" class="col-lg-2 boxy" >
+            <p class="fs-6">Note: you are in planning event mode and all actions are not effecting family data base</p>
+        </div> -->
+      </div>
+    </div>
+    <!-- <form method="POST">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <input type="submit" value="Submit">
+    </form> -->
+
+
+
+
+
+
+
+<script>
+
+function EventPlanaingParamaterChange(){
+
+  var elem = event.target
+
+  if(elem.id == "aDraw" ){
+    addSimulatedRecord("FromEventBallanceDraw")
+  }
+  if(elem.id == "savingDrawButton" ){
+
+      addSimulatedRecord("FromEventSavingsDraw")
+  }
+  if(elem.id == "lDraw" || elem.id == "lMonth" || elem.id == "lDrawIntrest"){
+      // console.log("Take loan")
+      addSimulatedRecord("FromEventLoanDraw")
+  }
+
+
+
+  // console.log(document.getElementsByName("attribute.Identifier Source"))
+}
+
+
+
+
+// XXXXXXXXXXXXXXXXXXXXXXXXXX
+function openPage(pageName,elmnt,color) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].style.backgroundColor = "";
+  }
+  document.getElementById(pageName).style.display = "block";
+  // hide edit form if was not closed before while editing
+  document.getElementById("myForm").style.display = "none"
+  document.getElementById("rselectdelete").disabled = false
+
+  elmnt.style.backgroundColor = color;
+}
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
+// XXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+function editRecord() {
+
+  var select = document.getElementById('rselectdelete');
+
+  //search global sim records for the desired record to be edit
+  var found = -1;
+  for(var i=0; i<GlobalSimRecords.length; i++)
+  {
+    if(GlobalSimRecords[i].Rec_Name == select.options[select.selectedIndex].text)
+    {
+      // __FOUND is set to the index of the element
+      found = i;
+      break;
+    }
+  }
+
+  RecordToEdit = GlobalSimRecords.slice(i,i+1)
+  // console.log("can edit?:",RecordToEdit[0].Rec_Edit)
+  if(RecordToEdit[0].Rec_Edit == "1"){
+    document.getElementById("myForm").style.display = "block"
+    document.getElementById("rselectdelete").disabled = true
+
+  }
+  else{
+    confirm("cant edit event record, reload page");
+  }
+  document.getElementById("poprstartdate").value =FromMyDateFormatToJsDateFormat(RecordToEdit[0].Start_Date)
+  document.getElementById("poprenddate").value =FromMyDateFormatToJsDateFormat(RecordToEdit[0].End_Date)
+  document.getElementById("poprvalue").value =RecordToEdit[0].Value
+  document.getElementById("poprstartvalue").value =RecordToEdit[0].Start_Value
+  document.getElementById("poprrate").value =RecordToEdit[0].Rate
+  txtvalue=""
+  if (RecordToEdit[0].Rec_Type==1)
+  {
+    txtvalue ="In Come"
+  }
+  else {
+    {
+      if (RecordToEdit[0].Rec_Type==2)
+      {
+        txtvalue ="Expanses"
+      }
+      else{
+        if (RecordToEdit[0].Rec_Type==3)
+        {
+          txtvalue ="Saving"
+        }
+        else{
+          if (RecordToEdit[0].Rec_Type==4)
+          {
+            txtvalue ="Loan"
+          }
+        }
+      }
+    }
+  }
+  document.getElementById("poprrecordtype").innerHTML=txtvalue
+  // console.log("rec,type",RecordToEdit,RecordToEdit[0].Rec_Type)
+}
+
+function exitEdit() {
+  document.getElementById("myForm").style.display = "none";
+
+  // document.getElementById("EditRecBut").style.display="inline"
+  // document.getElementById("DeleteRecBut").style.display="inline"
+  // document.getElementById("EditRecBut").disabled = false
+  // document.getElementById("DeleteRecBut").disabled = false
+  document.getElementById("rselectdelete").disabled = false
+
+}
+
+function foundREcordInGlobalList(lv_name)
+{
+  //find index of record based on name in global sim rec list
+  var found = -1;
+  for(var i=0; i<GlobalSimRecords.length; i++)
+  {
+
+    // if(GlobalSimRecords[i].Rec_Name == document.getElementById("EditRecordname").innerHTML)
+    if(GlobalSimRecords[i].Rec_Name == lv_name)
+
+    {
+      // __FOUND is set to the index of the element
+      found = i;
+      break;
+    }
+  }
+  return found
+}
+
+function deleteREcordInGlobalList(index)
+{
+  // console.log("delete record",JSON.stringify(GlobalSimRecords))
+  GlobalSimRecords= GlobalSimRecords.slice(0,index).concat(GlobalSimRecords.slice(index+1,GlobalSimRecords.length));
+  // console.log("delete record after delete temp value",JSON.stringify(GlobalSimRecords))
+}
+
+function updateRecord()
+{
+
+  //find index of record based on name in global sim rec list
+  var foundRec = -1;
+  var foundExspanse = -1;
+  for(var i=0; i<GlobalSimRecords.length; i++)
+  {
+    // console.log("i,global_i_name,search_name",i,GlobalSimRecords[i].Rec_Name,document.getElementById("EditRecordname").innerHTML)
+    var RecordSelectDelete = document.getElementById('rselectdelete')
+
+    RecToFind=RecordSelectDelete.options[RecordSelectDelete.selectedIndex].text
+    RecstringLength=RecToFind.length
+
+    if(document.getElementById("poprrecordtype").innerHTML=="Saving"){
+      SubStringToSearchForExp=RecordSelectDelete.options[RecordSelectDelete.selectedIndex].text.substring(0,RecstringLength-9)
+    }else {
+      SubStringToSearchForExp=RecordSelectDelete.options[RecordSelectDelete.selectedIndex].text.substring(0,RecstringLength-7)
+    }
+
+    ExpRecToFInd=SubStringToSearchForExp.concat("_Expanse")
+
+    // console.log(RecToFind,ExpRecToFInd)
+
+    // if(GlobalSimRecords[i].Rec_Name == document.getElementById("EditRecordname").innerHTML)
+    // if(GlobalSimRecords[i].Rec_Name == RecordSelectDelete.options[RecordSelectDelete.selectedIndex].text)
+    if(GlobalSimRecords[i].Rec_Name == RecToFind)
+    {
+      // __FOUND is set to the index of the element
+      foundRec = i;
+      // break;
+    }
+    if(GlobalSimRecords[i].Rec_Name == ExpRecToFInd)
+    {
+      // __FOUND is set to the index of the element
+      foundExspanse = i;
+      // break;
+    }
+
+
+  }
+
+  console.log(foundRec,foundExspanse)
+
+  OriginalRecord = GlobalSimRecords.slice(foundRec,foundRec+1)
+
+  // console.log(i,OriginalRecord[0])
+
+  // build record from edit parameters
+  const NewSimRecord = {Rec_Type:     OriginalRecord[0].Rec_Type.toString(),
+                        // End_Date:     document.getElementById("poprenddate").value,
+                        End_Date:     getMyFormatDateFromJsDate(document.getElementById("poprenddate").value),
+                        // Start_Date:   document.getElementById("poprstartdate").value,
+                        Start_Date:   getMyFormatDateFromJsDate(document.getElementById("poprstartdate").value),
+                        Value:        parseFloat(document.getElementById("poprvalue").value),
+                        Start_Value:  parseFloat(document.getElementById("poprstartvalue").value) ,
+                        Rate:         parseFloat(document.getElementById("poprrate").value),
+                        Family_id:    OriginalRecord[0].Family_id,
+                        Rec_Name:     OriginalRecord[0].Rec_Name,
+                        Rec_Edit:     OriginalRecord[0].Rec_Edit
+                        };
+
+
+  // console.log("original list:",GlobalSimRecords)
+  GlobalSimRecords= GlobalSimRecords.slice(0,foundRec).concat(NewSimRecord).concat(GlobalSimRecords.slice(foundRec+1,GlobalSimRecords.length));
+  // console.log("updated list:",GlobalSimRecords)
+
+  if( foundExspanse != -1)
+  {
+
+    ExpOriginalRecord = GlobalSimRecords.slice(foundExspanse,foundExspanse+1)
+
+    // console.log(i,OriginalRecord[0])
+
+    // build record from edit parameters
+    const ExpNewSimRecord = {Rec_Type:     "2",
+                          // End_Date:     document.getElementById("poprenddate").value,
+                          End_Date:     getMyFormatDateFromJsDate(document.getElementById("poprenddate").value),
+                          // Start_Date:   document.getElementById("poprstartdate").value,
+                          Start_Date:   getMyFormatDateFromJsDate(document.getElementById("poprstartdate").value),
+                          Value:        parseFloat(document.getElementById("poprvalue").value),
+                          Start_Value:  parseFloat(document.getElementById("poprstartvalue").value) ,
+                          Rate:         parseFloat(document.getElementById("poprrate").value),
+                          Family_id:    ExpOriginalRecord[0].Family_id,
+                          Rec_Name:     ExpOriginalRecord[0].Rec_Name,
+                          Rec_Edit:     ExpOriginalRecord[0].Rec_Edit
+                          };
+
+
+    // console.log("original list:",GlobalSimRecords)
+    GlobalSimRecords= GlobalSimRecords.slice(0,foundExspanse).concat(ExpNewSimRecord).concat(GlobalSimRecords.slice(foundExspanse+1,GlobalSimRecords.length));
+    // console.log("updated list:",GlobalSimRecords)
+  }
+
+
+
+
+
+
+
+
+  document.getElementById("myForm").style.display = "none";
+
+  // document.getElementById("EditRecBut").style.display="inline"
+  // document.getElementById("DeleteRecBut").style.display="inline"
+  // document.getElementById("EditRecBut").disabled = false
+  // document.getElementById("DeleteRecBut").disabled = false
+  document.getElementById("rselectdelete").disabled = false
+
+  // set focus to Event tab
+  document.getElementById("defaultOpen").click();
+  periodChangeFunction()
+
+
+  //replace old record with updated record
+  // update UI
+
+}
+
+
+
+
+document.getElementById("new_reocrd_nav").style.display = "none"
+document.getElementById("del_reocrd_nav").style.display = "none"
+document.getElementById("edit_reocrd_nav").style.display = "none"
+document.getElementById("new_event_nav").style.display = "none"
+
+// data from the view for incomes records
+var IncomesRecordsList={{IncomesRecordList|safe}}
+var incomesRecordNumber=IncomesRecordsList.length
+
+// data from the view for expanses records
+var ExpansesRecordsList={{ExpansesRecordList|safe}}
+var expansesRecordNumber=ExpansesRecordsList.length
+
+// data from the view for savingd records
+var SavingsRecordsList={{SavingsRecordList|safe}}
+var savingsRecordNumber=SavingsRecordsList.length
+
+// data from the view for loans records
+var LoansRecordsList={{LoansRecordList|safe}}
+var loansRecordNumber=LoansRecordsList.length
+
+var GlobalX=[]
+var GlobalIncomes=[]
+var GlobalExpanses=[]
+var GlobalBallance=[]
+var GlobalSavings=[]
+var GlobalLoans=[]
+var GlobalHonBallance=[]
+var GlobalCounter=0
+var GlobalOldBalanceArray=[]
+var GlobalOldHonBalanceArray=[]
+
+var GlobalEventSavingSelectRecordEndDate
+var GlobalEventSavingSelectRecordRate
+
+
+var GlobalSimRecords=[]
+// console.log("clear list",GlobalSimRecords)
+function FromMyDateFormatToJsDateFormat(lv_date)
+{
+  // starting with 07 2020
+  myYear=lv_date.slice(3,7)
+  myMonth=lv_date.slice(0,2)
+  ReturnDate = myYear.concat("-",myMonth,"-","01")
+  return ReturnDate
+  // format starting with is: 2022-01-09
+}
+
+function getMyFormatDateFromJsDate(lv_jsDareFormat)
+{
+  SelectedDate = new Date(lv_jsDareFormat)
+  SelectedMonth =SelectedDate.getMonth()
+  SelectedMonth=SelectedMonth+1//function start january=0
+  SelectedYear = SelectedDate.getFullYear()
+  if (SelectedMonth<10)
+  {
+    SelectedMonthString = "0".concat(SelectedMonth.toString())
+  }
+    else
+        {
+          SelectedMonthString = SelectedMonth.toString()
+        }
+  lv_EventDateMyFormat = "".concat(SelectedMonthString," ",SelectedYear.toString())
+  return lv_EventDateMyFormat
+
+}
+
+function createDate(InDate, days, months, years) {
+
+        // console.log("InDate:",InDate)
+        var date = new Date(InDate);
+        // console.log("date:",InDate)
+        // console.log("days,months,years:","typeof:", days, months, years, typeof months,typeof days,typeof years)
+        date.setDate(date.getDate() + days);
+        // console.log("get date",date.getDate())
+        // console.log("final date:",date)
+        date.setMonth(date.getMonth() + months);
+        // console.log("final date:",date)
+        date.setFullYear(date.getFullYear() + years);
+        // console.log("final date:",date)
+        return date;
+}
+
+function addSimulatedRecord(lv_source)
+{
+  var ExpanseFlag=0
+  DateNow = Date.now();
+  DateNowString = DateNow.toString()
+
+  // console.log("add simulation start",JSON.stringify(GlobalSimRecords))
+
+  if(lv_source=="FromAddAction"){
+
+    ActionStartDate=getMyFormatDateFromJsDate(document.getElementById('rstartdate').value)
+
+    ActionEndDate=getMyFormatDateFromJsDate(document.getElementById('renddate').value)
+
+
+    lv_select = document.getElementById('rselect')
+    var SimRecordType = lv_select.value.toString()
+    SimRecordTypeTxt = lv_select.options[lv_select.value-1].text
+    var SimRecordName = document.getElementById('rname')
+    var SimName = document.getElementById('ename').value.concat("_").concat(SimRecordName.value.concat("_".concat(DateNowString,"_",SimRecordTypeTxt)))
+
+    var SimRecordValue =  parseInt(document.getElementById('rvalue').value)
+    var SimRecordStartValue =  parseInt(document.getElementById('rstartvalue').value)
+    var SimRecordRate =  parseInt(document.getElementById('rrate').value)
+    var SimRecordStartDate = ActionStartDate
+    var SimRecordEndDate = ActionEndDate
+    var SimCanEdit="1"
+
+    if(SimRecordType == "3" || SimRecordType == "4"){
+      ExpanseFlag=1
+      var ExpSimName = document.getElementById('ename').value.concat("_").concat(SimRecordName.value.concat("_".concat(DateNowString,"_","Expanse")))
+      var ExpSimRecordType = 2
+      var ExpSimRecordValue =  SimRecordValue
+      var ExpSimRecordStartValue =  SimRecordStartValue
+      var ExpSimRecordRate =  SimRecordRate
+      var ExpSimRecordStartDate = SimRecordStartDate
+      var ExpSimRecordEndDate = SimRecordEndDate
+      var SimCanEdit="1"
+    }
+    else{
+        ExpanseFlag=0
+    }
+
+
+  }
+
+  if(lv_source=="FromEventBallanceDraw" || lv_source=="FromEventLoanDraw" || lv_source=="FromEventSavingsDraw")
+  {
+    //check if event already got an id, if yes dont create new one
+    if(document.getElementById("ename").disabled != true)
+    {
+      // build SimName based on the input user wrote and id based on current time
+      var SimEventName = document.getElementById('ename').value.concat("_".concat(DateNowString))
+      document.getElementById("ename").value = SimEventName
+    }
+    else
+    {
+      SimEventName = document.getElementById("ename").value
+    }
+
+    // Get event date in my format
+
+    var EventDate = document.getElementById('selectedDate')
+
+    EventDateMyFormat=getMyFormatDateFromJsDate(EventDate.value)
+
+    var SimCanEdit="0"
+
+    // build record to add incase it was draw from ballance
+    if(lv_source=="FromEventBallanceDraw")
+    {
+      // console.log("add simulation if ball draw",JSON.stringify(GlobalSimRecords))
+      var SimName = SimEventName.concat("_BallanceDraw")
+      index= foundREcordInGlobalList(SimName)
+      // console.log("index:",index)
+      if ( index != -1)
+      {
+        // console.log("add simulation if found index before delete",JSON.stringify(GlobalSimRecords))
+        // console.log("call delete")
+        deleteREcordInGlobalList(index)
+        // console.log("add simulation if found index after delete",JSON.stringify(GlobalSimRecords))
+      }
+      var SimRecordType = "2"
+      var SimRecordValue = parseInt(document.getElementById('aDraw').value)
+      // var SimRecordValue = 9999
+      var SimRecordStartValue = 0
+      var SimRecordRate = 0
+      var SimRecordStartDate = EventDateMyFormat
+      var SimRecordEndDate = SimRecordStartDate
+      ExpanseFlag=0
+
+    }
+    if(lv_source=="FromEventLoanDraw")
+    {
+      // to calc end date from event date and number of month the user insert we need to:
+      var EventDate = document.getElementById('selectedDate')
+      // EventDate in format 2022-01-09
+      // for js date object we need the format yyyy,mm,dd
+      EventDateJsObjectFormated=EventDate.value.replace(/-/g,",")
+      ConvertEventDate = new Date(EventDateJsObjectFormated)
+      AddedDate=createDate(ConvertEventDate, 0, parseInt(document.getElementById('lMonth').value), 0)
+      PassToMyFunction=AddedDate.getFullYear().toString().concat("-",(AddedDate.getMonth()+1).toString(),"-","01")
+      EndDateMyFormat = getMyFormatDateFromJsDate(PassToMyFunction)
+      // prepare the exp start date that is 1 month less then the loan itself
+      AddedDate=createDate(ConvertEventDate, 0, parseInt(document.getElementById('lMonth').value-1), 0)
+      // console.log("prepare exp end date to trnsfer to my format",AddedDate.getFullYear().toString().concat("-",(AddedDate.getMonth()+1).toString(),"-","01"))
+      PassToMyFunctionExp=AddedDate.getFullYear().toString().concat("-",(AddedDate.getMonth()+1).toString(),"-","01")
+      EndDateMyFormatExp = getMyFormatDateFromJsDate(PassToMyFunctionExp)
+
+      // console.log("add simulation if ball draw",JSON.stringify(GlobalSimRecords))
+      var SimName = SimEventName.concat("_LoanDraw")
+      index= foundREcordInGlobalList(SimName)
+      // console.log("index:",index)
+      if ( index != -1)
+      {
+        deleteREcordInGlobalList(index)
+      }
+
+      var SimRecordType = "4"
+      var SimRecordValue = parseInt((parseInt(document.getElementById('lDraw').value) + parseInt(document.getElementById('lDrawIntrest').value))/document.getElementById('lMonth').value )
+      var SimRecordStartValue = 0
+      var SimRecordRate = 0
+      var SimRecordStartDate = EventDateMyFormat
+      var SimRecordEndDate = EndDateMyFormat
+
+      ExpanseFlag=1
+
+      var SimNameExp = SimEventName.concat("_LoanDrawExp")
+      index= foundREcordInGlobalList(SimNameExp)
+      // console.log("index:",index)
+      if ( index != -1)
+      {
+        deleteREcordInGlobalList(index)
+      }
+
+      var ExpSimName = SimNameExp
+      var ExpSimRecordType = 2
+      var ExpSimRecordValue =  SimRecordValue
+      var ExpSimRecordStartValue =  0
+      var ExpSimRecordRate =  0
+      var ExpSimRecordStartDate = SimRecordStartDate
+      var ExpSimRecordEndDate = EndDateMyFormatExp
+    }
+
+    if (lv_source == "FromEventSavingsDraw")
+    {
+      select=document.getElementById('savingDrawSelect')
+      selectValue= select.value
+      selectText = select.options[selectValue].text
+      var SimName = SimEventName.concat("_SavingDraw").concat("_",selectText)
+      index= foundREcordInGlobalList(SimName)
+      // console.log("index:",index)
+      if ( index != -1)
+      {
+        // console.log("add simulation if found index before delete",JSON.stringify(GlobalSimRecords))
+        // console.log("call delete")
+        deleteREcordInGlobalList(index)
+        // console.log("add simulation if found index after delete",JSON.stringify(GlobalSimRecords))
+      }
+
+      var SimRecordType = "3"
+      var SimRecordValue = 0
+      // var SimRecordValue = 9999
+      var SimRecordStartValue = -document.getElementById('savingToDraw').value
+      var SimRecordRate = GlobalEventSavingSelectRecordRate
+      var SimRecordStartDate = EventDateMyFormat
+      var SimRecordEndDate = GlobalEventSavingSelectRecordEndDate
+      ExpanseFlag=0
+
+    }
+
+
+
+
+    //after add records event_name cant be chaned any more
+    document.getElementById("ename").disabled = true;
+    document.getElementById("selectedDate").disabled = true;
+    document.getElementById("ecost").disabled = true;
+  }
+
+
+  const NewSimRecord = {Rec_Type:     SimRecordType,
+                        End_Date:     SimRecordEndDate,
+                        Start_Date:   SimRecordStartDate,
+                        Value:        SimRecordValue ,
+                        Start_Value:  SimRecordStartValue,
+                        Rate:         SimRecordRate,
+                        Family_id:    IncomesRecordsList[0].Family_id,
+                        Rec_Name:     SimName,
+                        Rec_Edit:     SimCanEdit
+                        };
+
+  // console.log("new rec:",NewSimRecord)
+  GlobalSimRecords.push(NewSimRecord)
+  // console.log(NewSimRecord)
+
+
+  if(ExpanseFlag==1){
+    const NewExpSimRecord = {
+                          Rec_Type:     ExpSimRecordType,
+                          End_Date:     ExpSimRecordEndDate,
+                          Start_Date:   ExpSimRecordStartDate,
+                          Value:        ExpSimRecordValue ,
+                          Start_Value:  ExpSimRecordStartValue,
+                          Rate:         ExpSimRecordRate,
+                          Family_id:    IncomesRecordsList[0].Family_id,
+                          Rec_Name:     ExpSimName,
+                          Rec_Edit:     "0"
+                          };
+    GlobalSimRecords.push(NewExpSimRecord)
+
+  }
+
+
+  //update select after add
+  var select = document.getElementById('rselectdelete');
+  select.innerHTML=""
+
+  var array_length=GlobalSimRecords.length
+  for (var i = 0; i<array_length; i++)
+  {
+    var opt = document.createElement('option');
+    opt.value = i.toString();
+    opt.innerHTML = GlobalSimRecords[i].Rec_Name;
+    select.appendChild(opt);
+  }
+
+  // update form field to post data to server
+  // document.getElementById('Records_List_Jason').value=JSON.stringify(GlobalSimRecords)
+
+  // set focus to Event tab
+  document.getElementById("defaultOpen").click();
+  periodChangeFunction()
+  // console.log("add simulation end",JSON.stringify(GlobalSimRecords))
+
+}
+
+function deleteSimulatedRecord(){
+
+  document.getElementById("myForm").style.display = "none";
+  var RecordSelectDelete = document.getElementById('rselectdelete')
+
+  var found = -1;
+  for(var i=0; i<GlobalSimRecords.length; i++)
+  {
+    if(GlobalSimRecords[i].Rec_Name == RecordSelectDelete.options[RecordSelectDelete.selectedIndex].text)
+    {
+      // __FOUND is set to the index of the element
+      found = i;
+      break;
+    }
+  }
+  RecordToDelete = GlobalSimRecords.slice(found,found+1)
+  ///////barak!!!!!!!!
+  if(RecordToDelete[0].Rec_Edit == "1"){
+    //delete element
+    GlobalSimRecords= GlobalSimRecords.slice(0,found).concat(GlobalSimRecords.slice(found+1,GlobalSimRecords.length));
+  }
+  else{
+    confirm("cant delete event record, reload page");
+  }
+
+  // //delete element
+  // GlobalSimRecords= GlobalSimRecords.slice(0,found).concat(GlobalSimRecords.slice(found+1,GlobalSimRecords.length));
+
+  //update select after delete
+  var select = document.getElementById('rselectdelete');
+  select.innerHTML=""
+  var array_length=GlobalSimRecords.length
+  for (var i = 0; i<array_length; i++)
+  {
+    var opt = document.createElement('option');
+    opt.value = i.toString();
+    opt.innerHTML = GlobalSimRecords[i].Rec_Name;
+    select.appendChild(opt);
+  }
+
+  periodChangeFunction()
+
+
+}
+function ChangeDateFormat(SelectedDate){
+  var retValue=""
+  // console.log("in date",SelectedDate)
+  SelectedMonth =SelectedDate.getMonth()
+  SelectedMonth=SelectedMonth+1//function start january=0
+  SelectedYear = SelectedDate.getFullYear()
+
+
+  if (SelectedMonth<10){
+    SelectedMonthString = "0".concat(SelectedMonth.toString())
+  }
+    else
+        {
+          SelectedMonthString = SelectedMonth.toString()
+        }
+
+  retValue = retValue.concat(SelectedYear.toString(),"-",SelectedMonthString)
+  // console.log("out date",retValue)
+  return retValue
+
+}
+function Verify2Digits(inString){
+
+  if (inString.length<2){
+    retValue = "0".concat(inString)
+  }
+  return retValue
+
+}
+// in summary area date is changed
+function findMinimum(lv_inArray)
+{
+  var al = lv_inArray.length;
+  minimum = +Infinity;
+  // console.log("before while:",al,lv_inArray)
+  for (i=0 ; i<al ; i=i+1){
+      // console.log("i: ",i,"minimum=:",minimum,"currentValue:",lv_inArray[i])
+      if(lv_inArray[i] < minimum){
+          minimum = lv_inArray[i]
+      }
+  }
+  return minimum
+}
+
+function SelectedDateChane(){
+
+  var DateToSearch=""
+
+  //take event date
+  var EventDate = document.getElementById('selectedDate')
+
+
+  SelectedDate = new Date(EventDate.value)
+  SelectedMonth =SelectedDate.getMonth()
+  SelectedMonth=SelectedMonth+1//function start january=0
+  SelectedYear = SelectedDate.getFullYear()
+
+
+  if (SelectedMonth<10){
+    SelectedMonthString = "0".concat(SelectedMonth.toString())
+  }
+    else
+        {
+          SelectedMonthString = SelectedMonth.toString()
+        }
+
+  if(EventDate.value==""){
+
+    date=new Date()
+    DateToSearch=ChangeDateFormat(date)
+    // console.log("first time date:",DateToSearch)
+    // set current date to the event date display at first time
+    year = date.getFullYear().toString()
+    month = (date.getMonth()+1).toString()
+    month=Verify2Digits(month)
+    day =date.getDate().toString()
+    day=Verify2Digits(day)
+    // console.log("update date ui:",year.concat("-").concat(month).concat("-").concat(day))
+    EventDate.value= year.concat("-").concat(month).concat("-").concat(day)
+  }
+  else{
+    DateToSearch = DateToSearch.concat(SelectedYear.toString(),"-",SelectedMonthString)
+  }
+
+
+
+  // find index of selected date
+  for (j = 0; j <= GlobalX.length; j=j+1)
+  {
+
+    if(GlobalX[j]==DateToSearch)
+
+    {
+        // console.log(GlobalX[j],DateToSearch,j)
+        break
+    }
+  }
+
+  // document.getElementById('InAtDate').innerHTML=GlobalIncomes[j]
+  // document.getElementById('ExpansesAtDate').innerHTML=GlobalExpanses[j]
+  document.getElementById('BallanceAtDate').innerHTML=GlobalBallance[j]
+  document.getElementById('SourceOfGrowthAtDate').innerHTML=GlobalIncomes[j+1]-GlobalExpanses[j+1]
+
+
+  document.getElementById('SavingsAtDate').innerHTML=GlobalSavings[j]
+  // document.getElementById('LoansAtDate').innerHTML=GlobalLoans[j]
+  document.getElementById('HonBallanceAtDate').innerHTML=GlobalHonBallance[j]
+  // document.getElementById('TotalHonAtDate').innerHTML=GlobalBallance[j]+GlobalHonBallance[j]
+
+  EventCost = document.getElementById("ecost").value
+
+  // calc progrees bar
+  aDrawToTotal = parseInt(document.getElementById('aDraw').value)
+  lDrawToTotal = parseInt(document.getElementById('lDraw').value)
+  sDrawToTotal = parseInt(document.getElementById('savingToDraw').value)
+
+  TotalDrawForEvent = aDrawToTotal+lDrawToTotal+sDrawToTotal
+  document.getElementById('TotalDraw').value = TotalDrawForEvent
+
+  StillMissing=EventCost-TotalDrawForEvent
+  document.getElementById('StillNeedDraw').value=StillMissing
+
+
+  // console.log("min:",findMinimum(GlobalBallance).toString)
+  // console.log("min:",findMinimum(GlobalBallance))
+
+  var TXT=""
+  for (j = 0; j < GlobalBallance.length-1; j=j+1)
+  {
+
+    if(GlobalBallance[j]<0)
+    {
+
+      TXT = "יתרת עוש ב: "  +GlobalX[j] + " היא: " + GlobalBallance[j].toString()+", יתרה שלילית מקסימלית: "+ findMinimum(GlobalBallance)
+      break
+
+    }
+  }
+
+  var HONTEXT=""
+  for (j = 0; j < GlobalHonBallance.length-1; j=j+1)
+  {
+
+    if(GlobalHonBallance[j]<0)
+    {
+
+      HONTEXT ="<span style='color: blue;'>"+ "   יתרת הון ב: " +GlobalX[j] + " היא: " + GlobalHonBallance[j].toString()+", יתרת הון שלילית מקסימלית: "+ findMinimum(GlobalHonBallance)
+      break
+
+    }
+  }
+
+  // console.log("hinb:",HONTEXT, typeof HONTEXT)
+  document.getElementById('EventLimitCrossLabel').innerHTML = TXT.concat(HONTEXT)
+
+
+  progress = TotalDrawForEvent/EventCost*100
+  progress = Math.round( progress )
+  progressString=progress.toString()
+
+  document.getElementById('progressBarTxt').innerHTML=progressString.concat("%")
+  document.getElementById('progressBar').value=progress
+
+  EventSavingRecChange()
+  //
+
+}
+
+function BuildSelectsNamesList(){
+
+  // get names of incomes records
+  // console.log("bug:",GlobalSimRecords)
+  SimRecordsIn=filterRecordsListByType(GlobalSimRecords,"1")
+  JoinedArrayOfIncomesRecords=IncomesRecordsList.concat(SimRecordsIn)
+
+  var incomesRecordsNames = []
+    for (var i = 0; i<JoinedArrayOfIncomesRecords.length; i++)
+      incomesRecordsNames.push(JoinedArrayOfIncomesRecords[i].Rec_Name);
+
+  // inserts incomes record names into list of select
+  var select = document.getElementById('incomesRecords');
+  select.innerHTML=""
+
+  var array_length=incomesRecordsNames.length
+  for (var i = 0; i<array_length; i++)
+  {
+    var opt = document.createElement('option');
+    opt.value = i.toString();
+    opt.innerHTML = incomesRecordsNames[i];
+    select.appendChild(opt);
+  }
+
+
+  // get names of expanses records
+  SimRecordsExp=filterRecordsListByType(GlobalSimRecords,"2")
+  JoinedArrayOfExpansesRecords=ExpansesRecordsList.concat(SimRecordsExp)
+
+  var expansesRecordsNames = []
+  for (var i = 0; i<JoinedArrayOfExpansesRecords.length; i++)
+    expansesRecordsNames.push(JoinedArrayOfExpansesRecords[i].Rec_Name);
+
+  // inserts expanse record names into list of select
+  var select = document.getElementById('expansesRecords');
+  select.innerHTML=""
+  var array_length=expansesRecordsNames.length
+  for (var i = 0; i<array_length; i++)
+  {
+    var opt = document.createElement('option');
+    opt.value = i.toString();
+    opt.innerHTML = expansesRecordsNames[i];
+    select.appendChild(opt);
+  }
+
+  // get names of savings records
+
+  SimRecordsSavings=filterRecordsListByType(GlobalSimRecords,"3")
+  JoinedArrayOfSavingsRecords=SavingsRecordsList.concat(SimRecordsSavings)
+
+  var savingsRecordsNames = []
+  for (var i = 0; i<JoinedArrayOfSavingsRecords.length; i++)
+    savingsRecordsNames.push(JoinedArrayOfSavingsRecords[i].Rec_Name);
+
+  // inserts savings record names into list of select
+  var select = document.getElementById('savingsRecords');
+  select.innerHTML=""
+  var array_length=savingsRecordsNames.length
+  for (var i = 0; i<array_length; i++)
+  {
+    var opt = document.createElement('option');
+    opt.value = i.toString();
+    opt.innerHTML = savingsRecordsNames[i];
+    select.appendChild(opt);
+  }
+
+  //copy list to event saving draw list
+  document.getElementById("savingDrawSelect").innerHTML=document.getElementById("savingsRecords").innerHTML;
+
+
+  // sel=document.getElementById("savingDrawSelect")
+  // EventDrawSavingName = sel.options[sel.selectedIndex].text
+  //
+  // //search in saving list the selected saving in event
+  // var found = -1;
+  // for(var i=0; i<JoinedArrayOfSavingsRecords.length; i++)
+  // {
+  //
+  //   // if(GlobalSimRecords[i].Rec_Name == document.getElementById("EditRecordname").innerHTML)
+  //   if(JoinedArrayOfSavingsRecords[i].Rec_Name == EventDrawSavingName)
+  //
+  //   {
+  //     // __FOUND is set to the index of the element
+  //     found = i;
+  //     //update saving ballance at event alread
+  //     document.getElementById("sBallanceToDraw").value = JoinedArrayOfSavingsRecords[i].Value
+  //     break;
+  //   }
+  // }
+
+  // get names of loans records
+
+  SimRecordsLoans=filterRecordsListByType(GlobalSimRecords,"4")
+  JoinedArrayOfLoansRecords=LoansRecordsList.concat(SimRecordsLoans)
+
+  var loansRecordsNames = []
+  for (var i = 0; i<JoinedArrayOfLoansRecords.length; i++)
+    loansRecordsNames.push(JoinedArrayOfLoansRecords[i].Rec_Name);
+
+  // inserts loans record names into list of select
+  var select = document.getElementById('loansRecords');
+  select.innerHTML=""
+  var array_length=loansRecordsNames.length
+  for (var i = 0; i<array_length; i++)
+  {
+    var opt = document.createElement('option');
+    opt.value = i.toString();
+    opt.innerHTML = loansRecordsNames[i];
+    select.appendChild(opt);
+  }
+
+
+
+
+}
+
+function EventSavingRecChange(){
+
+  var xArray ={{IncomeXAxies|safe}}
+
+
+  // saving table id
+  var myTab = document.getElementById("tSaveTableJs");
+  // saving select id
+  var select = document.getElementById("savingDrawSelect");
+  // current select value
+  var selectValue=select.value
+
+  // LOOP THROUGH EACH ROW OF THE TABLE AFTER HEADER.
+  // and stop when the name of the raw same as name of the select.
+  // Y axis data is in rawdata list
+
+  for (i = 1; i < myTab.rows.length; i++)
+   {
+            // console.log("1",myTab.rows.item(i))
+            var rawdata = []
+            // GET THE CELLS COLLECTION OF THE CURRENT ROW.
+            var objCells = myTab.rows.item(i).cells;
+            // LOOP THROUGH EACH CELL OF THE CURENT ROW TO READ CELL VALUES.
+            for (var j = 0; j < objCells.length; j++) {
+                rawdata.push(parseInt(objCells.item(j).innerHTML))
+            }
+
+            recName=myTab.rows.item(i).cells.item(0).innerHTML
+            rawdata.shift()
+
+
+            if (recName == select.options[selectValue].text)
+            {
+              break;
+            }
+   }
+
+   SimRecordsSavings=filterRecordsListByType(GlobalSimRecords,"3")
+   JoinedArrayOfSavingsRecords=SavingsRecordsList.concat(SimRecordsSavings)
+
+   for (var j = 0; j < JoinedArrayOfSavingsRecords.length; j++) {
+      if (JoinedArrayOfSavingsRecords[j].Rec_Name == recName)
+      {
+        GlobalEventSavingSelectRecordEndDate= JoinedArrayOfSavingsRecords[j].End_Date
+        GlobalEventSavingSelectRecordRate =JoinedArrayOfSavingsRecords[j].Rate
+        break
+        // console.log("date:",GlobalEventSavingSelectRecordEndDate,"Rate:",GlobalEventSavingSelectRecordRate)
+      }
+   }
+
+
+   // console.log("recname:",recName,"rawdata:",rawdata)
+
+   var DateToSearch=""
+    //take event date
+   var EventDate = document.getElementById('selectedDate')
+   SelectedDate = new Date(EventDate.value)
+   SelectedMonth =SelectedDate.getMonth()
+   SelectedMonth=SelectedMonth+1//function start january=0
+   SelectedYear = SelectedDate.getFullYear()
+   if (SelectedMonth<10){
+     SelectedMonthString = "0".concat(SelectedMonth.toString())
+   }
+     else
+         {
+           SelectedMonthString = SelectedMonth.toString()
+         }
+   if(EventDate.value==""){
+
+     date=new Date()
+     DateToSearch=ChangeDateFormat(date)
+     // console.log("first time date:",DateToSearch)
+     // set current date to the event date display at first time
+     year = date.getFullYear().toString()
+     month = (date.getMonth()+1).toString()
+     month=Verify2Digits(month)
+     day =date.getDate().toString()
+     day=Verify2Digits(day)
+     // console.log("update date ui:",year.concat("-").concat(month).concat("-").concat(day))
+     EventDate.value= year.concat("-").concat(month).concat("-").concat(day)
+   }
+   else{
+     DateToSearch = DateToSearch.concat(SelectedYear.toString(),"-",SelectedMonthString)
+   }
+   // find index of selected date
+   for (j = 0; j <= GlobalX.length; j=j+1)
+   {
+
+     if(GlobalX[j]==DateToSearch)
+
+     {
+         // console.log(GlobalX[j],DateToSearch,j)
+         break
+     }
+   }
+   // console.log("index find:",j,"saving at date:",rawdata[j])
+   document.getElementById('sBallanceToDraw').value = rawdata[j]
+   // To DO : get evend date and searc in X array for inAndExpRow
+   // get the saving ballance at date inAndExpRow
+   //update ui with the ballance.
+
+   // trigger the rec add
+   // addSimulatedRecord("FromEventSavingsDraw")
+   // document.getElementById('savingToDraw').value = 0
+
+}
+
+
+//call function on change of income select to display the selected record
+function incomesRecordsChangeFunction(){
+
+    SimRecordsIn=filterRecordsListByType(GlobalSimRecords,"1")
+    JoinedArrayOfIncomesRecords=IncomesRecordsList.concat(SimRecordsIn)
+
+    generalRecordsChangeFunction("tInTableJs","incomesRecords",JoinedArrayOfIncomesRecords,"incomeselectchart","incomerecdata")
+}
+
+//call function on change of expanse  select to display the selected record
+function expansesRecordsChangeFunction(){
+
+    SimRecordsExp=filterRecordsListByType(GlobalSimRecords,"2")
+    JoinedArrayOfIncomesRecords=ExpansesRecordsList.concat(SimRecordsExp)
+
+    generalRecordsChangeFunction("tExpTableJs","expansesRecords",JoinedArrayOfIncomesRecords,"expanseselectchart","expanserecdata")
+}
+
+//call function on change of saving select to display the selected record
+function savingsRecordsChangeFunction(){
+    SimRecordsSavings=filterRecordsListByType(GlobalSimRecords,"3")
+    JoinedArrayOfSavingsRecords=SavingsRecordsList.concat(SimRecordsSavings)
+
+    generalRecordsChangeFunction("tSaveTableJs","savingsRecords",JoinedArrayOfSavingsRecords,"savingselectchart","recdata")
+}
+
+//call function on change of loan select to display the selected record
+function loansRecordsChangeFunction(){
+    SimRecordsLoans=filterRecordsListByType(GlobalSimRecords,"4")
+    JoinedArrayOfLoansRecords=LoansRecordsList.concat(SimRecordsLoans)
+    generalRecordsChangeFunction("tLoanTableJs","loansRecords",JoinedArrayOfLoansRecords,"loanselectchart","loanrecdata")
+}
+
+// function to catch select saving record change event to update to the selected record
+function generalRecordsChangeFunction(lv_Table,lv_Records,lv_RecordsList,lv_selectchart,lv_recdata){
+
+  // console.log("run general",lv_Table,lv_Records,lv_RecordsList,lv_selectchart,lv_recdata)
+  // build x axies of the graph
+  // all x axies are the same. income here can be any other
+  var xArray ={{IncomeXAxies|safe}}
+  // saving table id
+  var myTab = document.getElementById(lv_Table);
+  // saving select id
+  var select = document.getElementById(lv_Records);
+  // current select value
+  var selectValue=select.value
+
+  // LOOP THROUGH EACH ROW OF THE TABLE AFTER HEADER.
+  // and stop when the name of the raw same as name of the select.
+  // Y axis data is in rawdata list
+
+  for (i = 1; i < myTab.rows.length; i++)
+   {
+            // console.log("1",myTab.rows.item(i))
+            var rawdata = []
+            // GET THE CELLS COLLECTION OF THE CURRENT ROW.
+            var objCells = myTab.rows.item(i).cells;
+            // LOOP THROUGH EACH CELL OF THE CURENT ROW TO READ CELL VALUES.
+            for (var j = 0; j < objCells.length; j++) {
+                rawdata.push(parseInt(objCells.item(j).innerHTML))
+            }
+
+            recName=myTab.rows.item(i).cells.item(0).innerHTML
+            rawdata.shift()
+
+
+            if (recName == select.options[selectValue].text)
+            {
+
+              break;
+            }
+   }
+
+
+   // update rec data under the select
+   for (var j = 0; j < lv_RecordsList.length; j++) {
+      if (lv_RecordsList[j].Rec_Name == recName)
+      {
+        // if loan then dont need the rate and start value to display
+        if(lv_RecordsList[j].Rec_Type == "4" || lv_RecordsList[j].Rec_Type == "1"  || lv_RecordsList[j].Rec_Type == "2")
+        {
+          // document.getElementById('recdata').innerHTML="".concat("Start Date: <em>"" lv_RecordsList[j].Start_Date </em>"
+          document.getElementById(lv_recdata).innerHTML="".concat("<em>","start date: ","</em>",lv_RecordsList[j].Start_Date,"<em>"," end Date: ","</em>",lv_RecordsList[j].End_Date,"<em>"," Value: ","</em>",lv_RecordsList[j].Value,"<em>")
+        }
+        else{
+            // document.getElementById('recdata').innerHTML="".concat("Start Date: <em>"" lv_RecordsList[j].Start_Date </em>"
+            document.getElementById(lv_recdata).innerHTML="".concat("<em>","start date: ","</em>",lv_RecordsList[j].Start_Date,"<em>"," end Date: ","</em>",lv_RecordsList[j].End_Date,"<em>"," Value: ","</em>",lv_RecordsList[j].Value,"<em>"," Rate: ","</em>",lv_RecordsList[j].Rate,
+            "<em>"," Start Value: ","</em>",lv_RecordsList[j].Start_Value)
+        }
+
+
+        break;
+      }
+    }
+
+   var trace1 ={
+            x: xArray,
+            y: rawdata,
+            marker: {color: 'blue'},
+            type: 'scatter',
+            name:select.options[selectValue].text
+    }
+
+   var layout ={
+      xaxis: {autorange: true,title: "Date"},
+      yaxis: {autorange: true,title: "Value"},
+      title: select.options[selectValue].text,
+      // plot_bgcolor:"black",
+      paper_bgcolor:"#f4fce3",
+      width: 500,
+      height: 250,
+        margin: {
+          l: 50,
+          r: 50,
+          b: 40,
+          t: 80,
+          pad: 2
+        },
+
+    }
+    // var data =[trace1,trace2,trace3,trace4,layout]
+   var data =[trace1]
+
+   Plotly.newPlot(lv_selectchart,data,layout);
+}
+
+
+function allDataFunc() {
+
+  var checkBox = document.getElementById("checkAlldata");
+  if (checkBox.checked == true){
+    document.getElementById("periodSelect").disabled=true
+    document.getElementById("typeOfPeriods").disabled=true
+    document.getElementById("returns").disabled=true
+    periodChangeFunction()
+  }else{
+    document.getElementById("periodSelect").disabled=false
+    document.getElementById("typeOfPeriods").disabled=false
+    document.getElementById("returns").disabled=false
+  }
+}
+
+function monthDiff(dateFrom, dateTo) {
+ return dateTo.getMonth() - dateFrom.getMonth() +
+   (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
+}
+
+
+// build table using **js/////////////////////////////////
+function buildTableAndTotal(lv_Table_Name,lv_X_Array,lv_Record_List,lv_Records_Type)
+{//line 1
+
+  var table = document.getElementById(lv_Table_Name);
+  table.innerHTML=""
+  var row = table.insertRow(0);
+  var cell1 = row.insertCell(0);
+  cell1.innerHTML = "";
+  // fill in the first raw with the X aaies from view with values(month of the simulation)
+  for (i = 1; i <= lv_X_Array.length; i=i+1)
+  {//line 3
+    cell = row.insertCell(i);
+    cell.innerHTML = lv_X_Array[i-1]
+  }//\\line 3
+
+  // build raw based on records list from the view
+  for (i=0;i<lv_Record_List.length;i=i+1)
+  {//line 3
+      // insert into first cell of the raw the record name
+      row = table.insertRow(i+1);
+      cell = row.insertCell(0);
+      cell.innerHTML = lv_Record_List[i]['Rec_Name']
+      // console.log("name:",lv_Record_List[i]['Rec_Name'])
+      FromSettingsStartDayArray=lv_X_Array[0].split("-")
+      temp=FromSettingsStartDayArray[0]
+      FromSettingsStartDayArray[0]=FromSettingsStartDayArray[1]
+      FromSettingsStartDayArray[1]=temp
+
+
+
+      // get start and end date of the record
+      startDateArr=FromSettingsStartDayArray
+      // startDateArr = lv_Record_List[i]['Start_Date'].split(" ");
+      StartDateJsFormat=startDateArr[1]+"-"+startDateArr[0]+"-"+"01"
+      recStartDate = new Date(StartDateJsFormat)
+      endDateArr = lv_Record_List[i]['End_Date'].split(" ");
+      EndDateJsFormat=endDateArr[1]+"-"+endDateArr[0]+"-"+"01"
+      recEndDate = new Date(EndDateJsFormat)
+      recLongInMonth=monthDiff(recStartDate, recEndDate)
+
+      flag=0
+      prev=0
+      //insert values to the raw cells
+      for (j = 1; j <= lv_X_Array.length; j=j+1)
+      {//line 7
+
+        //get cell date of the raw
+        cellDate=(table.rows[0].cells[j].innerHTML);
+        cellDateArr = cellDate.split("-");
+        CellDateJsFormat=cellDateArr[0]+"-"+cellDateArr[1]+"-"+"01"
+        cellDate = new Date(CellDateJsFormat)
+        cell = row.insertCell(j);
+        // check if date of the cell is in the record dates
+        if((cellDate>=recStartDate)&&(cellDate<=recEndDate))
+        {//line 9
+          //check if the record is save or loan, In and Exp takes values
+          // in oppose to save and loan that calc intrest
+          if (lv_Records_Type == "Savings" || lv_Records_Type == "Loans")
+          {//line 11
+                  if(lv_Records_Type == "Savings")
+                  {//line 19
+                      if (flag==0)
+                      {//line 23
+                         prev=lv_Record_List[i]['Value']+lv_Record_List[i]['Start_Value']
+                         cell.innerHTML= prev
+                         flag=1
+                      }//\\line 23
+                      else
+                          {//line 27
+                            current=prev*(1+lv_Record_List[i]['Rate']/12/100)+Math.round(lv_Record_List[i]['Value'])
+                            cell.innerHTML= Math.round(current)
+                            prev=current
+                          }//l\\ine 27
+                  }//line 19
+                  else
+                      {//line 23
+                        if(lv_Records_Type == "Loans")
+                        {//line 25
+                          if (flag==0)
+                          {//line 23
+                             prev=lv_Record_List[i]['Value']*recLongInMonth
+                             // console.log("value,length,prev:",lv_Record_List[i]['Value'],recLongInMonth,prev)
+                             // console.log("value,long",lv_Record_List[i]['Value'],recLongInMonth)
+                             cell.innerHTML= prev
+                             flag=1
+                          }
+                          else
+                          {
+                            current=prev-lv_Record_List[i]['Value']
+                            // console.log("value,current:",lv_Record_List[i]['Value'],current)
+                            cell.innerHTML= Math.round(current)
+                            prev=current
+                          }//\\line 23
+
+                        }//\\line 25
+                        else
+                            {//line 29
+                              cell.innerHTML= Math.round(-9)
+                            }//\\line 29
+                      }//\\line 23
+          }//\\line 11
+          else
+              {//line 15
+                cell.innerHTML = Math.round(lv_Record_List[i]['Value'])
+              }//\\line 15
+        }//\\line 9
+        else
+            {//line 13
+              if (lv_Records_Type == "Savings")
+              {//line 15
+                current=prev*(1+lv_Record_List[i]['Rate']/12/100)
+                cell.innerHTML= Math.round(current)
+                prev=current
+              }//\\line 15
+              else
+                  {//line 19
+                    if (lv_Records_Type == "Loans")
+                    {//line 21
+                      cell.innerHTML= Math.round(0)
+                    }//\\line 21
+                    else
+                        {//line 25
+                          cell.innerHTML = '0'
+                        }//\\line 25
+                  }//\\line 19
+            }//\\line 13
+      }//\\line 7
+    }//\\line 3
+
+    //calculate the total raw.
+    row = table.insertRow(lv_Record_List.length+1);
+    cell = row.insertCell(0);
+    cell.innerHTML = "Total"
+
+    for (i=1;i<=lv_X_Array.length;i=i+1)
+    {
+      cell = row.insertCell(i);
+      sum=0
+      for (j=1;j<lv_Record_List.length+1;j=j+1)
+      {
+        // console.log(table.rows[j].cells[i].innerHTML)
+        val = parseInt(table.rows[j].cells[i].innerHTML)
+        sum = sum+val
+        cell.innerHTML = sum
+      }
+    }
+
+    totalRow = table.rows[lv_Record_List.length+1]
+    var yArrayJsTable=[]
+    for (i = 1; i <= lv_X_Array.length; i=i+1)
+    {
+      intValue=parseInt(totalRow.cells[i].innerHTML)
+      yArrayJsTable.push(intValue)
+    }
+    return yArrayJsTable
+
+}
+function filterRecordsListByType(l_in_list,type)
+{
+    // console.log("filter:",l_in_list)
+    resList=[]
+    if(l_in_list.length != 0)
+    {
+      for(i = 0;i<l_in_list.length;i++)
+      {
+        // console.log("if:",l_in_list[i].Rec_Type.toString(), type)
+        if(l_in_list[i].Rec_Type.toString() == type)
+          resList.push(l_in_list[i])
+      }
+    }
+
+    return resList
+
+}
+//////////////////////////////////////////////////////////
+function UpdateActionTable()
+{
+  // Find a <table> element with id="ActionsTable":
+  var table = document.getElementById("ActionsTable");
+  table.innerHTML=""
+  // console.log("global rec sim",GlobalSimRecords)
+  for(var i=0; i<GlobalSimRecords.length; i++)
+  {
+    // Create an empty <tr> element and add it to the 1st position of the table:
+    var row = table.insertRow(i);
+
+    // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+    var cell1 = row.insertCell(0);
+
+    cell1.style.fontSize = "1em"
+    // Add some text to the new cells:
+    if ( GlobalSimRecords[i].Rec_Type == 1){
+
+      nameTxt= "At ".concat("<span style='color: blue;'>").concat("'",GlobalSimRecords[i].Rec_Name,"'").concat("</span>")
+      valuetxt= "<span style='font-weight: bold;'>".concat(GlobalSimRecords[i].Value).concat("</span>")
+      StartDateTxt = "<span style='font-weight: bold;'>".concat(GlobalSimRecords[i].Start_Date).concat("</span>")
+      EndDateTxt = "<span style='font-weight: bold;'>".concat(GlobalSimRecords[i].End_Date).concat("</span>")
+      cell1.innerHTML = nameTxt.concat(" Increase Incomes by ").concat(valuetxt).concat(" NILS each month").concat(" from ").concat(StartDateTxt).concat(" to ").concat(EndDateTxt)
+
+    }
+    if (GlobalSimRecords[i].Rec_Type == 2 && GlobalSimRecords[i].Value >=0){
+
+      nameTxt= "At ".concat("<span style='color: blue;'>").concat("'",GlobalSimRecords[i].Rec_Name,"'").concat("</span>")
+      valuetxt= "<span style='font-weight: bold;'>".concat(GlobalSimRecords[i].Value).concat("</span>")
+      StartDateTxt = "<span style='font-weight: bold;'>".concat(GlobalSimRecords[i].Start_Date).concat("</span>")
+      EndDateTxt = "<span style='font-weight: bold;'>".concat(GlobalSimRecords[i].End_Date).concat("</span>")
+      cell1.innerHTML = nameTxt.concat(" add to expanse ").concat(valuetxt).concat(" NS each month").concat(" from ").concat(StartDateTxt).concat(" to ").concat(EndDateTxt)
+    }
+    if ( GlobalSimRecords[i].Rec_Type == 2 && GlobalSimRecords[i].Value < 0){
+      nameTxt= "At ".concat("<span style='color: blue;'>").concat("'",GlobalSimRecords[i].Rec_Name,"'").concat("</span>")
+      valuetxt= "<span style='font-weight: bold;'>".concat(-GlobalSimRecords[i].Value).concat("</span>")
+      StartDateTxt = "<span style='font-weight: bold;'>".concat(GlobalSimRecords[i].Start_Date).concat("</span>")
+      EndDateTxt = "<span style='font-weight: bold;'>".concat(GlobalSimRecords[i].End_Date).concat("</span>")
+      cell1.innerHTML = nameTxt.concat(" reduce Expanses by ").concat(valuetxt).concat(" NS each month").concat(" from ").concat(StartDateTxt).concat(" to ").concat(EndDateTxt)
+    }
+    if ( GlobalSimRecords[i].Rec_Type == 3){
+
+      nameTxt= "At ".concat("<span style='color: blue;'>").concat("'",GlobalSimRecords[i].Rec_Name,"'").concat("</span>")
+      valuetxt= "<span style='font-weight: bold;'>".concat(GlobalSimRecords[i].Value).concat("</span>")
+      StartDateTxt = "<span style='font-weight: bold;'>".concat(GlobalSimRecords[i].Start_Date).concat("</span>")
+      EndDateTxt = "<span style='font-weight: bold;'>".concat(GlobalSimRecords[i].End_Date).concat("</span>")
+      cell1.innerHTML = nameTxt.concat(" Start saving each momth ").concat(valuetxt).concat(" NS").concat(" from ").concat(StartDateTxt).concat(" to ").concat(EndDateTxt)
+
+    }
+    if ( GlobalSimRecords[i].Rec_Type == 4){
+
+      nameTxt= "At ".concat("<span style='color: blue;'>").concat("'",GlobalSimRecords[i].Rec_Name,"'").concat("</span>")
+      valuetxt= "<span style='font-weight: bold;'>".concat(GlobalSimRecords[i].Value).concat("</span>")
+      StartDateTxt = "<span style='font-weight: bold;'>".concat(GlobalSimRecords[i].Start_Date).concat("</span>")
+      EndDateTxt = "<span style='font-weight: bold;'>".concat(GlobalSimRecords[i].End_Date).concat("</span>")
+      cell1.innerHTML = nameTxt.concat(" Start taking loan with: ").concat(valuetxt).concat(" NS").concat(" from ").concat(StartDateTxt).concat(" to ").concat(EndDateTxt)
+
+    }
+  }
+
+
+}
+
+function printKeyAndValueInObject(InObject,ValueToSearch){
+  console.log("ParentObj:",InObject)
+  for (const [key, value] of Object.entries(InObject)) {
+    // console.log(`${key}: ${value}`);
+    if (value==ValueToSearch){
+      console.log("InKey:",InKey);
+      console.log("key:",key);
+      console.log("value:",value);
+      return
+    }
+    if (typeof(value) == "object"){
+         innerObject=value
+         printKeyAndValueInObject(innerObject,ValueToSearch)
+    }
+  }
+
+}
+
+
+function isEmpty(obj) {
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    }
+
+    return true;
+}
+
+// Changes XML to JSON
+// function xmlToJson(xml) {
+//
+// 	// Create the return object
+// 	var obj = {};
+//
+// 	if (xml.nodeType == 1) { // element
+// 		// do attributes
+// 		if (xml.attributes.length > 0) {
+// 		obj["@attributes"] = {};
+// 			for (var j = 0; j < xml.attributes.length; j++) {
+// 				var attribute = xml.attributes.item(j);
+// 				obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+// 			}
+// 		}
+// 	} else if (xml.nodeType == 3) { // text
+// 		obj = xml.nodeValue;
+// 	}
+//
+// 	// do children
+// 	if (xml.hasChildNodes()) {
+// 		for(var i = 0; i < xml.childNodes.length; i++) {
+// 			var item = xml.childNodes.item(i);
+// 			var nodeName = item.nodeName;
+// 			if (typeof(obj[nodeName]) == "undefined") {
+// 				obj[nodeName] = xmlToJson(item);
+// 			} else {
+// 				if (typeof(obj[nodeName].push) == "undefined") {
+// 					var old = obj[nodeName];
+// 					obj[nodeName] = [];
+// 					obj[nodeName].push(old);
+// 				}
+// 				obj[nodeName].push(xmlToJson(item));
+// 			}
+// 		}
+// 	}
+// 	return obj;
+// };
+
+
+window.onload = periodChangeFunction;
+function periodChangeFunction(){
+
+
+
+  // console log("Source name",CreditSources[CreditSourceIndex].CreditInformation)
+
+
+
+// printKeyAndValueInObject(myObject,"10000")
+// console.log("{{datajsonread}}")
+// console.log(obj)
+
+// ////////
+
+  UpdateActionTable()
+
+  // console.log("on load 1:",GlobalSimRecords)
+  // IncomesRecordsList[0].Value=37000
+  var xArray ={{IncomeXAxies|safe}}
+  var ExpxArray ={{ExpXAxies|safe}}
+  var BalancexArray ={{BalanceXAxies|safe}}
+  var SavingxArray ={{SavingsXAxies|safe}}
+  var LoanxArray ={{LoansXAxies|safe}}
+
+  BuildSelectsNamesList()
+  // console.log("on load 2:",GlobalSimRecords)
+
+  // update table using **js/////////////////////////////////
+  SimRecordsIn=filterRecordsListByType(GlobalSimRecords,"1")
+  yArray = buildTableAndTotal("tInTableJs",xArray,IncomesRecordsList.concat(SimRecordsIn),"In")
+  incomesRecordsChangeFunction()
+  // console.log("on load 3:",GlobalSimRecords)
+
+  SimRecordsExp=filterRecordsListByType(GlobalSimRecords,"2")
+  ExpyArray = buildTableAndTotal("tExpTableJs",xArray,ExpansesRecordsList.concat(SimRecordsExp),"Exp")
+  expansesRecordsChangeFunction()
+  // console.log("on load 4:",GlobalSimRecords)
+
+  BalanceyArray = [];
+  BalanceyArray[0]=yArray[0] - ExpyArray[0]
+  for(i = 1;i<=yArray.length;i++){
+     BalanceyArray[i]=BalanceyArray[i-1]+(yArray[i] - ExpyArray[i])
+  }
+
+
+
+  SimRecordsSavings=filterRecordsListByType(GlobalSimRecords,"3")
+  SavingyArray = buildTableAndTotal("tSaveTableJs",xArray,SavingsRecordsList.concat(SimRecordsSavings),"Savings")
+  savingsRecordsChangeFunction()
+
+  GlobalJoinedSaving = SavingsRecordsList.concat(SimRecordsSavings)
+  // console.log("joind global list",GlobalJoinedSaving)
+
+
+  SimRecordsLoans=filterRecordsListByType(GlobalSimRecords,"4")
+  LoanyArray = buildTableAndTotal("tLoanTableJs",xArray,LoansRecordsList.concat(SimRecordsLoans),"Loans")
+  loansRecordsChangeFunction()
+  // console.log("on load 6:",GlobalSimRecords)
+
+  HonBalanceyArray = [];
+  HonBalanceyArray[0]=SavingyArray[0] - LoanyArray[0]
+  for(i = 1;i<=SavingyArray.length;i++){
+     HonBalanceyArray[i]=(SavingyArray[i] - LoanyArray[i])
+  }
+
+  // save the ballance and hon ballance when page loaded first time
+  if(GlobalCounter==0)
+  {
+      GlobalOldBalanceArray=BalanceyArray
+      GlobalOldHonBalanceArray=HonBalanceyArray
+      GlobalCounter=1
+  }
+
+ // save values for the summary section that uses them
+ GlobalX=xArray
+ GlobalIncomes=yArray
+ GlobalExpanses=ExpyArray
+ GlobalBallance=BalanceyArray
+ GlobalSavings=SavingyArray
+ GlobalLoans=LoanyArray
+ GlobalHonBallance=HonBalanceyArray
+
+ ////////////////////////////////////////////////////////////
+
+  var periods = document.getElementById("periodSelect").value;
+  var typeofperiods = document.getElementById("typeOfPeriods").value;
+  var returns = document.getElementById("returns").value;
+  var NomOfMonToRet=periods*typeofperiods
+  var MaxMonthIndex = NomOfMonToRet*returns
+
+  //reduce arrays per user request of display months
+  var xArrayReduced = [];
+  var yArrayReduced = [];
+  var ExpxArrayReduced  = [];
+  var ExpyArrayReduced  = [];
+  var BalancexArrayReduced = [];
+  var BalanceyArrayReduced = [];
+
+  var GlobalOldBalanceArrayReduced =[];
+  var GlobalOldHonBalanceArrayReduced=[]
+
+  var HonBalancexArrayReduced= [];
+  var HonBalanceyArrayReduced= [];
+
+  var SavingxArrayReduced = [];
+  var SavingyArrayReduced = [];
+  var LoanxArrayReduced = [];
+  var LoanyArrayReduced = [];
+
+  checkBox = document.getElementById("checkAlldata");
+  if (checkBox.checked == false)
+    {
+      if (MaxMonthIndex > xArray.length)
+      {
+        MaxMonthIndex = xArray.length;
+      }
+      for (i = 0; i <= MaxMonthIndex; i=i+NomOfMonToRet) {
+        xArrayReduced.push(xArray[i]);
+        yArrayReduced.push(yArray[i]);
+        ExpxArrayReduced.push(ExpxArray[i]);
+        ExpyArrayReduced.push(ExpyArray[i]);
+        BalancexArrayReduced.push(BalancexArray[i]);
+        BalanceyArrayReduced.push(BalanceyArray[i]);
+
+        GlobalOldBalanceArrayReduced.push(GlobalOldBalanceArray[i]);
+        GlobalOldHonBalanceArrayReduced.push(GlobalOldHonBalanceArray[i]);
+
+        HonBalancexArrayReduced.push(BalancexArray[i]);
+        HonBalanceyArrayReduced.push(HonBalanceyArray[i]);
+
+
+        SavingxArrayReduced.push(SavingxArray[i]);
+        SavingyArrayReduced.push(SavingyArray[i]);
+        LoanxArrayReduced.push(LoanxArray[i]);
+        LoanyArrayReduced.push(LoanyArray[i]);
+        // console.log(NomOfMonToRet,MaxMonthIndex,)
+        // console.log(i,xArray[i],xArrayReduced[i])
+      }
+
+    }
+    else{
+      xArrayReduced=xArray
+      yArrayReduced=yArray
+      ExpxArrayReduced=ExpxArray
+      ExpyArrayReduced=ExpyArray
+      BalancexArrayReduced=BalancexArray
+      BalanceyArrayReduced=BalanceyArray
+
+      GlobalOldBalanceArrayReduced=GlobalOldBalanceArray
+      GlobalOldHonBalanceArrayReduced=GlobalOldHonBalanceArray
+
+      HonBalancexArrayReduced=BalancexArray
+      HonBalanceyArrayReduced=HonBalanceyArray
+
+      SavingxArrayReduced=SavingxArray
+      SavingyArrayReduced=SavingyArray
+      LoanxArrayReduced = LoanxArray
+      LoanyArrayReduced = LoanyArray
+    }
+
+///////////////////////////////////////////
+
+
+
+    var trace1 ={
+      x: xArrayReduced,
+      y: yArrayReduced,
+      mode: 'lines+markers+text',
+      text: [,'Incomes'],
+      textposition: 'top',
+      marker: {color: 'green'},
+      type: 'scatter',
+      name:"Incomes"
+
+    }
+
+    var trace2 ={
+      x: ExpxArrayReduced,
+      y: ExpyArrayReduced,
+      mode: 'lines+markers+text',
+      text: [,,'Expanses'],
+      textposition: 'top',
+      marker: {color: 'red'},
+      type: 'scatter',
+      name:"Expanses",
+      yaxis: 'y',
+
+    }
+
+    var trace3 ={
+      x: BalancexArrayReduced,
+      y: BalanceyArrayReduced,
+      mode: 'lines+markers+text',
+      text: [,,,'Ballance',],
+      textposition: 'top',
+      marker: {color: 'blue'},
+      type: 'scatter',
+      name:"Balance",
+       // yaxis: 'y2',
+    }
+
+    var trace4 ={
+      x: BalancexArrayReduced,
+      y: GlobalOldBalanceArrayReduced,
+      mode: 'lines+markers+text',
+      text: [,,,,'Ballance Reference',],
+      textposition: 'top',
+      marker: {color: 'black'},
+      type: 'scatter',
+      name:"Referance Balance",
+       // yaxis: 'y2',
+    }
+
+
+
+    var layout ={
+      xaxis: {autorange: true,title:{text:"Date",standoff: 0},range: [ExpxArray[0],ExpxArray[36]]},
+      yaxis: {autorange: true,title: "In/Exp(red and green)",showgrid: false },
+      yaxis2: {autorange: true,title: "Balancce(black and blue)",overlaying: 'y',side: 'right', anchor: 'x',position: 0.9},
+
+      // title: "Income,Expanse and Ballance",
+      title: "Bank Ballance",
+      // plot_bgcolor:"black",
+      paper_bgcolor:"#f4fce3",
+      legend: {"orientation": "h"}
+
+      }
+    // var data =[trace1,trace2,trace3,trace4,layout]
+    // var data =[trace1,trace2,trace3,trace4]
+    var data =[trace3,trace4]
+
+    Plotly.newPlot('bar_in_exp_Plot',data,layout);
+
+
+///////////////////////////////////////////////////////////
+
+    // Define Data
+    var trace1 ={
+      x: SavingxArrayReduced,
+      y: SavingyArrayReduced,
+      marker: {color: 'green'},
+      type: 'bar',
+      name:"Savings"
+    }
+    // Define Layout
+
+    var trace2 ={
+      x: LoanxArrayReduced,
+      y: LoanyArrayReduced,
+      marker: {color: 'red'},
+      type: 'bar',
+      name:"Loans"
+
+    }
+
+    var trace3 ={
+
+      x: HonBalancexArrayReduced,
+      y: HonBalanceyArrayReduced,
+      marker: {color: 'blue'},
+      type: 'scatter',
+      name:"Hon Balance",
+
+
+    }
+
+    var trace4 ={
+      x: HonBalancexArrayReduced,
+      y: GlobalOldHonBalanceArrayReduced,
+      marker: {color: 'black'},
+      type: 'scatter',
+      name:"Referance Hon Balance",
+    }
+
+
+
+    var layout ={
+      xaxis: {autorange: true,title: "Date"},
+      yaxis: {autorange: true,title: "Value"},
+      title: "Hon Ballance",
+      // plot_bgcolor:"black",
+      paper_bgcolor:"#93a2ba",
+        legend: {"orientation": "h"}
+
+      }
+    // var data =[trace1,trace2,trace3,trace4,layout]
+    // var data =[trace1,trace2,trace3,trace4]
+    var data =[trace3,trace4]
+    Plotly.newPlot('bar_savings_loans',data,layout);
+
+    // console.log("on load 7:",GlobalSimRecords)
+    SelectedDateChane()
+    // console.log("on load 8:",GlobalSimRecords)
+
+}
+// incomesRecordsChangeFunction()
+// expansesRecordsChangeFunction()
+// savingsRecordsChangeFunction()
+//loansRecordsChangeFunction()
+
+// function showTableData() {
+//      document.getElementById('info').innerHTML = "";
+//      var myTab = document.getElementById('empTable');
+//
+//      // LOOP THROUGH EACH ROW OF THE TABLE AFTER HEADER.
+//      for (i = 1; i < myTab.rows.length; i++) {
+//
+//          // GET THE CELLS COLLECTION OF THE CURRENT ROW.
+//          var objCells = myTab.rows.item(i).cells;
+//
+//          // LOOP THROUGH EACH CELL OF THE CURENT ROW TO READ CELL VALUES.
+//          for (var j = 0; j < objCells.length; j++) {
+//              info.innerHTML = info.innerHTML + ' ' + objCells.item(j).innerHTML;
+//          }
+//          info.innerHTML = info.innerHTML + '<br />';     // ADD A BREAK (TAG).
+//      }
+//  }
+
+  </script>
+
+
+    </body>
+  </html>
+
+    {% endblock %}

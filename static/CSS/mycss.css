@@ -1,0 +1,37 @@
+
+  .saverecdatacss em {
+  color: blue;
+  }
+ .boxy{
+    /* background: #d8dce3; */
+    background:#e8eded;
+    border: 7px ridge #6079a6;
+  }
+  .Table_Title{
+    text-align: center;
+  }
+  table.table-bordered > thead > tr > th{
+    border:1px solid #000000;
+  }
+    table.table-bordered > tbody > tr > td{
+    border:1px solid #000000;
+  }
+  table.table-bordered{
+    border:1px solid #000000;
+    margin-top:20px;
+  }
+  .table-responsive {
+  max-height:10px;
+  /* max-width:800px; */
+  }
+  .table td, .table th {
+   font-size: 10px;
+  }
+  .div_table_wrapper{
+  overflow-x:auto;
+  max-height:200px;
+  }
+  /* .div_table_wrapper_actions{
+  overflow-x:auto;
+  max-height:600px;
+  } */
