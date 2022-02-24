@@ -3,525 +3,530 @@
 {%block test%}{{family}}{%endblock%}
     {% block body_block%}
 
-    <!-- <div id="dataContainer" class="container-xxl" style="margin-top:60px; "> -->
-    <div id="dataContainer"   class="container-fluid" style="margin-top:80px;width:90%;">
-      <div id="dataRow" class="row">
-        <div id="tenSlotsData" class="col-lg-12 boxy" >
-          <div id="Family Info" class="row">
-            <div class="col-lg-12 boxy" >
-              <div >
-                  <h1 class="text-center" >תכנון ארוע עתידי</h1>
-                  <!-- <textarea id="jsonread" rows="4" cols="50"></textarea>
-                  <div>
-                  <form method="POST" class="mycrecord" enctype="multipart/form-data">
-                    {{ form.as_p }}
-                    {% csrf_token %}
-                    <input type="submit" id="jsonfileloaded" class='btn btn-primary' value="Submit">
-                  </form>
-                  </div> -->
-                  <button class="tablink" onclick="openPage('Event', this, 'gray')" id="defaultOpen">ארוע</button>
-                  <button class="tablink" onclick="openPage('Actions', this, 'gray')">הוסף פעולה</button>
-                  <button class="tablink" onclick="openPage('Edit/Delete', this, 'gray')">ערוך/מחק רשומה</button>
-                  <button class="tablink" onclick="openPage('ActionsLog', this, 'gray')">רשימת פעולות</button>
+    {% if user.is_authenticated %}
+        <!-- <div id="dataContainer" class="container-xxl" style="margin-top:60px; "> -->
+        <div id="dataContainer"   class="container-fluid" style="margin-top:80px;width:90%;">
+          <div id="dataRow" class="row">
+            <div id="tenSlotsData" class="col-lg-12 boxy" >
+              <div id="Family Info" class="row">
+                <div class="col-lg-12 boxy" >
+                  <div >
+                      <h1 class="text-center" >תכנון ארוע עתידי</h1>
+                      <!-- <textarea id="jsonread" rows="4" cols="50"></textarea>
+                      <div>
+                      <form method="POST" class="mycrecord" enctype="multipart/form-data">
+                        {{ form.as_p }}
+                        {% csrf_token %}
+                        <input type="submit" id="jsonfileloaded" class='btn btn-primary' value="Submit">
+                      </form>
+                      </div> -->
+                      <button class="tablink" onclick="openPage('Event', this, 'gray')" id="defaultOpen">ארוע</button>
+                      <button class="tablink" onclick="openPage('Actions', this, 'gray')">הוסף פעולה</button>
+                      <button class="tablink" onclick="openPage('Edit/Delete', this, 'gray')">ערוך/מחק רשומה</button>
+                      <button class="tablink" onclick="openPage('ActionsLog', this, 'gray')">רשימת פעולות</button>
 
-                  <div id="Event" class="tabcontent" style="margin-top: 50px;">
-                    <div class="row">
-                        <div  class="col-lg-2 "  >
-                          <!-- <label class="badge bg-primary text-wrap" style="color:white;font-weight: bold;font-size :1em">Event Parameters:</label><br><br> -->
+                      <div id="Event" class="tabcontent" style="margin-top: 50px;">
+                        <div class="row">
+                            <div  class="col-lg-2 "  >
+                              <!-- <label class="badge bg-primary text-wrap" style="color:white;font-weight: bold;font-size :1em">Event Parameters:</label><br><br> -->
 
-                          <div class="form-floating mb-3" >
-                            <input type="text" class="form-control" id="ename" value="שם הארוע" >
-                            <label>שם</label>
-                          </div>
-                          <div class="form-floating mb-3" style="margin-top: 10px;">
-                            <input type="number" class="form-control" id="ecost" value=10000 onchange="periodChangeFunction()">
-                            <label>עלות</label>
-                          </div>
-                          <div class="form-floating ">
-                            <input type="date" class="form-control" id="selectedDate" onchange="SelectedDateChane()" value = "2020-07-01">
-                            <!-- value = "2020-07-01" -->
-                            <label>תאריך</label>
-                          </div>
-                          <!-- <label class="badge bg-primary text-wrap" style="color:white;font-weight: bold;font-size :0.9em">Target Achived</label>
-                          <label class="fs-4" id="progressBarTxt"></label><br>
-                          <progress  style="height:20px;width: 100%;" id="progressBar" max="100" value="0"></progress>
-                          <div class="text-center" >
-                            <label class="fs-8" id="progressBarTxt"></label>
-                          </div> -->
-                        </div>
+                              <div class="form-floating mb-3" >
+                                <input type="text" class="form-control" id="ename" value="שם הארוע" >
+                                <label>שם</label>
+                              </div>
+                              <div class="form-floating mb-3" style="margin-top: 10px;">
+                                <input type="number" class="form-control" id="ecost" value=10000 onchange="periodChangeFunction()">
+                                <label>עלות</label>
+                              </div>
+                              <div class="form-floating ">
+                                <input type="date" class="form-control" id="selectedDate" onchange="SelectedDateChane()" value = "2020-07-01">
+                                <!-- value = "2020-07-01" -->
+                                <label>תאריך</label>
+                              </div>
+                              <!-- <label class="badge bg-primary text-wrap" style="color:white;font-weight: bold;font-size :0.9em">Target Achived</label>
+                              <label class="fs-4" id="progressBarTxt"></label><br>
+                              <progress  style="height:20px;width: 100%;" id="progressBar" max="100" value="0"></progress>
+                              <div class="text-center" >
+                                <label class="fs-8" id="progressBarTxt"></label>
+                              </div> -->
+                            </div>
 
-                        <div  class="col-lg-10 " >
-                          <!-- <label class="badge bg-primary text-wrap" style="color:white;font-weight: bold;font-size :1em">Status At Event Date:</label><br> -->
-                          <table  class="table table-striped table table-bordered" style="margin-top: 0px;">
-                            <tr>
-                              <!-- <th class="fs-6">Incomes</th> -->
-                              <!-- <th class="fs-6">Expanses</th> -->
-                              <th class="fs-6">יתרת עו"ש</th>
-                              <th class="fs-6">יכולת לקיחת הלוואה(חודש לאחר הארוע)</th>
-                              <th class="fs-6">חסכונות</th>
-                              <!-- <th class="fs-6">Loans</th> -->
-                              <th class="fs-6">מאזן הון</th>
-                              <!-- <th class="fs-6">Total</th> -->
-                            </tr>
-                            <tr>
-                              <!-- <td class="fs-6">Incomes</td> -->
-                              <!-- <td class="fs-6"><label id="InAtDate" style="color:black"></label><br></td> -->
-                              <!-- <td class="fs-6">  <label id="ExpansesAtDate" style="color:black"></label><br></td> -->
-                              <td class="fs-6 py-0">  <label id="BallanceAtDate" style="color:black;font-weight: bold"></label></td>
-                              <td class="fs-6 py-0"> <label id="SourceOfGrowthAtDate" style="color:black;font-weight: bold"></label> </td>
-                              <td class="fs-6 py-0"><label id="SavingsAtDate" style="color:black; font-weight: bold"></label></td>
-                              <!-- <td class="fs-6"><label id="LoansAtDate" style="color:black"></label> </td> -->
-                              <td class="fs-6 py-0">  <label id="HonBallanceAtDate" style="color:black;font-weight: bold"></label></td>
-                              <!-- <td class="fs-6"><label id="TotalHonAtDate" style="color:blue;font-weight: bold"></label> </td> -->
-                            </tr>
-                            <tr>
-                              <td py-0>
-                                <!-- <div class="form-floating mb-3 py-0"> -->
-                                  <!-- <input type="number" class="form-control" id="aDraw" value=0 onchange="EventPlanaingParamaterChange()"> -->
-                                  <label for="aDraw" class="fs-6" class="form-label">סכום משיכה מהעוש</label>
-                                  <input style = "background-color: white;width:auto" type="range" min="1" max="100000" value="0"  id="aDraw" onchange="EventPlanaingParamaterChange()">
+                            <div  class="col-lg-10 " >
+                              <!-- <label class="badge bg-primary text-wrap" style="color:white;font-weight: bold;font-size :1em">Status At Event Date:</label><br> -->
+                              <table  class="table table-striped table table-bordered" style="margin-top: 0px;">
+                                <tr>
+                                  <!-- <th class="fs-6">Incomes</th> -->
+                                  <!-- <th class="fs-6">Expanses</th> -->
+                                  <th class="fs-6">יתרת עו"ש</th>
+                                  <th class="fs-6">יכולת לקיחת הלוואה(חודש לאחר הארוע)</th>
+                                  <th class="fs-6">חסכונות</th>
+                                  <!-- <th class="fs-6">Loans</th> -->
+                                  <th class="fs-6">מאזן הון</th>
+                                  <!-- <th class="fs-6">Total</th> -->
+                                </tr>
+                                <tr>
+                                  <!-- <td class="fs-6">Incomes</td> -->
+                                  <!-- <td class="fs-6"><label id="InAtDate" style="color:black"></label><br></td> -->
+                                  <!-- <td class="fs-6">  <label id="ExpansesAtDate" style="color:black"></label><br></td> -->
+                                  <td class="fs-6 py-0">  <label id="BallanceAtDate" style="color:black;font-weight: bold"></label></td>
+                                  <td class="fs-6 py-0"> <label id="SourceOfGrowthAtDate" style="color:black;font-weight: bold"></label> </td>
+                                  <td class="fs-6 py-0"><label id="SavingsAtDate" style="color:black; font-weight: bold"></label></td>
+                                  <!-- <td class="fs-6"><label id="LoansAtDate" style="color:black"></label> </td> -->
+                                  <td class="fs-6 py-0">  <label id="HonBallanceAtDate" style="color:black;font-weight: bold"></label></td>
+                                  <!-- <td class="fs-6"><label id="TotalHonAtDate" style="color:blue;font-weight: bold"></label> </td> -->
+                                </tr>
+                                <tr>
+                                  <td py-0>
+                                    <!-- <div class="form-floating mb-3 py-0"> -->
+                                      <!-- <input type="number" class="form-control" id="aDraw" value=0 onchange="EventPlanaingParamaterChange()"> -->
+                                      <label for="aDraw" class="fs-6" class="form-label">סכום משיכה מהעוש</label>
+                                      <input style = "background-color: white;width:auto" type="range" min="1" max="100000" value="0"  id="aDraw" onchange="EventPlanaingParamaterChange()">
 
-                                  <!-- <label class="fs-6">משיכה מהעו"ש</label> -->
-                                <!-- </div> -->
-                              </td>
-                              <td py-0>
-                                <!-- <div class="container"> -->
-                                  <div class="row">
-                                    <div class="col">
-                                      <div class="form-floating mb-3">
-                                        <input type="number" class="form-control" id="lDraw" value=0 onchange="EventPlanaingParamaterChange()">
-                                        <label class="fs-6">לקיחת הלוואה</label>
+                                      <!-- <label class="fs-6">משיכה מהעו"ש</label> -->
+                                    <!-- </div> -->
+                                  </td>
+                                  <td py-0>
+                                    <!-- <div class="container"> -->
+                                      <div class="row">
+                                        <div class="col">
+                                          <div class="form-floating mb-3">
+                                            <input type="number" class="form-control" id="lDraw" value=0 onchange="EventPlanaingParamaterChange()">
+                                            <label class="fs-6">לקיחת הלוואה</label>
+                                          </div>
+                                        </div>
+                                        <div class="col">
+                                          <div class="form-floating mb-3">
+                                            <input type="number" class="form-control" id="lMonth" value=1 min="1" onchange="EventPlanaingParamaterChange()">
+                                            <label class="fs-6">תקופת בחודשים</label>
+                                          </div>
+                                        </div>
                                       </div>
+                                      <div class="row">
+                                        <div class="col-6">
+                                          <div class="form-floating mb-3">
+                                            <input type="number" class="form-control" id="lDrawIntrest" value=0 onchange="EventPlanaingParamaterChange()">
+                                            <label class="fs-6">ריבית בשקלים</label>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    <!-- </div> -->
+                                  </td>
+                                  <td py-0>
+                                    <div class="form-floating mb-3">
+                                      <!-- <input type="number" class="form-control" id="sDraw" value=0 onchange="EventPlanaingParamaterChange()"> -->
+                                      <select id="savingDrawSelect" class="form-select" aria-label="select saving" onchange="EventSavingRecChange()">
+                                      </select>
+                                      <label class="fs-6">בחר חיסכון למשוך</label>
                                     </div>
-                                    <div class="col">
-                                      <div class="form-floating mb-3">
-                                        <input type="number" class="form-control" id="lMonth" value=1 min="1" onchange="EventPlanaingParamaterChange()">
-                                        <label class="fs-6">תקופת בחודשים</label>
-                                      </div>
+                                      <div class="row">
+                                        <div class="col-4">
+                                          <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="sBallanceToDraw" value=0 min="0" disabled >
+                                            <label class="fs-6" >יתרת החיסכון</label>
+                                          </div>
+                                        </div>
+                                        <div class="col-5">
+                                          <div class="form-floating mb-3">
+                                            <input type="number" class="form-control" id="savingToDraw" value=0 min="0"  >
+                                            <label class="fs-6">סכום למשיכה</label>
+                                          </div>
+                                        </div>
+                                        <div class="col-1">
+                                          <button id="savingDrawButton" class="open-button" onclick="EventPlanaingParamaterChange()">אישור</button>
+                                        </div>
+
+                                  </td>
+                                  <td>
+                                    <!-- <div class="form-floating mb-3">
+                                      <input type="number" class="form-control" id="TotalDraw" value=0 min="0" disabled >
+                                      <label class="fs-6">Total Draw</label>
                                     </div>
-                                  </div>
-                                  <div class="row">
-                                    <div class="col-6">
-                                      <div class="form-floating mb-3">
-                                        <input type="number" class="form-control" id="lDrawIntrest" value=0 onchange="EventPlanaingParamaterChange()">
-                                        <label class="fs-6">ריבית בשקלים</label>
+                                    <div class="form-floating mb-3">
+                                      <input type="number" class="form-control" id="StillNeedDraw" value=0 min="0" disabled >
+                                      <label class="fs-6">Still Missing</label>
+                                    </div> -->
+                                  </td>
+
+                                </tr>
+                                <tr>
+                                  <td colspan="4">
+                                    <div class="row">
+                                      <div class="col-3">
+                                          <div class="form-floating mb-3">
+                                            <input type="number" class="form-control" id="TotalDraw" value=0 min="0" disabled >
+                                            <label class="fs-6">סה"כ משיכה</label>
+                                          </div>
                                       </div>
+                                      <div class="col-3">
+                                          <div class="form-floating mb-3">
+                                            <input type="number" class="form-control" id="StillNeedDraw" value=0 min="0" disabled >
+                                            <label class="fs-6">סכום שעדיין נדרש</label>
+                                          </div>
+                                      </div>
+                                      <div class="col-6">
+                                          <!-- <label class="badge bg-primary text-wrap" style="color:white;font-weight: bold;font-size :1em">Target Achived</label> -->
+                                          <label class="fs-5" id="progressBarTxt"></label><br>
+                                          <progress  style="height:40px;width: 100%;" id="progressBar" max="100" value="0"></progress>
+                                          <div class="text-center" >
+                                            <!-- <label class="fs-8" id="progressBarTxt"></label> -->
+                                          </div>
+                                      </div>
+
+
+                                  </td>
+
+                                <tr>
+                                  <td colspan="4">
+                                    <div class="form-floating mb-3">
+                                      <!-- <input type="number" class="form-control" id="EventLimitControlLabel" value=0 min="0" disabled > -->
+                                      <label id="EventLimitCrossLabel" class="fs-6" style = "border: 0px solid green;  padding: 0px;  margin: 0px; color: red"></label>
                                     </div>
-                                  </div>
-                                <!-- </div> -->
-                              </td>
-                              <td py-0>
-                                <div class="form-floating mb-3">
-                                  <!-- <input type="number" class="form-control" id="sDraw" value=0 onchange="EventPlanaingParamaterChange()"> -->
-                                  <select id="savingDrawSelect" class="form-select" aria-label="select saving" onchange="EventSavingRecChange()">
-                                  </select>
-                                  <label class="fs-6">בחר חיסכון למשוך</label>
-                                </div>
-                                  <div class="row">
-                                    <div class="col-4">
-                                      <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="sBallanceToDraw" value=0 min="0" disabled >
-                                        <label class="fs-6" >יתרת החיסכון</label>
-                                      </div>
-                                    </div>
-                                    <div class="col-5">
-                                      <div class="form-floating mb-3">
-                                        <input type="number" class="form-control" id="savingToDraw" value=0 min="0"  >
-                                        <label class="fs-6">סכום למשיכה</label>
-                                      </div>
-                                    </div>
-                                    <div class="col-1">
-                                      <button id="savingDrawButton" class="open-button" onclick="EventPlanaingParamaterChange()">אישור</button>
-                                    </div>
+                                  </td>
+                                <tr>
+                              </table>
+                            </div>
+                        </div>
 
-                              </td>
-                              <td>
-                                <!-- <div class="form-floating mb-3">
-                                  <input type="number" class="form-control" id="TotalDraw" value=0 min="0" disabled >
-                                  <label class="fs-6">Total Draw</label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                  <input type="number" class="form-control" id="StillNeedDraw" value=0 min="0" disabled >
-                                  <label class="fs-6">Still Missing</label>
-                                </div> -->
-                              </td>
-
-                            </tr>
-                            <tr>
-                              <td colspan="4">
-                                <div class="row">
-                                  <div class="col-3">
-                                      <div class="form-floating mb-3">
-                                        <input type="number" class="form-control" id="TotalDraw" value=0 min="0" disabled >
-                                        <label class="fs-6">סה"כ משיכה</label>
-                                      </div>
-                                  </div>
-                                  <div class="col-3">
-                                      <div class="form-floating mb-3">
-                                        <input type="number" class="form-control" id="StillNeedDraw" value=0 min="0" disabled >
-                                        <label class="fs-6">סכום שעדיין נדרש</label>
-                                      </div>
-                                  </div>
-                                  <div class="col-6">
-                                      <!-- <label class="badge bg-primary text-wrap" style="color:white;font-weight: bold;font-size :1em">Target Achived</label> -->
-                                      <label class="fs-5" id="progressBarTxt"></label><br>
-                                      <progress  style="height:40px;width: 100%;" id="progressBar" max="100" value="0"></progress>
-                                      <div class="text-center" >
-                                        <!-- <label class="fs-8" id="progressBarTxt"></label> -->
-                                      </div>
-                                  </div>
-
-
-                              </td>
-
-                            <tr>
-                              <td colspan="4">
-                                <div class="form-floating mb-3">
-                                  <!-- <input type="number" class="form-control" id="EventLimitControlLabel" value=0 min="0" disabled > -->
-                                  <label id="EventLimitCrossLabel" class="fs-6" style = "border: 0px solid green;  padding: 0px;  margin: 0px; color: red"></label>
-                                </div>
-                              </td>
-                            <tr>
-                          </table>
-                        </div>
-                    </div>
-
-                  </div>
-                  <div id="Actions" class="tabcontent">
-                    <!-- <label class="badge bg-primary text-wrap" style="color:yellow;font-weight: bold;font-size :1em">Add Record:</label><br><br> -->
-                      <br>  <br>  <br>
-                    <div class="row">
-                        <div class="col">
-                          <div class="form-floating mb-3" >
-                            <input type="text" class="form-control" id="rname" value="Record Name" >
-                            <label>Name:</label>
-                          </div>
-                        </div>
-                        <div class="col">
-                          <div class="form-floating  mb-3">
-                            <select id="rselect" class="form-control" >
-                              <h3 >
-                                <option value=1>"Income"</option>
-                                <option value=2>"Expanse"</option>
-                                <option value=3>"Saving"</option>
-                                <option value=4>"Loan"</option>
-                              </h3><br>
-                            </select><br>
-                            <label>Type:</label>
-                          </div>
-                        </div>
-                        <div class="col">
-                          <div class="form-floating mb-3" >
-                            <input type="date" class="form-control" id="rstartdate" value = "2020-07-01"  >
-                            <label>Start Date:</label>
-                          </div>
-                        </div>
-                        <div class="col">
-                          <div class="form-floating">
-                            <input type="date" class="form-control" id="renddate" value="2020-07-01" >
-                            <label>End Date:</label>
-                          </div>
-                        </div>
-                        <div class="col">
-                          <div class="form-floating mb-3" >
-                            <input type="number" class="form-control" id="rvalue" value=0 >
-                            <label>Value:</label>
-                          </div>
-                        </div>
-                        <div class="col">
-                          <div class="form-floating">
-                            <input type="number" class="form-control" id="rstartvalue" value=0 >
-                            <label>Start Value:</label>
-                          </div>
-                        </div>
-                        <div class="col">
-                          <div class="form-floating mb-3" >
-                            <input type="number" class="form-control" id="rrate" value=4>
-                            <label>Rate:</label>
-                          </div>
-                        </div>
-                        <div class="col">
-                          <button class="open-button" onclick="addSimulatedRecord('FromAddAction')">Add Action</button>
-
-                        </div>
-                    </div>
-                    <!-- <label class="badge bg-primary text-wrap" style="color:yellow;font-weight: bold;font-size :1em">Add Action:</label><br><br> -->
-                  </div>
-
-                  <div id="Edit/Delete" class="tabcontent">
-                    <label class="badge bg-primary text-wrap" style="color:yellow;font-weight: bold;font-size :1em">Edit/Delete:</label><br><br>
-                    <dic class="row">
-                        <div class="col-8">
-                          <div class="form-floating">
-                            <select id="rselectdelete" class="form-select" aria-label="Floating label select example">
-                              <h3 >
-
-                              </h3>
-                            </select><br>
-                            <label for="floatingSelect">Select Record</label>
-                          </div>
-                        </div>
-                        <div class="col-2">
-                          <button style="color:white;width: 80%;" class="open-button" onclick="editRecord()" id="EditRecBut">Edit</button>
-                        </div>
-                        <div class="col-2">
-                          <button style="color:white;width: 80%;" class="open-button" onclick="deleteSimulatedRecord()" id="DeleteRecBut">Delete</button>
-                        </div>
-                    </div>
-                    <div class="row">
-                      <div class="form-popup" id="myForm">
-                        <form  class="form-container">
-                          <div class="row">
+                      </div>
+                      <div id="Actions" class="tabcontent">
+                        <!-- <label class="badge bg-primary text-wrap" style="color:yellow;font-weight: bold;font-size :1em">Add Record:</label><br><br> -->
+                          <br>  <br>  <br>
+                        <div class="row">
                             <div class="col">
                               <div class="form-floating mb-3" >
-                                <p id="poprrecordtype" class="form-control"></p>
-                                <label>Record Type:</label>
+                                <input type="text" class="form-control" id="rname" value="Record Name" >
+                                <label>Name:</label>
+                              </div>
+                            </div>
+                            <div class="col">
+                              <div class="form-floating  mb-3">
+                                <select id="rselect" class="form-control" >
+                                  <h3 >
+                                    <option value=1>"Income"</option>
+                                    <option value=2>"Expanse"</option>
+                                    <option value=3>"Saving"</option>
+                                    <option value=4>"Loan"</option>
+                                  </h3><br>
+                                </select><br>
+                                <label>Type:</label>
                               </div>
                             </div>
                             <div class="col">
                               <div class="form-floating mb-3" >
-                                 <input type="date" class="form-control" id="poprstartdate" value = "2020-07-01">
-                                 <label>Start Date:</label>
+                                <input type="date" class="form-control" id="rstartdate" value = "2020-07-01"  >
+                                <label>Start Date:</label>
                               </div>
                             </div>
                             <div class="col">
                               <div class="form-floating">
-                                <input type="date" class="form-control" id="poprenddate" value = "2020-07-01">
-                                <!-- <input class="form-control" type="text" id="poprenddate" ><br> -->
+                                <input type="date" class="form-control" id="renddate" value="2020-07-01" >
                                 <label>End Date:</label>
-
                               </div>
                             </div>
                             <div class="col">
                               <div class="form-floating mb-3" >
-                                <input type="number" class="form-control" id="poprvalue" value=0 >
-                                <label>Monthly Value:</label>
+                                <input type="number" class="form-control" id="rvalue" value=0 >
+                                <label>Value:</label>
                               </div>
                             </div>
                             <div class="col">
                               <div class="form-floating">
-                                <input type="number" class="form-control" id="poprstartvalue" value=0 >
+                                <input type="number" class="form-control" id="rstartvalue" value=0 >
                                 <label>Start Value:</label>
                               </div>
                             </div>
                             <div class="col">
                               <div class="form-floating mb-3" >
-                                <input type="number" class="form-control" id="poprrate" value=4>
+                                <input type="number" class="form-control" id="rrate" value=4>
                                 <label>Rate:</label>
                               </div>
                             </div>
-                          </div>
-                          <div class="row">
-                            <div class="col-1">
-                                <button style= " width:100%;" type="button" class="open-button" onclick="updateRecord()">Update</button>
+                            <div class="col">
+                              <button class="open-button" onclick="addSimulatedRecord('FromAddAction')">Add Action</button>
+
                             </div>
-                            <div class="col-1">
-                              <button style= " width:100%;" type="button" class="open-button" onclick="exitEdit()">Exit</button>
+                        </div>
+                        <!-- <label class="badge bg-primary text-wrap" style="color:yellow;font-weight: bold;font-size :1em">Add Action:</label><br><br> -->
+                      </div>
+
+                      <div id="Edit/Delete" class="tabcontent">
+                        <label class="badge bg-primary text-wrap" style="color:yellow;font-weight: bold;font-size :1em">Edit/Delete:</label><br><br>
+                        <dic class="row">
+                            <div class="col-8">
+                              <div class="form-floating">
+                                <select id="rselectdelete" class="form-select" aria-label="Floating label select example">
+                                  <h3 >
+
+                                  </h3>
+                                </select><br>
+                                <label for="floatingSelect">Select Record</label>
+                              </div>
                             </div>
+                            <div class="col-2">
+                              <button style="color:white;width: 80%;" class="open-button" onclick="editRecord()" id="EditRecBut">Edit</button>
+                            </div>
+                            <div class="col-2">
+                              <button style="color:white;width: 80%;" class="open-button" onclick="deleteSimulatedRecord()" id="DeleteRecBut">Delete</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                          <div class="form-popup" id="myForm">
+                            <form  class="form-container">
+                              <div class="row">
+                                <div class="col">
+                                  <div class="form-floating mb-3" >
+                                    <p id="poprrecordtype" class="form-control"></p>
+                                    <label>Record Type:</label>
+                                  </div>
+                                </div>
+                                <div class="col">
+                                  <div class="form-floating mb-3" >
+                                     <input type="date" class="form-control" id="poprstartdate" value = "2020-07-01">
+                                     <label>Start Date:</label>
+                                  </div>
+                                </div>
+                                <div class="col">
+                                  <div class="form-floating">
+                                    <input type="date" class="form-control" id="poprenddate" value = "2020-07-01">
+                                    <!-- <input class="form-control" type="text" id="poprenddate" ><br> -->
+                                    <label>End Date:</label>
 
-                          </div>
+                                  </div>
+                                </div>
+                                <div class="col">
+                                  <div class="form-floating mb-3" >
+                                    <input type="number" class="form-control" id="poprvalue" value=0 >
+                                    <label>Monthly Value:</label>
+                                  </div>
+                                </div>
+                                <div class="col">
+                                  <div class="form-floating">
+                                    <input type="number" class="form-control" id="poprstartvalue" value=0 >
+                                    <label>Start Value:</label>
+                                  </div>
+                                </div>
+                                <div class="col">
+                                  <div class="form-floating mb-3" >
+                                    <input type="number" class="form-control" id="poprrate" value=4>
+                                    <label>Rate:</label>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-1">
+                                    <button style= " width:100%;" type="button" class="open-button" onclick="updateRecord()">Update</button>
+                                </div>
+                                <div class="col-1">
+                                  <button style= " width:100%;" type="button" class="open-button" onclick="exitEdit()">Exit</button>
+                                </div>
 
-                    </row>
+                              </div>
 
+                        </row>
+
+                      </div>
+
+                      <div id="ActionsLog" class="tabcontent">
+                        <label class="badge bg-primary text-wrap" style="color:white;font-weight: bold;font-size :1em">Actions taken to reach event cost</label><br><br>
+                        <div class="div_table_wrapper_actions">
+                            <table  id="ActionsTable" class="table table-striped" style="width:100%;height:auto"  >
+                              <!-- class="table table-striped" -->
+                              <!-- class="dataframe table table-striped table-bordered table-responsivek" -->
+                            </table>
+                        </div>
+
+                      </div>
+                      <!--  -->
+                   </div>
+                </div>
+              </div>
+              <!-- XXXXXXXXXXXXEvent RowXXXXXXXXXXXXXX -->
+
+              <!-- XXXXXXXXXXXXXXXXXXXXXXXXXX -->
+              <!-- XXXXXXXXXXXXXXXXXXXXXX -->
+              <div id="Family Info" class="row">
+                <div class="col-lg-12 boxy" >
+                  <div class="text-center">
+                    <h3 style="display:inline;color:blue;">תקופה:</h3>
+                    <select id="typeOfPeriods" onchange="periodChangeFunction()">
+                      <h3 >
+                        <option  selected value=1>חודש</option>
+                        <option   value=12>שנה</option>
+                      </h3>
+                    </select>
+                    <h3 style="display:inline;color:blue;">תקופות:</h3>
+                    <select id="returns" onchange="periodChangeFunction()">
+                      <h3 >
+                        <option value=1>1</option>
+                        <option value=2>2</option>
+                        <option value=3>3</option>
+                        <option value=4>4</option>
+                        <option value=5>5</option>
+                        <option value=6>6</option>
+                        <option value=7>7</option>
+                        <option value=8>8</option>
+                        <option value=9>9</option>
+                        <option value=10>10</option>
+                        <option value=11>11</option>
+                        <option selected value=12>12</option>
+                        <option value=13>13</option>
+                        <option value=14>14</option>
+                        <option value=15>15</option>
+                        <option value=16>16</option>
+                        <option value=17>17</option>
+                        <option value=18>18</option>
+                        <option value=19>19</option>
+                        <option value=20>20</option>
+                        <option value=21>21</option>
+                        <option value=22>22</option>
+                        <option value=23>23</option>
+                        <option value=24>24</option>
+                      </h3>
+                  </select>
+                  <h3 style="display:inline;color:blue;">הכפלה:</h3>
+                  <select id="periodSelect" onchange="periodChangeFunction()">
+                      <h3 >
+                        <option selected="selected" value=1>1</option>
+                        <option value=2>2</option>
+                        <option value=3>3</option>
+                        <option value=4>4</option>
+                        <option value=5>5</option>
+                        <option value=6>6</option>
+                        <option value=7>7</option>
+                        <option value=8>8</option>
+                        <option value=9>9</option>
+                        <option value=10>10</option>
+                        <option value=11>11</option>
+                        <option value=12>12</option>
+                      </h3>
+                    </select>
+                  <input type="checkbox" id="checkAlldata" value="all" onclick="allDataFunc()">
+                  <h3 style="display:inline;color:green;">הכל</h3>
+                   </div>
+                </div>
+              </div>
+              <div id="Charts" class="row">
+                <div  class="col-lg-12 boxy" >
+                  <div class "row">
+                    <!-- <div id="testreduce" style="max-width:1200px;max-height:400px;"></div> -->
+                    <div id="bar_in_exp_Plot" style="max-width:50%;max-height:400px;float:left"></div>
+                    <!-- <div id="test" style="max-width:1200px;max-height:400px;"></div> -->
+                    <div id="bar_savings_loans" style="max-width:50%;max-height:400px;float:left"></div>
                   </div>
 
-                  <div id="ActionsLog" class="tabcontent">
-                    <label class="badge bg-primary text-wrap" style="color:white;font-weight: bold;font-size :1em">Actions taken to reach event cost</label><br><br>
-                    <div class="div_table_wrapper_actions">
-                        <table  id="ActionsTable" class="table table-striped" style="width:100%;height:auto"  >
-                          <!-- class="table table-striped" -->
-                          <!-- class="dataframe table table-striped table-bordered table-responsivek" -->
-                        </table>
-                    </div>
 
+
+                </div>
+              </div>
+              <!-- XXXXXXXXXXXXXXXXXXXXXX -->
+              <div id="inAndExpRow" class="row">
+                <div id="inTable" class="col-lg-6  boxy" >
+                  <h2>Income Data Table</h2>
+                  <select id="incomesRecords" onchange="incomesRecordsChangeFunction()">
+                      <h3 >
+                      </h3>
+                  </select>
+                  <p class="saverecdatacss" id="incomerecdata"></p>
+                  <div id ="incomeselectchart" style="max-width:1200px;max-height:400px;"></div>
+
+                  <div class="div_table_wrapper">
+                    <table border="1" class="dataframe table table-striped table-bordered table-responsivek" id="tInTableJs">
+                    </table>
                   </div>
-                  <!--  -->
-               </div>
-            </div>
-          </div>
-          <!-- XXXXXXXXXXXXEvent RowXXXXXXXXXXXXXX -->
 
-          <!-- XXXXXXXXXXXXXXXXXXXXXXXXXX -->
-          <!-- XXXXXXXXXXXXXXXXXXXXXX -->
-          <div id="Family Info" class="row">
-            <div class="col-lg-12 boxy" >
-              <div class="text-center">
-                <h3 style="display:inline;color:blue;">תקופה:</h3>
-                <select id="typeOfPeriods" onchange="periodChangeFunction()">
-                  <h3 >
-                    <option  selected value=1>חודש</option>
-                    <option   value=12>שנה</option>
-                  </h3>
-                </select>
-                <h3 style="display:inline;color:blue;">תקופות:</h3>
-                <select id="returns" onchange="periodChangeFunction()">
-                  <h3 >
-                    <option value=1>1</option>
-                    <option value=2>2</option>
-                    <option value=3>3</option>
-                    <option value=4>4</option>
-                    <option value=5>5</option>
-                    <option value=6>6</option>
-                    <option value=7>7</option>
-                    <option value=8>8</option>
-                    <option value=9>9</option>
-                    <option value=10>10</option>
-                    <option value=11>11</option>
-                    <option selected value=12>12</option>
-                    <option value=13>13</option>
-                    <option value=14>14</option>
-                    <option value=15>15</option>
-                    <option value=16>16</option>
-                    <option value=17>17</option>
-                    <option value=18>18</option>
-                    <option value=19>19</option>
-                    <option value=20>20</option>
-                    <option value=21>21</option>
-                    <option value=22>22</option>
-                    <option value=23>23</option>
-                    <option value=24>24</option>
-                  </h3>
-              </select>
-              <h3 style="display:inline;color:blue;">הכפלה:</h3>
-              <select id="periodSelect" onchange="periodChangeFunction()">
-                  <h3 >
-                    <option selected="selected" value=1>1</option>
-                    <option value=2>2</option>
-                    <option value=3>3</option>
-                    <option value=4>4</option>
-                    <option value=5>5</option>
-                    <option value=6>6</option>
-                    <option value=7>7</option>
-                    <option value=8>8</option>
-                    <option value=9>9</option>
-                    <option value=10>10</option>
-                    <option value=11>11</option>
-                    <option value=12>12</option>
-                  </h3>
-                </select>
-              <input type="checkbox" id="checkAlldata" value="all" onclick="allDataFunc()">
-              <h3 style="display:inline;color:green;">הכל</h3>
-               </div>
-            </div>
-          </div>
-          <div id="Charts" class="row">
-            <div  class="col-lg-12 boxy" >
-              <div class "row">
-                <!-- <div id="testreduce" style="max-width:1200px;max-height:400px;"></div> -->
-                <div id="bar_in_exp_Plot" style="max-width:50%;max-height:400px;float:left"></div>
-                <!-- <div id="test" style="max-width:1200px;max-height:400px;"></div> -->
-                <div id="bar_savings_loans" style="max-width:50%;max-height:400px;float:left"></div>
+
+                </div>
+
+                <div id="expTable" class="col-lg-6   boxy" >
+                  <h2>Expanse Data Table</h2>
+
+
+                  <select id="expansesRecords" onchange="expansesRecordsChangeFunction()">
+                      <h3 >
+                      </h3>
+                  </select>
+                  <p class="saverecdatacss" id="expanserecdata"></p>
+                  <div id ="expanseselectchart" style="max-width:1200px;max-height:400px;"></div>
+
+                  <div class="div_table_wrapper">
+                    <table border="1" class="dataframe table table-striped table-bordered table-responsivek" id="tExpTableJs">
+                    </table>
+                  </div>
+
+
+
+
+
+                </div>
+              </div>
+              <div id="Balance" class="row">
+                <div id="balanceTable" class="col-lg-12  boxy" >
+                  <h2>Balance</h2>
+
+                </div>
+
               </div>
 
+              <div id="savAndLoanRow" class="row">
+                <div id="saveTable" class="col-lg-6 boxy" >
+                  <h2>Savings Data Table</h2>
+                  <select id="savingsRecords" onchange="savingsRecordsChangeFunction()">
+                      <h3 >
 
+                      </h3>
+                  </select>
+                  <p class="saverecdatacss" id="recdata"></p>
+                  <div id ="savingselectchart" style="max-width:1200px;max-height:400px;"></div>
+                  <p></p>
+                  <!-- <div class="div_table_wrapper">
+                    {{SaveTable|safe}}
+                  </div> -->
+                  <div class="div_table_wrapper">
+                    <table border="1" class="dataframe table table-striped table-bordered table-responsivek" id="tSaveTableJs">
+                    </table>
+                  </div>
+                </div>
 
-            </div>
-          </div>
-          <!-- XXXXXXXXXXXXXXXXXXXXXX -->
-          <div id="inAndExpRow" class="row">
-            <div id="inTable" class="col-lg-6  boxy" >
-              <h2>Income Data Table</h2>
-              <select id="incomesRecords" onchange="incomesRecordsChangeFunction()">
-                  <h3 >
-                  </h3>
-              </select>
-              <p class="saverecdatacss" id="incomerecdata"></p>
-              <div id ="incomeselectchart" style="max-width:1200px;max-height:400px;"></div>
+                <div id="loanTable" class="col-lg-6 boxy" >
+                  <h2>Loans Data Table</h2>
+                  <select id="loansRecords" onchange="loansRecordsChangeFunction()">
+                      <h3 >
+                      </h3>
+                  </select>
+                  <p class="saverecdatacss" id="loanrecdata"></p>
+                  <div id ="loanselectchart" style="max-width:1200px;max-height:400px;"></div>
+                  <p></p>
+                  <!-- <div class="div_table_wrapper">
+                    {{LoanTable|safe}}
+                  </div> -->
+                  <div class="div_table_wrapper">
+                    <table border="1" class="dataframe table table-striped table-bordered table-responsivek" id="tLoanTableJs">
+                    </table>
+                  </div>
+                </div>
 
-              <div class="div_table_wrapper">
-                <table border="1" class="dataframe table table-striped table-bordered table-responsivek" id="tInTableJs">
-                </table>
               </div>
-
-
-            </div>
-
-            <div id="expTable" class="col-lg-6   boxy" >
-              <h2>Expanse Data Table</h2>
-
-
-              <select id="expansesRecords" onchange="expansesRecordsChangeFunction()">
-                  <h3 >
-                  </h3>
-              </select>
-              <p class="saverecdatacss" id="expanserecdata"></p>
-              <div id ="expanseselectchart" style="max-width:1200px;max-height:400px;"></div>
-
-              <div class="div_table_wrapper">
-                <table border="1" class="dataframe table table-striped table-bordered table-responsivek" id="tExpTableJs">
-                </table>
-              </div>
-
-
-
-
-
-            </div>
-          </div>
-          <div id="Balance" class="row">
-            <div id="balanceTable" class="col-lg-12  boxy" >
-              <h2>Balance</h2>
-
-            </div>
-
-          </div>
-
-          <div id="savAndLoanRow" class="row">
-            <div id="saveTable" class="col-lg-6 boxy" >
-              <h2>Savings Data Table</h2>
-              <select id="savingsRecords" onchange="savingsRecordsChangeFunction()">
-                  <h3 >
-
-                  </h3>
-              </select>
-              <p class="saverecdatacss" id="recdata"></p>
-              <div id ="savingselectchart" style="max-width:1200px;max-height:400px;"></div>
+              <!-- for space at bottom of page -->
               <p></p>
-              <!-- <div class="div_table_wrapper">
-                {{SaveTable|safe}}
-              </div> -->
-              <div class="div_table_wrapper">
-                <table border="1" class="dataframe table table-striped table-bordered table-responsivek" id="tSaveTableJs">
-                </table>
-              </div>
-            </div>
-
-            <div id="loanTable" class="col-lg-6 boxy" >
-              <h2>Loans Data Table</h2>
-              <select id="loansRecords" onchange="loansRecordsChangeFunction()">
-                  <h3 >
-                  </h3>
-              </select>
-              <p class="saverecdatacss" id="loanrecdata"></p>
-              <div id ="loanselectchart" style="max-width:1200px;max-height:400px;"></div>
               <p></p>
-              <!-- <div class="div_table_wrapper">
-                {{LoanTable|safe}}
-              </div> -->
-              <div class="div_table_wrapper">
-                <table border="1" class="dataframe table table-striped table-bordered table-responsivek" id="tLoanTableJs">
-                </table>
-              </div>
+              <!-- *********** -->
+
+              <!-- *********** -->
             </div>
-
+            <!-- <div id="twoSlotsData" class="col-lg-2 boxy" >
+                <p class="fs-6">Note: you are in planning event mode and all actions are not effecting family data base</p>
+            </div> -->
           </div>
-          <!-- for space at bottom of page -->
-          <p></p>
-          <p></p>
-          <!-- *********** -->
-
-          <!-- *********** -->
         </div>
-        <!-- <div id="twoSlotsData" class="col-lg-2 boxy" >
-            <p class="fs-6">Note: you are in planning event mode and all actions are not effecting family data base</p>
-        </div> -->
-      </div>
-    </div>
-    <!-- <form method="POST">
-        {{ form.as_p }}
-        {% csrf_token %}
-        <input type="submit" value="Submit">
-    </form> -->
+        <!-- <form method="POST">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <input type="submit" value="Submit">
+        </form> -->
+     {% else %}
+        <br><br><br><h1>Please log in</h1>
+
+      {% endif %}
 
 
 

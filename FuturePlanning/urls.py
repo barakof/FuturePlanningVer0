@@ -8,9 +8,9 @@ app_name = 'FuturePlanning'
 
 urlpatterns = [
 
-path('',views.v_f_index),
+path('',views.v_f_index_new),
 # path('',views.v_f_select_family),
-path('home/',views.v_f_index,name="index"),
+path('home/',views.v_f_index_new,name="index"),
 path('new_record/',views.v_f_new_c_record),
 path('del_record/',views.v_f_del_c_record),
 path('edit_record/',views.v_f_edit_c_record),

@@ -160,107 +160,148 @@ def f_get_active_family(request):
     return(logIn_family,logIn_family.Fam_name)
 
 
-def v_f_index(request):
+# def v_f_index(request):
+#
+#     logIn_family_obj,logIn_family_str = f_get_active_family(request)
+#     print("log f string:",logIn_family_str)
+#
+#
+#     incomes_records_in_family =c_Records.objects.all().filter(Family__Fam_name=logIn_family_str).filter(Rec_Type='1')
+#     incomes_records_list = list(incomes_records_in_family.values())
+#
+#     expanses_records_in_family =c_Records.objects.all().filter(Family__Fam_name=logIn_family_str).filter(Rec_Type='2')
+#     expanses_records_list = list(expanses_records_in_family.values())
+#
+#     savings_records_in_family =c_Records.objects.all().filter(Family__Fam_name=logIn_family_str).filter(Rec_Type='3')
+#     savings_records_list = list(savings_records_in_family.values())
+#
+#     loans_records_in_family =c_Records.objects.all().filter(Family__Fam_name=logIn_family_str).filter(Rec_Type='4')
+#     loans_records_list = list(loans_records_in_family.values())
+#
+#     #Create an empty adataframe object for the incomes and return df and month list
+#     (g_income_table_df,g_table_month_list) = f_create_dataframe(g_start,g_end)
+#
+#     #Create an empty adataframe object for the Expanse and return df and month list
+#     (g_expanse_table_df,g_table_month_list) = f_create_dataframe(g_start,g_end)
+#
+#     #Create an empty adataframe object for the savings and return df and month list
+#     (g_savings_table_df,g_table_month_list) = f_create_dataframe(g_start,g_end)
+#
+#     #Create an empty adataframe object for the loans and return df and month list
+#     (g_loans_table_df,g_table_month_list) = f_create_dataframe(g_start,g_end)
+#
+#     # build income df from db records for incomes
+#     df_in=f_build_df_from_db(myconfig.g_types_list[0][0],logIn_family_str,g_table_month_list,g_income_table_df,{})
+#     # print("views df_in: ",df_in)
+#     # build expanse df from db records for expanses
+#     df_exp=f_build_df_from_db(myconfig.g_types_list[1][0],logIn_family_str,g_table_month_list,g_expanse_table_df,{})
+#
+# ###########################################################################
+#     rowTotalIncome = df_in.loc["Total"]
+#     rowTotalExp = df_exp.loc["Total"]
+#     MonthBalance = rowTotalIncome - rowTotalExp
+#     TotalBalance=[]
+#     TotalBalance.append(MonthBalance[0])
+#     index=1
+#     for i in range(len(MonthBalance)-1):
+#         TotalBalance.append(TotalBalance[index-1]+MonthBalance[index])
+#         index=index+1
+#     df_balance = f_create_balance_dataframe(g_start,g_end,TotalBalance)
+# ###########################################################################
+#
+#     # build savings df from db records for savings
+#     df_save=f_build_df_from_db(myconfig.g_types_list[2][0],logIn_family_str,g_table_month_list,g_savings_table_df,{})
+#     # print("views df_save: ",df_save)
+#     # build loans df from db records for loans
+#     df_loan=f_build_df_from_db(myconfig.g_types_list[3][0],logIn_family_str,g_table_month_list,g_loans_table_df,{})
+#     # print("views df_loan: ",df_loan)
+#     #transfer in comes df to html string
+#     income_table_string = df_in.to_html(classes="table table-striped table-bordered table-responsivek",table_id="tInTable")
+#
+#     #transfer expanse df to html string
+#     expanse_table_string = df_exp.to_html(classes="table table-striped table-bordered table-responsivek",table_id="tExpTable")
+#
+#     #transfer savings df to html string
+#     savings_table_string = df_save.to_html(classes="table table-striped table-bordered table-responsivek",table_id="tSaveTable")
+#
+#     #transfer expanse df to html string
+#     loans_table_string = df_loan.to_html(classes="table table-striped table-bordered table-responsivek",table_id="tLoanTable")
+#
+#     balance_table_string = df_balance.to_html(classes="table table-striped table-bordered table-responsivek",table_id="tBalanceTable")
+#
+#     in_index_length=(len(df_in))
+#
+#
+#     exp_index_length=(len(df_exp))
+#     save_index_length=(len(df_save))
+#     loan_index_length=(len(df_loan))
+#     balance_index_length=(len(df_balance))
+#
+#     dates_list_plotly = pd.date_range(g_start, g_end, freq='MS').strftime('%Y-%m').tolist()
+#
+#     my_dict = {'InTable':income_table_string,
+#                'ExpTable':expanse_table_string,
+#                'SaveTable':savings_table_string,
+#                'LoanTable':loans_table_string,
+#                'BalanceTable':balance_table_string,
+#
+#
+#                'IncomeYAxies':df_in.iloc[in_index_length-1].tolist(),
+#                'IncomeXAxies':dates_list_plotly,
+#                'ExpYAxies':df_exp.iloc[exp_index_length-1].tolist(),
+#                'ExpXAxies':dates_list_plotly,
+#
+#                'SavingsYAxies':df_save.iloc[save_index_length-1].tolist(),
+#                'SavingsXAxies':dates_list_plotly,
+#                'LoansYAxies':df_loan.iloc[loan_index_length-1].tolist(),
+#                'LoansXAxies':dates_list_plotly,
+#
+#                'BalanceYAxies':df_balance.iloc[balance_index_length-1].tolist(),
+#                'BalanceXAxies':dates_list_plotly,
+#
+#                'family':logIn_family_str,
+#                # g_current_family[0].Fam_name
+#
+#                'SavingsRecordList':savings_records_list,
+#                'LoansRecordList':loans_records_list,
+#
+#                'IncomesRecordList': incomes_records_list,
+#                'ExpansesRecordList': expanses_records_list,
+#
+#
+#                }
+#     return render(request,'FuturePlanning/v_f_index.html',context=my_dict)
+def v_f_index_new(request):
 
     logIn_family_obj,logIn_family_str = f_get_active_family(request)
-    print("log f string:",logIn_family_str)
-
 
     incomes_records_in_family =c_Records.objects.all().filter(Family__Fam_name=logIn_family_str).filter(Rec_Type='1')
     incomes_records_list = list(incomes_records_in_family.values())
-
     expanses_records_in_family =c_Records.objects.all().filter(Family__Fam_name=logIn_family_str).filter(Rec_Type='2')
     expanses_records_list = list(expanses_records_in_family.values())
-
     savings_records_in_family =c_Records.objects.all().filter(Family__Fam_name=logIn_family_str).filter(Rec_Type='3')
     savings_records_list = list(savings_records_in_family.values())
-
     loans_records_in_family =c_Records.objects.all().filter(Family__Fam_name=logIn_family_str).filter(Rec_Type='4')
     loans_records_list = list(loans_records_in_family.values())
 
-    #Create an empty adataframe object for the incomes and return df and month list
-    (g_income_table_df,g_table_month_list) = f_create_dataframe(g_start,g_end)
-
-    #Create an empty adataframe object for the Expanse and return df and month list
-    (g_expanse_table_df,g_table_month_list) = f_create_dataframe(g_start,g_end)
-
-    #Create an empty adataframe object for the savings and return df and month list
-    (g_savings_table_df,g_table_month_list) = f_create_dataframe(g_start,g_end)
-
-    #Create an empty adataframe object for the loans and return df and month list
-    (g_loans_table_df,g_table_month_list) = f_create_dataframe(g_start,g_end)
-
-    # build income df from db records for incomes
-    df_in=f_build_df_from_db(myconfig.g_types_list[0][0],logIn_family_str,g_table_month_list,g_income_table_df,{})
-    # print("views df_in: ",df_in)
-    # build expanse df from db records for expanses
-    df_exp=f_build_df_from_db(myconfig.g_types_list[1][0],logIn_family_str,g_table_month_list,g_expanse_table_df,{})
-
-###########################################################################
-    rowTotalIncome = df_in.loc["Total"]
-    rowTotalExp = df_exp.loc["Total"]
-    MonthBalance = rowTotalIncome - rowTotalExp
-    TotalBalance=[]
-    TotalBalance.append(MonthBalance[0])
-    index=1
-    for i in range(len(MonthBalance)-1):
-        TotalBalance.append(TotalBalance[index-1]+MonthBalance[index])
-        index=index+1
-    df_balance = f_create_balance_dataframe(g_start,g_end,TotalBalance)
-###########################################################################
-
-    # build savings df from db records for savings
-    df_save=f_build_df_from_db(myconfig.g_types_list[2][0],logIn_family_str,g_table_month_list,g_savings_table_df,{})
-    # print("views df_save: ",df_save)
-    # build loans df from db records for loans
-    df_loan=f_build_df_from_db(myconfig.g_types_list[3][0],logIn_family_str,g_table_month_list,g_loans_table_df,{})
-    # print("views df_loan: ",df_loan)
-    #transfer in comes df to html string
-    income_table_string = df_in.to_html(classes="table table-striped table-bordered table-responsivek",table_id="tInTable")
-
-    #transfer expanse df to html string
-    expanse_table_string = df_exp.to_html(classes="table table-striped table-bordered table-responsivek",table_id="tExpTable")
-
-    #transfer savings df to html string
-    savings_table_string = df_save.to_html(classes="table table-striped table-bordered table-responsivek",table_id="tSaveTable")
-
-    #transfer expanse df to html string
-    loans_table_string = df_loan.to_html(classes="table table-striped table-bordered table-responsivek",table_id="tLoanTable")
-
-    balance_table_string = df_balance.to_html(classes="table table-striped table-bordered table-responsivek",table_id="tBalanceTable")
-
-    in_index_length=(len(df_in))
-
-
-    exp_index_length=(len(df_exp))
-    save_index_length=(len(df_save))
-    loan_index_length=(len(df_loan))
-    balance_index_length=(len(df_balance))
-
     dates_list_plotly = pd.date_range(g_start, g_end, freq='MS').strftime('%Y-%m').tolist()
 
-    my_dict = {'InTable':income_table_string,
-               'ExpTable':expanse_table_string,
-               'SaveTable':savings_table_string,
-               'LoanTable':loans_table_string,
-               'BalanceTable':balance_table_string,
+    my_dict = {
 
-
-               'IncomeYAxies':df_in.iloc[in_index_length-1].tolist(),
+               # 'IncomeYAxies':df_in.iloc[in_index_length-1].tolist(),
                'IncomeXAxies':dates_list_plotly,
-               'ExpYAxies':df_exp.iloc[exp_index_length-1].tolist(),
+               # 'ExpYAxies':df_exp.iloc[exp_index_length-1].tolist(),
                'ExpXAxies':dates_list_plotly,
 
-               'SavingsYAxies':df_save.iloc[save_index_length-1].tolist(),
+               # 'SavingsYAxies':df_save.iloc[save_index_length-1].tolist(),
                'SavingsXAxies':dates_list_plotly,
-               'LoansYAxies':df_loan.iloc[loan_index_length-1].tolist(),
+               # 'LoansYAxies':df_loan.iloc[loan_index_length-1].tolist(),
                'LoansXAxies':dates_list_plotly,
 
-               'BalanceYAxies':df_balance.iloc[balance_index_length-1].tolist(),
+               # 'BalanceYAxies':df_balance.iloc[balance_index_length-1].tolist(),
                'BalanceXAxies':dates_list_plotly,
 
                'family':logIn_family_str,
-               # g_current_family[0].Fam_name
 
                'SavingsRecordList':savings_records_list,
                'LoansRecordList':loans_records_list,
@@ -270,8 +311,11 @@ def v_f_index(request):
 
 
                }
-    return render(request,'FuturePlanning/v_f_index.html',context=my_dict)
 
+
+
+
+    return render(request,'FuturePlanning/v_f_index_new.html',context=my_dict)
 
 def v_f_select_family(request):
     global g_current_family

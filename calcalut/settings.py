@@ -30,8 +30,7 @@ SECRET_KEY = 'django-insecure-y%!4z#q1l%t0@59epmzwf^5hff*xe_-9yi8zs8ivb$+7yv)t8=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['calcalut-barakof.pythonanywhere.com', '127.0.0.1' ]
 
 # Application definition
 

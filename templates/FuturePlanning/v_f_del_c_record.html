@@ -5,8 +5,8 @@
 
 
 
-
-    <div class="container" style="margin-top:60px; ">
+    {% if user.is_authenticated %}
+     <div class="container" style="margin-top:60px; ">
       <h2>Delete Record</h2>
       {% if erros %}
             {% for err in erros %}
@@ -22,7 +22,10 @@
         <input type="submit" class='btn btn-primary' value="Submit" id="submit_btn">
       </form>
     </div>
+    {% else %}
+        <br><br><br><h1>Please log in</h1>
 
+      {% endif %}
 
 
   </body>
